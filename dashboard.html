@@ -1,4 +1,5 @@
-
+```python
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -135,11 +136,11 @@
         td { padding: 9px 8px; text-align: center; border-bottom: 1px solid #EEE; }
         tr:hover td { background: #FFF8E1; }
         .badge { padding: 3px 8px; border-radius: 10px; font-weight: 600; font-size: 0.76em; }
-        .badge-ok { background: #E8F5E9; color: #2E7D32; }
+        .badge-ok { background: #E8F5E9; color: [MAC_ADDRESS]; }
         .badge-warn { background: #FFF3E0; color: #E65100; }
         .badge-alert { background: #FFEBEE; color: #C62828; }
         .node-bold { font-weight: 700; }
-        .pos { color: #2E7D32; font-weight: 700; }
+        .pos { color: [MAC_ADDRESS]; font-weight: 700; }
         .neg { color: #C62828; font-weight: 700; }
         @media (max-width: 900px) {
             .kpi-cards { grid-template-columns: repeat(3, 1fr); }
@@ -270,24 +271,71 @@
 
     <script>
     // ==============================================
-    // SUA URL (ja configurada):
+    // SUA URL (nao altere):
     // ==============================================
-    var API_URL = 'https://script.google.com/macros/s/AKfycbwL_9312RhpK_JNculKu_bCUiI662cTn2PXYrxZYoMA3NwAeJ5cxm8p38Ebk0aByT-Z/exec?action=getData';
+    var BASE_URL = 'https://script.google.com/macros/s/AKfycbwL_9312RhpK_JNculKu_bCUiI662cTn2PXYrxZYoMA3NwAeJ5cxm8p38Ebk0aByT-Z/exec';
     // ==============================================
+
+    Highcharts.setOptions({ accessibility: { enabled: false } });
 
     var TODOS_DADOS = [];
 
     carregarDados();
 
-   function carregarDados() {
+    function carregarDados() {
+        // Usa Google Apps Script com redirect (evita CORS)
+        var iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.name = 'dataFrame';
+        document.body.appendChild(iframe);
+
+        // Metodo alternativo: usar XMLHttpRequest com redirect follow
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', BASE_URL + '?action=getData', true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    try {
+                        var data = JSON.parse(xhr.responseText);
+                        processarDados(data);
+                    } catch(e) {
+                        tentarJSONP();
+                    }
+                } else {
+                    tentarJSONP();
+                }
+            }
+        };
+        xhr.onerror = function() {
+            tentarJSONP();
+        };
+        xhr.send();
+    }
+
+    function tentarJSONP() {
+        var callbackName = 'dashCallback_' + Date.now();
+        window[callbackName] = function(data) {
+            processarDados(data);
+            delete window[callbackName];
+        };
         var script = document.createElement('script');
-        script.src = API_URL + '&callback=receberDados';
+        script.src = BASE_URL + '?action=getData&callback=' + callbackName;
+        script.onerror = function() {
+            document.getElementById('lastUpdate').textContent = 'Erro ao carregar dados. Verifique a conexao.';
+        };
         document.body.appendChild(script);
     }
 
-    function receberDados(data) {
+    function processarDados(data) {
         document.getElementById('lastUpdate').textContent = 'Atualizado: ' + new Date(data.lastUpdate).toLocaleString('pt-BR');
         TODOS_DADOS = data.dados;
+
+        // Normalizar datas (remover horario se vier no formato ISO)
+        for (var i = 0; i < TODOS_DADOS.length; i++) {
+            if (TODOS_DADOS[i].dataRef && TODOS_DADOS[i].dataRef.length > 10) {
+                TODOS_DADOS[i].dataRef = TODOS_DADOS[i].dataRef.slice(0, 10);
+            }
+        }
 
         var hoje = new Date().toISOString().split('T')[0];
         var seteDiasAtras = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
@@ -306,7 +354,6 @@
         }
     }
 
-    // Verificar se todos estao marcados
     function verificarTodos() {
         var checks = document.querySelectorAll('.chkEDSP');
         var todosMarcados = true;
@@ -316,7 +363,6 @@
         document.getElementById('chkTodos').checked = todosMarcados;
     }
 
-    // Adicionar evento em cada checkbox individual
     var checksIndividuais = document.querySelectorAll('.chkEDSP');
     for (var i = 0; i < checksIndividuais.length; i++) {
         checksIndividuais[i].addEventListener('change', verificarTodos);
@@ -351,7 +397,6 @@
             return passaData && passaEDSP;
         });
 
-        // Atualizar info do periodo
         var info = '';
         if (dataInicio && dataFim) {
             info = 'Periodo: ' + dataInicio + ' ate ' + dataFim;
@@ -391,7 +436,6 @@
             return;
         }
 
-        // KPIs
         var totalProcessed = soma(dados, 'processed');
         var avgDesvio = media(dados, 'desvioForecast');
         var totalForaCPT = soma(dados, 'veiculosForaCPT');
@@ -400,18 +444,15 @@
 
         document.getElementById('kpiProcessed').textContent = totalProcessed.toLocaleString('pt-BR');
         document.getElementById('kpiDesvio').textContent = (avgDesvio >= 0 ? '+' : '') + avgDesvio.toFixed(1) + '%';
-        document.getElementById('kpiDesvio').style.color = avgDesvio >= 0 ? '#2E7D32' : '#C62828';
+        document.getElementById('kpiDesvio').style.color = avgDesvio >= 0 ? '[MAC_ADDRESS]' : '#C62828';
         document.getElementById('kpiForaCPT').textContent = totalForaCPT;
         document.getElementById('kpiEquipe').textContent = totalEquipe;
         document.getElementById('kpiTPH').textContent = avgTPH.toFixed(2);
 
-        // Graficos
         renderChartForecast(dados);
         renderChartTPH(dados);
         renderChartForaCPT(dados);
         renderChartEquipe(dados);
-
-        // Tabela
         renderTabela(dados);
     }
 
