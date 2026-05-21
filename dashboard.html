@@ -1,0 +1,352 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FM EDSPs - Dashboard DF-SUL</title>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Calibri', 'Segoe UI', sans-serif;
+            background: #F5F5F5;
+            color: #232F3E;
+            padding: 20px;
+        }
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 28px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 4px solid #FF9900;
+        }
+        .header h1 { font-size: 1.4em; color: #232F3E; }
+        .header h1 span { color: #FF9900; }
+        .header .subtitle { font-size: 0.8em; color: #666; margin-top: 2px; }
+        .header .update {
+            font-size: 0.78em; color: #666;
+            background: #FFF3E0; padding: 6px 12px; border-radius: 16px;
+        }
+        .kpi-cards {
+            display: grid; grid-template-columns: repeat(5, 1fr);
+            gap: 14px; margin-bottom: 22px;
+        }
+        .kpi-card {
+            background: white; border-radius: 10px; padding: 16px;
+            text-align: center; border-top: 3px solid #232F3E;
+        }
+        .kpi-card.destaque { border-top-color: #FF9900; }
+        .kpi-card .icon { font-size: 1.3em; margin-bottom: 4px; }
+        .kpi-card .label { font-size: 0.68em; color: #666; text-transform: uppercase; }
+        .kpi-card .valor { font-size: 1.5em; font-weight: 700; color: #232F3E; margin: 4px 0; }
+        .kpi-card .sub { font-size: 0.7em; color: #999; }
+        .charts-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 18px; margin-bottom: 22px;
+        }
+        .chart-box {
+            background: white; border-radius: 10px; padding: 18px;
+            min-height: 320px;
+        }
+        .table-section {
+            background: white; border-radius: 10px; padding: 20px;
+            margin-bottom: 20px; overflow-x: auto;
+        }
+        .table-section h3 { color: #232F3E; margin-bottom: 14px; font-size: 1em; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8em; }
+        th {
+            background: #232F3E; color: #FF9900; padding: 10px 8px;
+            text-align: center; font-size: 0.76em; white-space: nowrap;
+        }
+        td { padding: 9px 8px; text-align: center; border-bottom: 1px solid #EEE; }
+        tr:hover td { background: #FFF8E1; }
+        .badge { padding: 3px 8px; border-radius: 10px; font-weight: 600; font-size: 0.76em; }
+        .badge-ok { background: #E8F5E9; color: #2E7D32; }
+        .badge-warn { background: #FFF3E0; color: #E65100; }
+        .badge-alert { background: #FFEBEE; color: #C62828; }
+        .node-bold { font-weight: 700; }
+        .pos { color: #2E7D32; font-weight: 700; }
+        .neg { color: #C62828; font-weight: 700; }
+        .aviso-dash {
+            background: #FFEBEE; border: 2px solid #EF5350;
+            border-radius: 10px; padding: 12px; margin-bottom: 14px;
+            font-size: 0.78em; color: #C62828; text-align: center;
+        }
+        .aviso-dash.pronto { background: #E8F5E9; border-color: #66BB6A; color: #2E7D32; }
+        @media (max-width: 900px) {
+            .kpi-cards { grid-template-columns: repeat(3, 1fr); }
+            .charts-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 600px) {
+            .kpi-cards { grid-template-columns: repeat(2, 1fr); }
+            .header { flex-direction: column; gap: 10px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1>FM EDSPs — <span>Regional DF-SUL</span></h1>
+            <p class="subtitle">Dashboard Operacional | Consolidado Diario</p>
+        </div>
+        <div class="update" id="lastUpdate">Carregando...</div>
+    </div>
+
+    <div class="aviso-dash" id="avisoDash">
+        CONFIGURE: Substitua https://script.google.com/macros/s/AKfycbw2S-H3ppizbXQGsk7OBjBifVa5St4sapBsaJ4PhToY1JwkTd2lTD0xnr0KVn_i-9M/exec pela URL do Apps Script (com ?action=getData no final).
+    </div>
+
+    <!-- KPI CARDS -->
+    <div class="kpi-cards">
+        <div class="kpi-card destaque">
+            <div class="icon">📦</div>
+            <div class="label">Total Processed</div>
+            <div class="valor" id="kpiProcessed">--</div>
+            <div class="sub">pacotes no dia</div>
+        </div>
+        <div class="kpi-card">
+            <div class="icon">📊</div>
+            <div class="label">Desvio Forecast</div>
+            <div class="valor" id="kpiDesvio">--</div>
+            <div class="sub">media regional</div>
+        </div>
+        <div class="kpi-card">
+            <div class="icon">🚚</div>
+            <div class="label">Veiculos Fora CPT</div>
+            <div class="valor" id="kpiForaCPT">--</div>
+            <div class="sub">total no dia</div>
+        </div>
+        <div class="kpi-card">
+            <div class="icon">👥</div>
+            <div class="label">Equipe Total</div>
+            <div class="valor" id="kpiEquipe">--</div>
+            <div class="sub">AA + Diaristas + YB</div>
+        </div>
+        <div class="kpi-card destaque">
+            <div class="icon">⚡</div>
+            <div class="label">TPH Medio</div>
+            <div class="valor" id="kpiTPH">--</div>
+            <div class="sub">throughput/hora</div>
+        </div>
+    </div>
+
+    <!-- GRAFICOS -->
+    <div class="charts-grid">
+        <div class="chart-box" id="chartForecast"></div>
+        <div class="chart-box" id="chartTPH"></div>
+        <div class="chart-box" id="chartForaCPT"></div>
+        <div class="chart-box" id="chartEquipe"></div>
+    </div>
+
+    <!-- TABELA -->
+    <div class="table-section">
+        <h3>Detalhamento por EDSP - Ultimo Dia</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>EDSP</th>
+                    <th>Responsavel</th>
+                    <th>Forecast</th>
+                    <th>Processed</th>
+                    <th>Desvio %</th>
+                    <th>Piso</th>
+                    <th>Wrong Node</th>
+                    <th>Veiculos</th>
+                    <th>Fora CPT</th>
+                    <th>Lib. Veiculo</th>
+                    <th>AA's</th>
+                    <th>Diaristas</th>
+                    <th>Lider YB</th>
+                    <th>TPH</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="tabelaNodes">
+                <tr><td colspan="15">Aguardando dados...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+    // ==============================================
+    // COLE SUA URL AQUI (com ?action=getData no final):
+    // ==============================================
+    var API_URL = 'https://script.google.com/macros/s/AKfycbw2S-H3ppizbXQGsk7OBjBifVa5St4sapBsaJ4PhToY1JwkTd2lTD0xnr0KVn_i-9M/exec?action=getData';
+    // Exemplo: 'https://script.google.com/macros/s/AKfycbxXXXX/exec?action=getData'
+    // ==============================================
+
+    // Verificar config
+    if (false) {
+        document.getElementById('avisoDash').style.display = 'block';
+    } else {
+        var avisoDash = document.getElementById('avisoDash');
+        avisoDash.className = 'aviso-dash pronto';
+        avisoDash.textContent = 'Conectado! Carregando dados...';
+        carregarDados();
+    }
+
+    function carregarDados() {
+        fetch(API_URL)
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                document.getElementById('avisoDash').style.display = 'none';
+                renderizar(data);
+            })
+            .catch(function(err) {
+                document.getElementById('avisoDash').className = 'aviso-dash';
+                document.getElementById('avisoDash').textContent = 'Erro ao carregar dados: ' + err.message;
+            });
+    }
+
+    function renderizar(data) {
+        document.getElementById('lastUpdate').textContent = 'Atualizado: ' + new Date(data.lastUpdate).toLocaleString('pt-BR');
+
+        if (data.dados.length === 0) {
+            document.getElementById('tabelaNodes').innerHTML = '<tr><td colspan="15">Nenhum dado encontrado.</td></tr>';
+            return;
+        }
+
+        // Pegar ultimo dia
+        var ultimoDia = data.datasDisponiveis[0];
+        var dadosHoje = data.dados.filter(function(d) { return d.dataRef === ultimoDia; });
+
+        if (dadosHoje.length === 0) {
+            dadosHoje = data.dados;
+        }
+
+        // KPIs
+        var totalProcessed = soma(dadosHoje, 'processed');
+        var avgDesvio = media(dadosHoje, 'desvioForecast');
+        var totalForaCPT = soma(dadosHoje, 'veiculosForaCPT');
+        var totalEquipe = soma(dadosHoje, 'qtdAAs') + soma(dadosHoje, 'qtdDiaristas') + soma(dadosHoje, 'qtdLiderYB');
+        var avgTPH = media(dadosHoje, 'tph');
+
+        document.getElementById('kpiProcessed').textContent = totalProcessed.toLocaleString('pt-BR');
+        document.getElementById('kpiDesvio').textContent = (avgDesvio >= 0 ? '+' : '') + avgDesvio.toFixed(1) + '%';
+        document.getElementById('kpiDesvio').style.color = avgDesvio >= 0 ? '#2E7D32' : '#C62828';
+        document.getElementById('kpiFora CPT').textContent = totalForaCPT;
+        document.getElementById('kpiForaCPT').textContent = totalForaCPT;
+        document.getElementById('kpiEquipe').textContent = totalEquipe;
+        document.getElementById('kpiTPH').textContent = avgTPH.toFixed(2);
+
+        // Graficos
+        renderChartForecast(data.dados, data.datasDisponiveis);
+        renderChartTPH(dadosHoje);
+        renderChartForaCPT(dadosHoje);
+        renderChartEquipe(dadosHoje);
+
+        // Tabela
+        renderTabela(dadosHoje);
+    }
+
+    function renderChartForecast(dados, datas) {
+        var datasUsadas = datas.slice(0, 7).reverse();
+        var forecast = datasUsadas.map(function(dt) { return soma(dados.filter(function(d){return d.dataRef===dt;}), 'forecast'); });
+        var processed = datasUsadas.map(function(dt) { return soma(dados.filter(function(d){return d.dataRef===dt;}), 'processed'); });
+
+        Highcharts.chart('chartForecast', {
+            chart: { type: 'column' },
+            title: { text: 'Forecast vs Processed', style: { fontSize: '13px' } },
+            xAxis: { categories: datasUsadas.map(function(d){return d.slice(5);}) },
+            yAxis: { title: { text: 'Pacotes' } },
+            series: [
+                { name: 'Forecast', data: forecast, color: '#37475A' },
+                { name: 'Processed', data: processed, color: '#FF9900' }
+            ],
+            credits: { enabled: false },
+            legend: { enabled: true }
+        });
+    }
+
+    function renderChartTPH(dadosHoje) {
+        var nodes = dadosHoje.map(function(d){return d.node;});
+        var tphs = dadosHoje.map(function(d){return d.tph;});
+
+        Highcharts.chart('chartTPH', {
+            chart: { type: 'bar' },
+            title: { text: 'TPH por EDSP', style: { fontSize: '13px' } },
+            xAxis: { categories: nodes },
+            yAxis: { title: { text: 'TPH' } },
+            series: [{ name: 'TPH', data: tphs, color: '#FF9900' }],
+            credits: { enabled: false },
+            legend: { enabled: false }
+        });
+    }
+
+    function renderChartForaCPT(dadosHoje) {
+        var nodes = dadosHoje.map(function(d){return d.node;});
+        var fora = dadosHoje.map(function(d){return d.veiculosForaCPT;});
+
+        Highcharts.chart('chartForaCPT', {
+            chart: { type: 'column' },
+            title: { text: 'Veiculos Fora do CPT', style: { fontSize: '13px' } },
+            xAxis: { categories: nodes },
+            yAxis: { title: { text: 'Veiculos' } },
+            series: [{ name: 'Fora CPT', data: fora, color: '#C62828' }],
+            credits: { enabled: false },
+            legend: { enabled: false }
+        });
+    }
+
+    function renderChartEquipe(dadosHoje) {
+        var nodes = dadosHoje.map(function(d){return d.node;});
+
+        Highcharts.chart('chartEquipe', {
+            chart: { type: 'bar' },
+            title: { text: 'Composicao da Equipe', style: { fontSize: '13px' } },
+            xAxis: { categories: nodes },
+            yAxis: { title: { text: 'Pessoas' }, stackLabels: { enabled: true } },
+            plotOptions: { series: { stacking: 'normal' } },
+            series: [
+                { name: "AA's", data: dadosHoje.map(function(d){return d.qtdAAs;}), color: '#232F3E' },
+                { name: 'Diaristas', data: dadosHoje.map(function(d){return d.qtdDiaristas;}), color: '#FF9900' },
+                { name: 'Lider YB', data: dadosHoje.map(function(d){return d.qtdLiderYB;}), color: '#37475A' }
+            ],
+            credits: { enabled: false },
+            legend: { enabled: true }
+        });
+    }
+
+    function renderTabela(dadosHoje) {
+        var tbody = document.getElementById('tabelaNodes');
+        dadosHoje.sort(function(a, b) { return b.tph - a.tph; });
+
+        tbody.innerHTML = dadosHoje.map(function(d) {
+            var status = getStatus(d);
+            var desvioClass = d.desvioForecast >= 0 ? 'pos' : 'neg';
+            return '<tr>' +
+                '<td class="node-bold">' + d.node + '</td>' +
+                '<td>' + d.responsavel + '</td>' +
+                '<td>' + d.forecast + '</td>' +
+                '<td>' + d.processed + '</td>' +
+                '<td class="' + desvioClass + '">' + (d.desvioForecast >= 0 ? '+' : '') + d.desvioForecast.toFixed(1) + '%</td>' +
+                '<td>' + d.pacotesPiso + '</td>' +
+                '<td>' + d.wrongNode + '</td>' +
+                '<td>' + d.qtdVeiculos + '</td>' +
+                '<td>' + d.veiculosForaCPT + '</td>' +
+                '<td>' + d.horarioLiberacao + '</td>' +
+                '<td>' + d.qtdAAs + '</td>' +
+                '<td>' + d.qtdDiaristas + '</td>' +
+                '<td>' + d.qtdLiderYB + '</td>' +
+                '<td>' + d.tph.toFixed(2) + '</td>' +
+                '<td><span class="badge ' + status.classe + '">' + status.texto + '</span></td>' +
+                '</tr>';
+        }).join('');
+    }
+
+    function getStatus(d) {
+        if (d.veiculosForaCPT > 3 || d.desvioForecast < -10) return { texto: 'Critico', classe: 'badge-alert' };
+        if (d.veiculosForaCPT > 0 || d.desvioForecast < -5) return { texto: 'Atencao', classe: 'badge-warn' };
+        return { texto: 'OK', classe: 'badge-ok' };
+    }
+
+    function media(arr, campo) { return arr.length > 0 ? arr.reduce(function(s,d){return s+d[campo];}, 0) / arr.length : 0; }
+    function soma(arr, campo) { return arr.reduce(function(s,d){return s+d[campo];}, 0); }
+    </script>
+</body>
+</html>
+
