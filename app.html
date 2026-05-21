@@ -62,14 +62,27 @@
             border-radius: 8px;
             font-size: 16px;
             background: #FAFAFA;
+            -webkit-appearance: none;
         }
         .field input:focus, .field select:focus {
             border-color: #FF9900;
             outline: none;
             background: white;
         }
-        .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .field-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .field-row .field { margin-bottom: 0; }
+        .field-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .field-row-3 .field { margin-bottom: 0; }
         .auto-field {
             background: #F0F8E8 !important;
             border-color: #4CAF50 !important;
@@ -86,6 +99,7 @@
             font-size: 1em;
             font-weight: 700;
             cursor: pointer;
+            margin-top: 4px;
         }
         .btn-submit:active { background: #E68A00; }
         .btn-submit:disabled { background: #D5D9D9; color: #888; }
@@ -189,17 +203,33 @@
             </div>
             <div class="field-row">
                 <div class="field">
-                    <label>Quantidade de veiculos</label>
+                    <label>Qtd. Veiculos</label>
                     <input type="number" id="qtdVeiculos" min="0" placeholder="0" required>
                 </div>
                 <div class="field">
-                    <label>Veiculos liberados fora do CPT</label>
+                    <label>Veiculos Fora CPT</label>
                     <input type="number" id="veiculosForaCPT" min="0" placeholder="0" required>
                 </div>
             </div>
-            <div class="field">
-                <label>Horario Liberacao Veiculo</label>
-                <input type="time" id="horarioLiberacao" required>
+            <div class="field-row">
+                <div class="field">
+                    <label>Horario Inicio Operacao</label>
+                    <input type="time" id="horarioInicio" required>
+                </div>
+                <div class="field">
+                    <label>Horario Lib. Veiculo</label>
+                    <input type="time" id="horarioLiberacao" required>
+                </div>
+            </div>
+            <div class="field-row">
+                <div class="field">
+                    <label>Backlog Shuttles</label>
+                    <input type="number" id="backlogShuttles" min="0" placeholder="0" required>
+                </div>
+                <div class="field">
+                    <label>Backlog Pallets</label>
+                    <input type="number" id="backlogPallets" min="0" placeholder="0" required>
+                </div>
             </div>
         </div>
 
@@ -223,7 +253,7 @@
             <div class="tph-box">
                 <div class="lbl">TPH (Throughput por Hora)</div>
                 <div class="val" id="tphValor">--</div>
-                <div class="formula">((AA x 345 + Diaristas x 420 + YB x 480) / 60) / Processed</div>
+                <div class="formula">Processed / ((AA x 345 + Diaristas x 420 + YB x 480) / 60)</div>
             </div>
         </div>
 
@@ -234,7 +264,7 @@
 
     <script>
     // ==============================================
-    // COLE SUA URL AQUI (entre as aspas):
+    // SUA URL (nao altere):
     // ==============================================
     var MINHA_URL = 'https://script.google.com/macros/s/AKfycbwL_9312RhpK_JNculKu_bCUiI662cTn2PXYrxZYoMA3NwAeJ5cxm8p38Ebk0aByT-Z/exec';
     // ==============================================
@@ -248,8 +278,12 @@
         avisoEl.textContent = 'Conectado! Pronto para enviar dados.';
     }
 
-    // Data de hoje
-    document.getElementById('dataRef').value = new Date().toISOString().split('T')[0];
+    // Data de HOJE (fuso horario local)
+    var hoje = new Date();
+    var ano = hoje.getFullYear();
+    var mes = String(hoje.getMonth() + 1).padStart(2, '0');
+    var dia = String(hoje.getDate()).padStart(2, '0');
+    document.getElementById('dataRef').value = ano + '-' + mes + '-' + dia;
 
     // Tabela EDSP -> Responsavel
     var RESPONSAVEIS = {
@@ -300,7 +334,7 @@
             elDesvio.style.color = '#2E7D32';
         }
 
-        // TPH = ((AA's x 345) + (Diaristas x 420) + (Lider YB x 480)) / 60 / Processed
+        // TPH = Processed / ((AA's x 345 + Diaristas x 420 + Lider YB x 480) / 60)
         var aas = Number(document.getElementById('qtdAAs').value) || 0;
         var diaristas = Number(document.getElementById('qtdDiaristas').value) || 0;
         var liderYB = Number(document.getElementById('qtdLiderYB').value) || 0;
@@ -322,7 +356,7 @@
         e.preventDefault();
 
         if (MINHA_URL === 'COLOQUE_SUA_URL_AQUI') {
-            alert('Configure a URL primeiro! Abra o arquivo no Bloco de Notas e substitua https://script.google.com/macros/s/AKfycbwL_9312RhpK_JNculKu_bCUiI662cTn2PXYrxZYoMA3NwAeJ5cxm8p38Ebk0aByT-Z/execpela sua URL.');
+            alert('Configure a URL primeiro! Abra o arquivo no Bloco de Notas e substitua a URL pela sua URL do Apps Script.');
             return;
         }
 
@@ -354,7 +388,10 @@
             wrongNode: Number(document.getElementById('wrongNode').value || 0),
             qtdVeiculos: Number(document.getElementById('qtdVeiculos').value),
             veiculosForaCPT: Number(document.getElementById('veiculosForaCPT').value),
+            horarioInicio: document.getElementById('horarioInicio').value,
             horarioLiberacao: document.getElementById('horarioLiberacao').value,
+            backlogShuttles: Number(document.getElementById('backlogShuttles').value),
+            backlogPallets: Number(document.getElementById('backlogPallets').value),
             qtdAAs: aas,
             qtdDiaristas: diaristas,
             qtdLiderYB: liderYB,
@@ -388,10 +425,11 @@
             msgEl.textContent = 'Dados enviados! (' + dados.node + ' - ' + dados.dataRef + ')';
 
             // Limpar campos
-            var limpar = ['forecast','processed','pacotesPiso','wrongNode','qtdVeiculos','veiculosForaCPT','qtdAAs','qtdDiaristas','qtdLiderYB'];
+            var limpar = ['forecast','processed','pacotesPiso','wrongNode','qtdVeiculos','veiculosForaCPT','backlogShuttles','backlogPallets','qtdAAs','qtdDiaristas','qtdLiderYB'];
             for (var i = 0; i < limpar.length; i++) {
                 document.getElementById(limpar[i]).value = '';
             }
+            document.getElementById('horarioInicio').value = '';
             document.getElementById('horarioLiberacao').value = '';
             document.getElementById('desvioForecast').value = '--';
             document.getElementById('tphValor').textContent = '--';
