@@ -102,7 +102,7 @@
             background: #FFF8E1; padding: 8px; border-radius: 8px;
         }
         .kpi-cards {
-            display: grid; grid-template-columns: repeat(5, 1fr);
+            display: grid; grid-template-columns: repeat(6, 1fr);
             gap: 14px; margin-bottom: 22px;
         }
         .kpi-card {
@@ -122,6 +122,10 @@
             background: white; border-radius: 10px; padding: 18px;
             min-height: 320px;
         }
+        .chart-full {
+            background: white; border-radius: 10px; padding: 18px;
+            min-height: 320px; margin-bottom: 22px;
+        }
         .table-section {
             background: white; border-radius: 10px; padding: 20px;
             margin-bottom: 20px; overflow-x: auto;
@@ -135,14 +139,17 @@
         td { padding: 9px 8px; text-align: center; border-bottom: 1px solid #EEE; }
         tr:hover td { background: #FFF8E1; }
         .badge { padding: 3px 8px; border-radius: 10px; font-weight: 600; font-size: 0.76em; }
-        .badge-ok { background: #E8F5E9; color: [MAC_ADDRESS]; }
+        .badge-ok { background: #E8F5E9; color: #2E7D32; }
         .badge-warn { background: #FFF3E0; color: #E65100; }
         .badge-alert { background: #FFEBEE; color: #C62828; }
         .node-bold { font-weight: 700; }
-        .pos { color: [MAC_ADDRESS]; font-weight: 700; }
+        .pos { color: #2E7D32; font-weight: 700; }
         .neg { color: #C62828; font-weight: 700; }
-        @media (max-width: 900px) {
+        @media (max-width: 1100px) {
             .kpi-cards { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 900px) {
+            .kpi-cards { grid-template-columns: repeat(2, 1fr); }
             .charts-grid { grid-template-columns: 1fr; }
             .filtros-row { flex-direction: column; align-items: flex-start; }
         }
@@ -228,6 +235,12 @@
             <div class="valor" id="kpiTPH">--</div>
             <div class="sub">throughput/hora</div>
         </div>
+        <div class="kpi-card">
+            <div class="icon">📋</div>
+            <div class="label">Backlog Shuttles</div>
+            <div class="valor" id="kpiBacklog">--</div>
+            <div class="sub">total no periodo</div>
+        </div>
     </div>
 
     <!-- GRAFICOS -->
@@ -237,6 +250,9 @@
         <div class="chart-box" id="chartForaCPT"></div>
         <div class="chart-box" id="chartEquipe"></div>
     </div>
+
+    <!-- GRAFICO BACKLOG (largura total) -->
+    <div class="chart-full" id="chartBacklog"></div>
 
     <!-- TABELA -->
     <div class="table-section">
@@ -254,7 +270,10 @@
                     <th>Wrong Node</th>
                     <th>Veiculos</th>
                     <th>Fora CPT</th>
+                    <th>Inicio Op.</th>
                     <th>Lib. Veiculo</th>
+                    <th>Bklog Shuttles</th>
+                    <th>Bklog Pallets</th>
                     <th>AA's</th>
                     <th>Diaristas</th>
                     <th>Lider YB</th>
@@ -263,7 +282,7 @@
                 </tr>
             </thead>
             <tbody id="tabelaNodes">
-                <tr><td colspan="16">Aguardando dados...</td></tr>
+                <tr><td colspan="19">Aguardando dados...</td></tr>
             </tbody>
         </table>
     </div>
@@ -431,7 +450,8 @@
             document.getElementById('kpiForaCPT').textContent = '--';
             document.getElementById('kpiEquipe').textContent = '--';
             document.getElementById('kpiTPH').textContent = '--';
-            document.getElementById('tabelaNodes').innerHTML = '<tr><td colspan="16">Nenhum dado encontrado para o periodo/filtro selecionado.</td></tr>';
+            document.getElementById('kpiBacklog').textContent = '--';
+            document.getElementById('tabelaNodes').innerHTML = '<tr><td colspan="19">Nenhum dado encontrado para o periodo/filtro selecionado.</td></tr>';
             return;
         }
 
@@ -440,18 +460,21 @@
         var totalForaCPT = soma(dados, 'veiculosForaCPT');
         var totalEquipe = soma(dados, 'qtdAAs') + soma(dados, 'qtdDiaristas') + soma(dados, 'qtdLiderYB');
         var avgTPH = media(dados, 'tph');
+        var totalBacklog = soma(dados, 'backlogShuttles');
 
         document.getElementById('kpiProcessed').textContent = totalProcessed.toLocaleString('pt-BR');
         document.getElementById('kpiDesvio').textContent = (avgDesvio >= 0 ? '+' : '') + avgDesvio.toFixed(1) + '%';
-        document.getElementById('kpiDesvio').style.color = avgDesvio >= 0 ? '[MAC_ADDRESS]' : '#C62828';
+        document.getElementById('kpiDesvio').style.color = avgDesvio >= 0 ? '#2E7D32' : '#C62828';
         document.getElementById('kpiForaCPT').textContent = totalForaCPT;
         document.getElementById('kpiEquipe').textContent = totalEquipe;
         document.getElementById('kpiTPH').textContent = avgTPH.toFixed(2);
+        document.getElementById('kpiBacklog').textContent = totalBacklog;
 
         renderChartForecast(dados);
         renderChartTPH(dados);
         renderChartForaCPT(dados);
         renderChartEquipe(dados);
+        renderChartBacklog(dados);
         renderTabela(dados);
     }
 
@@ -509,7 +532,7 @@
     function renderChartForaCPT(dados) {
         var nodes = {};
         dados.forEach(function(d) {
-            nodes[d.node] = (nodes[d.node] || 0) + d.veiculosForaCPT;
+            nodes[d.node] = (nodes[d.node] || 0) + (d.veiculosForaCPT || 0);
         });
 
         var labels = Object.keys(nodes).sort();
@@ -554,6 +577,30 @@
         });
     }
 
+    function renderChartBacklog(dados) {
+        var nodes = {};
+        dados.forEach(function(d) {
+            if (!nodes[d.node]) nodes[d.node] = { shuttles: 0, pallets: 0 };
+            nodes[d.node].shuttles += (d.backlogShuttles || 0);
+            nodes[d.node].pallets += (d.backlogPallets || 0);
+        });
+
+        var labels = Object.keys(nodes).sort();
+
+        Highcharts.chart('chartBacklog', {
+            chart: { type: 'column' },
+            title: { text: 'Backlog por EDSP — Shuttles e Pallets (Total no Periodo)', style: { fontSize: '13px' } },
+            xAxis: { categories: labels },
+            yAxis: { title: { text: 'Quantidade' } },
+            series: [
+                { name: 'Backlog Shuttles', data: labels.map(function(n){ return nodes[n].shuttles; }), color: '#FF9900' },
+                { name: 'Backlog Pallets', data: labels.map(function(n){ return nodes[n].pallets; }), color: '#232F3E' }
+            ],
+            credits: { enabled: false },
+            legend: { enabled: true }
+        });
+    }
+
     function renderTabela(dados) {
         var tbody = document.getElementById('tabelaNodes');
         dados.sort(function(a, b) {
@@ -572,10 +619,13 @@
                 '<td>' + d.processed + '</td>' +
                 '<td class="' + desvioClass + '">' + (d.desvioForecast >= 0 ? '+' : '') + d.desvioForecast.toFixed(1) + '%</td>' +
                 '<td>' + d.pacotesPiso + '</td>' +
-                '<td>' + d.wrongNode + '</td>' +
+                '<td>' + (d.wrongNode || 0) + '</td>' +
                 '<td>' + d.qtdVeiculos + '</td>' +
                 '<td>' + d.veiculosForaCPT + '</td>' +
-                '<td>' + d.horarioLiberacao + '</td>' +
+                '<td>' + (d.horarioInicio || '-') + '</td>' +
+                '<td>' + (d.horarioLiberacao || '-') + '</td>' +
+                '<td>' + (d.backlogShuttles || 0) + '</td>' +
+                '<td>' + (d.backlogPallets || 0) + '</td>' +
                 '<td>' + d.qtdAAs + '</td>' +
                 '<td>' + d.qtdDiaristas + '</td>' +
                 '<td>' + d.qtdLiderYB + '</td>' +
@@ -591,8 +641,9 @@
         return { texto: 'OK', classe: 'badge-ok' };
     }
 
-    function media(arr, campo) { return arr.length > 0 ? arr.reduce(function(s, d) { return s + d[campo]; }, 0) / arr.length : 0; }
-    function soma(arr, campo) { return arr.reduce(function(s, d) { return s + d[campo]; }, 0); }
+    function media(arr, campo) { return arr.length > 0 ? arr.reduce(function(s, d) { return s + (d[campo] || 0); }, 0) / arr.length : 0; }
+    function soma(arr, campo) { return arr.reduce(function(s, d) { return s + (d[campo] || 0); }, 0); }
     </script>
 </body>
 </html>
+
