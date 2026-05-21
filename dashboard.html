@@ -610,14 +610,14 @@
 
         tbody.innerHTML = dados.map(function(d) {
             var status = getStatus(d);
-            var desvioClass = d.desvioForecast >= 0 ? 'pos' : 'neg';
+            var desvioClass = Number(d.desvioForecast) >= 0 ? 'pos' : 'neg';
             return '<tr>' +
                 '<td class="node-bold">' + d.node + '</td>' +
                 '<td>' + d.responsavel + '</td>' +
                 '<td>' + d.dataRef + '</td>' +
                 '<td>' + d.forecast + '</td>' +
                 '<td>' + d.processed + '</td>' +
-                '<td class="' + desvioClass + '">' + (d.desvioForecast >= 0 ? '+' : '') + d.desvioForecast.toFixed(1) + '%</td>' +
+                '<td class="' + desvioClass + '">' + (Number(d.desvioForecast) >= 0 ? '+' : '') + Number(d.desvioForecast).toFixed(1) + '%</td>' +
                 '<td>' + d.pacotesPiso + '</td>' +
                 '<td>' + (d.wrongNode || 0) + '</td>' +
                 '<td>' + d.qtdVeiculos + '</td>' +
