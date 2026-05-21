@@ -1,0 +1,22 @@
+{
+  "name": "FM EDSPs - Regional DF-SUL",
+  "short_name": "FM EDSPs",
+  "description": "Coleta diaria de operacoes - Regional DF-SUL",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#232F3E",
+  "theme_color": "#232F3E",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
