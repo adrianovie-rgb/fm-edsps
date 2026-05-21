@@ -279,24 +279,22 @@
 
     carregarDados();
 
-    function carregarDados() {
-        fetch(API_URL)
-            .then(function(r) { return r.json(); })
-            .then(function(data) {
-                document.getElementById('lastUpdate').textContent = 'Atualizado: ' + new Date(data.lastUpdate).toLocaleString('pt-BR');
-                TODOS_DADOS = data.dados;
+   function carregarDados() {
+        var script = document.createElement('script');
+        script.src = API_URL + '&callback=receberDados';
+        document.body.appendChild(script);
+    }
 
-                // Preencher datas padrao (ultimos 7 dias)
-                var hoje = new Date().toISOString().split('T')[0];
-                var seteDiasAtras = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-                document.getElementById('dataFim').value = hoje;
-                document.getElementById('dataInicio').value = seteDiasAtras;
+    function receberDados(data) {
+        document.getElementById('lastUpdate').textContent = 'Atualizado: ' + new Date(data.lastUpdate).toLocaleString('pt-BR');
+        TODOS_DADOS = data.dados;
 
-                aplicarFiltro();
-            })
-            .catch(function(err) {
-                document.getElementById('lastUpdate').textContent = 'Erro ao carregar: ' + err.message;
-            });
+        var hoje = new Date().toISOString().split('T')[0];
+        var seteDiasAtras = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+        document.getElementById('dataFim').value = hoje;
+        document.getElementById('dataInicio').value = seteDiasAtras;
+
+        aplicarFiltro();
     }
 
     // CHECKBOX - Marcar/Desmarcar todos
