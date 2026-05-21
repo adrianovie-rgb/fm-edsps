@@ -1,0 +1,500 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#232F3E">
+    <title>FM EDSPs | Regional DF-SUL</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #EAEDED;
+            min-height: 100vh;
+            padding: 12px;
+        }
+        .header {
+            background: #232F3E;
+            color: white;
+            padding: 18px 16px;
+            border-radius: 10px;
+            margin-bottom: 14px;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.2em; color: #FF9900; }
+        .header p { font-size: 0.8em; opacity: 0.8; margin-top: 4px; }
+        .header .tag {
+            display: inline-block;
+            background: #FF9900;
+            color: #232F3E;
+            padding: 3px 12px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid #FF9900;
+        }
+        .card h3 {
+            color: #232F3E;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+        .field { margin-bottom: 12px; }
+        .field label {
+            display: block;
+            font-size: 0.78em;
+            color: #555;
+            margin-bottom: 3px;
+            font-weight: 600;
+        }
+        .field input, .field select {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1.5px solid #D5D9D9;
+            border-radius: 8px;
+            font-size: 16px;
+            background: #FAFAFA;
+            -webkit-appearance: none;
+        }
+        .field input:focus, .field select:focus {
+            border-color: #FF9900;
+            outline: none;
+            background: white;
+        }
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .field-row .field { margin-bottom: 0; }
+        .field-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .field-row-3 .field { margin-bottom: 0; }
+        .auto-field {
+            background: #F0F8E8 !important;
+            border-color: #4CAF50 !important;
+            font-weight: 700;
+        }
+        .auto-label { color: #2E7D32 !important; }
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: #FF9900;
+            color: #232F3E;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+        .btn-submit:active { background: #E68A00; }
+        .btn-submit:disabled { background: #D5D9D9; color: #888; }
+        .msg {
+            text-align: center; padding: 10px; border-radius: 8px;
+            margin-top: 10px; font-weight: 600; font-size: 0.85em; display: none;
+        }
+        .msg.ok { display: block; background: #E8F5E9; color: #2E7D32; }
+        .msg.erro { display: block; background: #FFEBEE; color: #C62828; }
+        .msg.enviando { display: block; background: #FFF3E0; color: #E65100; }
+        .tph-box {
+            text-align: center; padding: 12px;
+            background: #232F3E; border-radius: 8px; margin-top: 8px;
+        }
+        .tph-box .lbl { font-size: 0.7em; color: #FF9900; text-transform: uppercase; }
+        .tph-box .val { font-size: 1.8em; font-weight: 700; color: white; }
+        .tph-box .formula { font-size: 0.6em; color: #999; margin-top: 4px; }
+        .aviso {
+            background: #FFEBEE; border: 2px solid #EF5350;
+            border-radius: 10px; padding: 12px; margin-bottom: 14px;
+            font-size: 0.78em; color: #C62828; text-align: center;
+        }
+        .aviso.pronto { background: #E8F5E9; border-color: #66BB6A; color: #2E7D32; }
+        .install-banner {
+            display: none;
+            background: #232F3E;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 14px;
+            text-align: center;
+            font-size: 0.82em;
+        }
+        .install-banner button {
+            background: #FF9900;
+            color: #232F3E;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            margin-top: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- BANNER DE INSTALACAO PWA -->
+    <div class="install-banner" id="installBanner">
+        📲 Instale o app na sua tela inicial para acesso rapido!
+        <br>
+        <button id="btnInstall">INSTALAR APP</button>
+    </div>
+
+    <div class="header">
+        <h1>FM EDSPs</h1>
+        <p>Coleta Diaria de Operacoes</p>
+        <div class="tag">REGIONAL DF-SUL</div>
+    </div>
+
+    <div class="aviso" id="aviso">
+        CONFIGURE: Abra este arquivo no Bloco de Notas e substitua a URL pela URL do Apps Script.
+    </div>
+
+    <form id="formColeta">
+        <!-- IDENTIFICACAO -->
+        <div class="card">
+            <h3>Identificacao</h3>
+            <div class="field">
+                <label>Data Referencia</label>
+                <input type="date" id="dataRef" required>
+            </div>
+            <div class="field">
+                <label>EDSP</label>
+                <select id="node" required onchange="preencherResponsavel()">
+                    <option value="">Selecione o EDSP...</option>
+                    <option value="ECB8">ECB8</option>
+                    <option value="EGO8">EGO8</option>
+                    <option value="EIJ8">EIJ8</option>
+                    <option value="EJO8">EJO8</option>
+                    <option value="ELO8">ELO8</option>
+                    <option value="EME8">EME8</option>
+                    <option value="EMR8">EMR8</option>
+                    <option value="EOZ8">EOZ8</option>
+                    <option value="ERS8">ERS8</option>
+                    <option value="ESB8">ESB8</option>
+                    <option value="ESE8">ESE8</option>
+                    <option value="EUM8">EUM8</option>
+                    <option value="EVE8">EVE8</option>
+                </select>
+            </div>
+            <div class="field">
+                <label>Responsavel</label>
+                <input type="text" id="responsavel" required placeholder="Sera preenchido automaticamente ou digite" style="background:#F[MAC_ADDRESS]E1;">
+            </div>
+        </div>
+
+        <!-- VOLUME -->
+        <div class="card">
+            <h3>Volume</h3>
+            <div class="field-row">
+                <div class="field">
+                    <label>Forecast</label>
+                    <input type="number" id="forecast" min="0" placeholder="0" required oninput="calcularAuto()">
+                </div>
+                <div class="field">
+                    <label>Processed</label>
+                    <input type="number" id="processed" min="0" placeholder="0" required oninput="calcularAuto()">
+                </div>
+            </div>
+            <div class="field">
+                <label class="auto-label">Desvio de Forecast (%) - automatico</label>
+                <input type="text" id="desvioForecast" class="auto-field" readonly placeholder="--">
+            </div>
+        </div>
+
+        <!-- OPERACAO -->
+        <div class="card">
+            <h3>Operacao</h3>
+            <div class="field-row">
+                <div class="field">
+                    <label>Pacotes no Piso</label>
+                    <input type="number" id="pacotesPiso" min="0" placeholder="0" required>
+                </div>
+                <div class="field">
+                    <label>Wrong Node</label>
+                    <input type="number" id="wrongNode" min="0" placeholder="0">
+                </div>
+            </div>
+            <div class="field-row">
+                <div class="field">
+                    <label>Qtd. Veiculos</label>
+                    <input type="number" id="qtdVeiculos" min="0" placeholder="0" required>
+                </div>
+                <div class="field">
+                    <label>Veiculos Fora CPT</label>
+                    <input type="number" id="veiculosForaCPT" min="0" placeholder="0" required>
+                </div>
+            </div>
+            <div class="field-row">
+                <div class="field">
+                    <label>Horario Inicio Operacao</label>
+                    <input type="time" id="horarioInicio" required>
+                </div>
+                <div class="field">
+                    <label>Horario Lib. Veiculo</label>
+                    <input type="time" id="horarioLiberacao" required>
+                </div>
+            </div>
+            <div class="field-row">
+                <div class="field">
+                    <label>Backlog Shuttles</label>
+                    <input type="number" id="backlogShuttles" min="0" placeholder="0" required>
+                </div>
+                <div class="field">
+                    <label>Backlog Pallets</label>
+                    <input type="number" id="backlogPallets" min="0" placeholder="0" required>
+                </div>
+            </div>
+        </div>
+
+        <!-- EQUIPE -->
+        <div class="card">
+            <h3>Equipe</h3>
+            <div class="field-row-3">
+                <div class="field">
+                    <label>AA's</label>
+                    <input type="number" id="qtdAAs" min="0" placeholder="0" required oninput="calcularAuto()">
+                </div>
+                <div class="field">
+                    <label>Diaristas</label>
+                    <input type="number" id="qtdDiaristas" min="0" placeholder="0" required oninput="calcularAuto()">
+                </div>
+                <div class="field">
+                    <label>Lider YB</label>
+                    <input type="number" id="qtdLiderYB" min="0" placeholder="0" required oninput="calcularAuto()">
+                </div>
+            </div>
+            <div class="tph-box">
+                <div class="lbl">TPH (Throughput por Hora)</div>
+                <div class="val" id="tphValor">--</div>
+                <div class="formula">Processed / ((AA x 345 + Diaristas x 420 + YB x 480) / 60)</div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="btnSubmit">ENVIAR DADOS</button>
+    </form>
+
+    <div id="msg" class="msg"></div>
+
+    <script>
+    // ==============================================
+    // SUA URL (nao altere):
+    // ==============================================
+    var MINHA_URL = 'https://script.google.com/macros/s/AKfycbwL_9312RhpK_JNculKu_bCUiI662cTn2PXYrxZYoMA3NwAeJ5cxm8p38Ebk0aByT-Z/exec';
+    // ==============================================
+
+    // Verificar configuracao
+    if (MINHA_URL === 'COLOQUE_SUA_URL_AQUI') {
+        document.getElementById('aviso').style.display = 'block';
+    } else {
+        var avisoEl = document.getElementById('aviso');
+        avisoEl.className = 'aviso pronto';
+        avisoEl.textContent = 'Conectado! Pronto para enviar dados.';
+    }
+
+    // Data de HOJE (fuso horario local)
+    var hoje = new Date();
+    var ano = hoje.getFullYear();
+    var mes = String(hoje.getMonth() + 1).padStart(2, '0');
+    var dia = String(hoje.getDate()).padStart(2, '0');
+    document.getElementById('dataRef').value = ano + '-' + mes + '-' + dia;
+
+    // Tabela EDSP -> Responsavel
+    var RESPONSAVEIS = {
+        'ECB8': 'Vinicius',
+        'EGO8': 'Kimberly',
+        'EIJ8': 'Caio',
+        'EJO8': '',
+        'ELO8': '',
+        'EME8': '',
+        'EMR8': '',
+        'EOZ8': 'Bruno',
+        'ERS8': 'Kimberly',
+        'ESB8': '',
+        'ESE8': 'Adriano',
+        'EUM8': 'Matuza',
+        'EVE8': 'Julio'
+    };
+
+    function preencherResponsavel() {
+        var node = document.getElementById('node').value;
+        var resp = RESPONSAVEIS[node];
+        var campo = document.getElementById('responsavel');
+        if (resp && resp !== '') {
+            campo.value = resp;
+            campo.readOnly = true;
+            campo.style.background = '#F[MAC_ADDRESS]E1';
+        } else {
+            campo.value = '';
+            campo.readOnly = false;
+            campo.style.background = '#FAFAFA';
+            campo.placeholder = 'Digite o nome do responsavel';
+        }
+    }
+
+    // CALCULO AUTOMATICO: Desvio + TPH
+    function calcularAuto() {
+        var forecast = Number(document.getElementById('forecast').value) || 0;
+        var processed = Number(document.getElementById('processed').value) || 0;
+        var elDesvio = document.getElementById('desvioForecast');
+
+        if (forecast > 0 && processed > 0) {
+            var desvio = (processed / forecast - 1) * 100;
+            elDesvio.value = (desvio >= 0 ? '+' : '') + desvio.toFixed(1) + '%';
+            elDesvio.style.color = desvio < 0 ? '#D32F2F' : '#2E7D32';
+        } else {
+            elDesvio.value = '--';
+            elDesvio.style.color = '#2E7D32';
+        }
+
+        var aas = Number(document.getElementById('qtdAAs').value) || 0;
+        var diaristas = Number(document.getElementById('qtdDiaristas').value) || 0;
+        var liderYB = Number(document.getElementById('qtdLiderYB').value) || 0;
+        var elTPH = document.getElementById('tphValor');
+
+        if (processed > 0 && (aas + diaristas + liderYB) > 0) {
+            var cap = ((aas * 345) + (diaristas * 420) + (liderYB * 480)) / 60;
+            var tph = processed / cap;
+            elTPH.textContent = tph.toFixed(2);
+            elTPH.style.color = tph >= 1 ? '#4CAF50' : '#FF5722';
+        } else {
+            elTPH.textContent = '--';
+            elTPH.style.color = 'white';
+        }
+    }
+
+    // ENVIO DOS DADOS
+    document.getElementById('formColeta').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (MINHA_URL === 'COLOQUE_SUA_URL_AQUI') {
+            alert('Configure a URL primeiro!');
+            return;
+        }
+
+        var btn = document.getElementById('btnSubmit');
+        var msgEl = document.getElementById('msg');
+        btn.disabled = true;
+        btn.textContent = 'Enviando...';
+        msgEl.className = 'msg enviando';
+        msgEl.textContent = 'Enviando dados para a planilha...';
+
+        var forecast = Number(document.getElementById('forecast').value);
+        var processed = Number(document.getElementById('processed').value);
+        var aas = Number(document.getElementById('qtdAAs').value);
+        var diaristas = Number(document.getElementById('qtdDiaristas').value);
+        var liderYB = Number(document.getElementById('qtdLiderYB').value);
+        var desvio = forecast > 0 ? Math.round((processed / forecast - 1) * 10000) / 100 : 0;
+        var cap = ((aas * 345) + (diaristas * 420) + (liderYB * 480)) / 60;
+        var tph = cap > 0 ? Math.round((processed / cap) * 100) / 100 : 0;
+
+        var dados = {
+            timestamp: new Date().toISOString(),
+            dataRef: document.getElementById('dataRef').value,
+            node: document.getElementById('node').value,
+            responsavel: document.getElementById('responsavel').value,
+            forecast: forecast,
+            processed: processed,
+            desvioForecast: desvio,
+            pacotesPiso: Number(document.getElementById('pacotesPiso').value),
+            wrongNode: Number(document.getElementById('wrongNode').value || 0),
+            qtdVeiculos: Number(document.getElementById('qtdVeiculos').value),
+            veiculosForaCPT: Number(document.getElementById('veiculosForaCPT').value),
+            horarioInicio: document.getElementById('horarioInicio').value,
+            horarioLiberacao: document.getElementById('horarioLiberacao').value,
+            backlogShuttles: Number(document.getElementById('backlogShuttles').value),
+            backlogPallets: Number(document.getElementById('backlogPallets').value),
+            qtdAAs: aas,
+            qtdDiaristas: diaristas,
+            qtdLiderYB: liderYB,
+            tph: tph
+        };
+
+        // Envio via iframe
+        var nomeFrame = 'frame_' + Date.now();
+        var iframe = document.createElement('iframe');
+        iframe.name = nomeFrame;
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = MINHA_URL;
+        form.target = nomeFrame;
+
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'payload';
+        input.value = JSON.stringify(dados);
+        form.appendChild(input);
+
+        document.body.appendChild(form);
+        form.submit();
+
+        setTimeout(function() {
+            msgEl.className = 'msg ok';
+            msgEl.textContent = 'Dados enviados! (' + dados.node + ' - ' + dados.dataRef + ')';
+
+            var limpar = ['forecast','processed','pacotesPiso','wrongNode','qtdVeiculos','veiculosForaCPT','backlogShuttles','backlogPallets','qtdAAs','qtdDiaristas','qtdLiderYB'];
+            for (var i = 0; i < limpar.length; i++) {
+                document.getElementById(limpar[i]).value = '';
+            }
+            document.getElementById('horarioInicio').value = '';
+            document.getElementById('horarioLiberacao').value = '';
+            document.getElementById('desvioForecast').value = '--';
+            document.getElementById('tphValor').textContent = '--';
+
+            btn.disabled = false;
+            btn.textContent = 'ENVIAR DADOS';
+
+            document.body.removeChild(iframe);
+            document.body.removeChild(form);
+        }, 3000);
+    });
+
+    // =============================================
+    // PWA - Service Worker + Instalacao
+    // =============================================
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./service-worker.js')
+        .then(function() { console.log('PWA ativo!'); })
+        .catch(function(err) { console.log('SW erro:', err); });
+    }
+
+    // Banner de instalacao (Android)
+    var deferredPrompt;
+    window.addEventListener('beforeinstallprompt', function(e) {
+        e.preventDefault();
+        deferredPrompt = e;
+        document.getElementById('installBanner').style.display = 'block';
+    });
+
+    document.getElementById('btnInstall').addEventListener('click', function() {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then(function(choiceResult) {
+                document.getElementById('installBanner').style.display = 'none';
+                deferredPrompt = null;
+            });
+        }
+    });
+    </script>
+</body>
+</html>
+
