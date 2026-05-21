@@ -31,6 +31,76 @@
             font-size: 0.78em; color: #666;
             background: #FFF3E0; padding: 6px 12px; border-radius: 16px;
         }
+        .filtros {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 24px;
+            margin-bottom: 20px;
+            border-left: 4px solid #FF9900;
+        }
+        .filtros-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+        .filtros label {
+            font-size: 0.8em;
+            font-weight: 700;
+            color: #232F3E;
+        }
+        .filtros input[type="date"] {
+            padding: 8px 12px;
+            border: 1.5px solid #D5D9D9;
+            border-radius: 8px;
+            font-size: 0.85em;
+        }
+        .filtros input[type="date"]:focus {
+            border-color: #FF9900;
+            outline: none;
+        }
+        .filtros button {
+            padding: 8px 18px;
+            background: #FF9900;
+            color: #232F3E;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85em;
+            cursor: pointer;
+        }
+        .filtros button:hover { background: #E68A00; }
+        .filtros .btn-limpar {
+            background: #EAEDED;
+            color: #555;
+        }
+        .checkbox-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: #F9F9F9;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid #E0E0E0;
+            font-size: 0.78em;
+            cursor: pointer;
+        }
+        .checkbox-item:hover { background: #FFF8E1; border-color: #FF9900; }
+        .checkbox-item input { cursor: pointer; }
+        .checkbox-item.todos { background: #232F3E; color: white; border-color: #232F3E; }
+        .checkbox-item.todos:hover { background: #37475A; }
+        .periodo-info {
+            font-size: 0.78em; color: #666;
+            margin-bottom: 16px; text-align: center;
+            background: #FFF8E1; padding: 8px; border-radius: 8px;
+        }
         .kpi-cards {
             display: grid; grid-template-columns: repeat(5, 1fr);
             gap: 14px; margin-bottom: 22px;
@@ -71,15 +141,10 @@
         .node-bold { font-weight: 700; }
         .pos { color: #2E7D32; font-weight: 700; }
         .neg { color: #C62828; font-weight: 700; }
-        .aviso-dash {
-            background: #FFEBEE; border: 2px solid #EF5350;
-            border-radius: 10px; padding: 12px; margin-bottom: 14px;
-            font-size: 0.78em; color: #C62828; text-align: center;
-        }
-        .aviso-dash.pronto { background: #E8F5E9; border-color: #66BB6A; color: #2E7D32; }
         @media (max-width: 900px) {
             .kpi-cards { grid-template-columns: repeat(3, 1fr); }
             .charts-grid { grid-template-columns: 1fr; }
+            .filtros-row { flex-direction: column; align-items: flex-start; }
         }
         @media (max-width: 600px) {
             .kpi-cards { grid-template-columns: repeat(2, 1fr); }
@@ -91,14 +156,45 @@
     <div class="header">
         <div>
             <h1>FM EDSPs — <span>Regional DF-SUL</span></h1>
-            <p class="subtitle">Dashboard Operacional | Consolidado Diario</p>
+            <p class="subtitle">Dashboard Operacional | Consolidado por Periodo</p>
         </div>
         <div class="update" id="lastUpdate">Carregando...</div>
     </div>
 
-    <div class="aviso-dash" id="avisoDash">
-        CONFIGURE: Substitua https://script.google.com/macros/s/AKfycbw2S-H3ppizbXQGsk7OBjBifVa5St4sapBsaJ4PhToY1JwkTd2lTD0xnr0KVn_i-9M/exec pela URL do Apps Script (com ?action=getData no final).
+    <!-- FILTROS -->
+    <div class="filtros">
+        <div class="filtros-row">
+            <label>Periodo:</label>
+            <input type="date" id="dataInicio" title="Data inicio">
+            <span style="color:#999; font-size:0.85em;">ate</span>
+            <input type="date" id="dataFim" title="Data fim">
+            <button onclick="aplicarFiltro()">Filtrar</button>
+            <button class="btn-limpar" onclick="limparFiltro()">Limpar</button>
+        </div>
+        <div>
+            <label>EDSPs:</label>
+            <div class="checkbox-grid">
+                <label class="checkbox-item todos">
+                    <input type="checkbox" id="chkTodos" checked onchange="toggleTodos()"> Todos
+                </label>
+                <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="ECB8" checked> ECB8</label>
+                <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="EGO8" checked> EGO8</label>
+                <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="EIJ8" checked> EIJ8</label>
+                <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="EJO8" checked> EJO8</label>
+                <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="ELO8" checked> ELO8</label>
+                <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="EME8" checked> EME8</label>
+                <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="EMR8" checked> EMR8</label>
+                <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="EOZ8" checked> EOZ8</label>
+                <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="ERS8" checked> ERS8</label>
+                <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="ESB8" checked> ESB8</label>
+                <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="ESE8" checked> ESE8</label>
+                <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="EUM8" checked> EUM8</label>
+                <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="EVE8" checked> EVE8</label>
+            </div>
+        </div>
     </div>
+
+    <div class="periodo-info" id="periodoInfo">Mostrando todos os dados disponiveis</div>
 
     <!-- KPI CARDS -->
     <div class="kpi-cards">
@@ -106,7 +202,7 @@
             <div class="icon">📦</div>
             <div class="label">Total Processed</div>
             <div class="valor" id="kpiProcessed">--</div>
-            <div class="sub">pacotes no dia</div>
+            <div class="sub">pacotes no periodo</div>
         </div>
         <div class="kpi-card">
             <div class="icon">📊</div>
@@ -118,7 +214,7 @@
             <div class="icon">🚚</div>
             <div class="label">Veiculos Fora CPT</div>
             <div class="valor" id="kpiForaCPT">--</div>
-            <div class="sub">total no dia</div>
+            <div class="sub">total no periodo</div>
         </div>
         <div class="kpi-card">
             <div class="icon">👥</div>
@@ -144,12 +240,13 @@
 
     <!-- TABELA -->
     <div class="table-section">
-        <h3>Detalhamento por EDSP - Ultimo Dia</h3>
+        <h3>Detalhamento por EDSP</h3>
         <table>
             <thead>
                 <tr>
                     <th>EDSP</th>
                     <th>Responsavel</th>
+                    <th>Data</th>
                     <th>Forecast</th>
                     <th>Processed</th>
                     <th>Desvio %</th>
@@ -166,92 +263,179 @@
                 </tr>
             </thead>
             <tbody id="tabelaNodes">
-                <tr><td colspan="15">Aguardando dados...</td></tr>
+                <tr><td colspan="16">Aguardando dados...</td></tr>
             </tbody>
         </table>
     </div>
 
     <script>
     // ==============================================
-    // COLE SUA URL AQUI (com ?action=getData no final):
+    // SUA URL (ja configurada):
     // ==============================================
     var API_URL = 'https://script.google.com/macros/s/AKfycbw2S-H3ppizbXQGsk7OBjBifVa5St4sapBsaJ4PhToY1JwkTd2lTD0xnr0KVn_i-9M/exec?action=getData';
-    // Exemplo: 'https://script.google.com/macros/s/AKfycbxXXXX/exec?action=getData'
     // ==============================================
 
-    // Verificar config
-    if (false) {
-        document.getElementById('avisoDash').style.display = 'block';
-    } else {
-        var avisoDash = document.getElementById('avisoDash');
-        avisoDash.className = 'aviso-dash pronto';
-        avisoDash.textContent = 'Conectado! Carregando dados...';
-        carregarDados();
-    }
+    var TODOS_DADOS = [];
+
+    carregarDados();
 
     function carregarDados() {
         fetch(API_URL)
             .then(function(r) { return r.json(); })
             .then(function(data) {
-                document.getElementById('avisoDash').style.display = 'none';
-                renderizar(data);
+                document.getElementById('lastUpdate').textContent = 'Atualizado: ' + new Date(data.lastUpdate).toLocaleString('pt-BR');
+                TODOS_DADOS = data.dados;
+
+                // Preencher datas padrao (ultimos 7 dias)
+                var hoje = new Date().toISOString().split('T')[0];
+                var seteDiasAtras = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+                document.getElementById('dataFim').value = hoje;
+                document.getElementById('dataInicio').value = seteDiasAtras;
+
+                aplicarFiltro();
             })
             .catch(function(err) {
-                document.getElementById('avisoDash').className = 'aviso-dash';
-                document.getElementById('avisoDash').textContent = 'Erro ao carregar dados: ' + err.message;
+                document.getElementById('lastUpdate').textContent = 'Erro ao carregar: ' + err.message;
             });
     }
 
-    function renderizar(data) {
-        document.getElementById('lastUpdate').textContent = 'Atualizado: ' + new Date(data.lastUpdate).toLocaleString('pt-BR');
+    // CHECKBOX - Marcar/Desmarcar todos
+    function toggleTodos() {
+        var marcado = document.getElementById('chkTodos').checked;
+        var checks = document.querySelectorAll('.chkEDSP');
+        for (var i = 0; i < checks.length; i++) {
+            checks[i].checked = marcado;
+        }
+    }
 
-        if (data.dados.length === 0) {
-            document.getElementById('tabelaNodes').innerHTML = '<tr><td colspan="15">Nenhum dado encontrado.</td></tr>';
+    // Verificar se todos estao marcados
+    function verificarTodos() {
+        var checks = document.querySelectorAll('.chkEDSP');
+        var todosMarcados = true;
+        for (var i = 0; i < checks.length; i++) {
+            if (!checks[i].checked) { todosMarcados = false; break; }
+        }
+        document.getElementById('chkTodos').checked = todosMarcados;
+    }
+
+    // Adicionar evento em cada checkbox individual
+    var checksIndividuais = document.querySelectorAll('.chkEDSP');
+    for (var i = 0; i < checksIndividuais.length; i++) {
+        checksIndividuais[i].addEventListener('change', verificarTodos);
+    }
+
+    function getEDSPsSelecionados() {
+        var checks = document.querySelectorAll('.chkEDSP:checked');
+        var selecionados = [];
+        for (var i = 0; i < checks.length; i++) {
+            selecionados.push(checks[i].value);
+        }
+        return selecionados;
+    }
+
+    function aplicarFiltro() {
+        var dataInicio = document.getElementById('dataInicio').value;
+        var dataFim = document.getElementById('dataFim').value;
+        var edspsSelecionados = getEDSPsSelecionados();
+
+        var dadosFiltrados = TODOS_DADOS.filter(function(d) {
+            var passaData = true;
+            var passaEDSP = true;
+
+            if (dataInicio) passaData = d.dataRef >= dataInicio;
+            if (dataFim) passaData = passaData && d.dataRef <= dataFim;
+            if (edspsSelecionados.length > 0) {
+                passaEDSP = edspsSelecionados.indexOf(d.node) !== -1;
+            } else {
+                passaEDSP = false;
+            }
+
+            return passaData && passaEDSP;
+        });
+
+        // Atualizar info do periodo
+        var info = '';
+        if (dataInicio && dataFim) {
+            info = 'Periodo: ' + dataInicio + ' ate ' + dataFim;
+        } else if (dataInicio) {
+            info = 'A partir de: ' + dataInicio;
+        } else if (dataFim) {
+            info = 'Ate: ' + dataFim;
+        } else {
+            info = 'Mostrando todos os dados disponiveis';
+        }
+        if (edspsSelecionados.length < 13) {
+            info += ' | EDSPs: ' + edspsSelecionados.join(', ');
+        }
+        info += ' (' + dadosFiltrados.length + ' registros)';
+        document.getElementById('periodoInfo').textContent = info;
+
+        renderizar(dadosFiltrados);
+    }
+
+    function limparFiltro() {
+        document.getElementById('dataInicio').value = '';
+        document.getElementById('dataFim').value = '';
+        document.getElementById('chkTodos').checked = true;
+        toggleTodos();
+        document.getElementById('periodoInfo').textContent = 'Mostrando todos os dados disponiveis (' + TODOS_DADOS.length + ' registros)';
+        renderizar(TODOS_DADOS);
+    }
+
+    function renderizar(dados) {
+        if (dados.length === 0) {
+            document.getElementById('kpiProcessed').textContent = '--';
+            document.getElementById('kpiDesvio').textContent = '--';
+            document.getElementById('kpiForaCPT').textContent = '--';
+            document.getElementById('kpiEquipe').textContent = '--';
+            document.getElementById('kpiTPH').textContent = '--';
+            document.getElementById('tabelaNodes').innerHTML = '<tr><td colspan="16">Nenhum dado encontrado para o periodo/filtro selecionado.</td></tr>';
             return;
         }
 
-        // Pegar ultimo dia
-        var ultimoDia = data.datasDisponiveis[0];
-        var dadosHoje = data.dados.filter(function(d) { return d.dataRef === ultimoDia; });
-
-        if (dadosHoje.length === 0) {
-            dadosHoje = data.dados;
-        }
-
         // KPIs
-        var totalProcessed = soma(dadosHoje, 'processed');
-        var avgDesvio = media(dadosHoje, 'desvioForecast');
-        var totalForaCPT = soma(dadosHoje, 'veiculosForaCPT');
-        var totalEquipe = soma(dadosHoje, 'qtdAAs') + soma(dadosHoje, 'qtdDiaristas') + soma(dadosHoje, 'qtdLiderYB');
-        var avgTPH = media(dadosHoje, 'tph');
+        var totalProcessed = soma(dados, 'processed');
+        var avgDesvio = media(dados, 'desvioForecast');
+        var totalForaCPT = soma(dados, 'veiculosForaCPT');
+        var totalEquipe = soma(dados, 'qtdAAs') + soma(dados, 'qtdDiaristas') + soma(dados, 'qtdLiderYB');
+        var avgTPH = media(dados, 'tph');
 
         document.getElementById('kpiProcessed').textContent = totalProcessed.toLocaleString('pt-BR');
         document.getElementById('kpiDesvio').textContent = (avgDesvio >= 0 ? '+' : '') + avgDesvio.toFixed(1) + '%';
         document.getElementById('kpiDesvio').style.color = avgDesvio >= 0 ? '#2E7D32' : '#C62828';
-        document.getElementById('kpiFora CPT').textContent = totalForaCPT;
         document.getElementById('kpiForaCPT').textContent = totalForaCPT;
         document.getElementById('kpiEquipe').textContent = totalEquipe;
         document.getElementById('kpiTPH').textContent = avgTPH.toFixed(2);
 
         // Graficos
-        renderChartForecast(data.dados, data.datasDisponiveis);
-        renderChartTPH(dadosHoje);
-        renderChartForaCPT(dadosHoje);
-        renderChartEquipe(dadosHoje);
+        renderChartForecast(dados);
+        renderChartTPH(dados);
+        renderChartForaCPT(dados);
+        renderChartEquipe(dados);
 
         // Tabela
-        renderTabela(dadosHoje);
+        renderTabela(dados);
     }
 
-    function renderChartForecast(dados, datas) {
-        var datasUsadas = datas.slice(0, 7).reverse();
-        var forecast = datasUsadas.map(function(dt) { return soma(dados.filter(function(d){return d.dataRef===dt;}), 'forecast'); });
-        var processed = datasUsadas.map(function(dt) { return soma(dados.filter(function(d){return d.dataRef===dt;}), 'processed'); });
+    function renderChartForecast(dados) {
+        var datas = [];
+        var forecastPorDia = {};
+        var processedPorDia = {};
+
+        dados.forEach(function(d) {
+            if (datas.indexOf(d.dataRef) === -1) datas.push(d.dataRef);
+            forecastPorDia[d.dataRef] = (forecastPorDia[d.dataRef] || 0) + d.forecast;
+            processedPorDia[d.dataRef] = (processedPorDia[d.dataRef] || 0) + d.processed;
+        });
+        datas.sort();
+
+        var forecast = datas.map(function(dt) { return forecastPorDia[dt]; });
+        var processed = datas.map(function(dt) { return processedPorDia[dt]; });
 
         Highcharts.chart('chartForecast', {
             chart: { type: 'column' },
-            title: { text: 'Forecast vs Processed', style: { fontSize: '13px' } },
-            xAxis: { categories: datasUsadas.map(function(d){return d.slice(5);}) },
+            title: { text: 'Forecast vs Processed por Dia', style: { fontSize: '13px' } },
+            xAxis: { categories: datas.map(function(d){ return d.slice(5); }) },
             yAxis: { title: { text: 'Pacotes' } },
             series: [
                 { name: 'Forecast', data: forecast, color: '#37475A' },
@@ -262,29 +446,41 @@
         });
     }
 
-    function renderChartTPH(dadosHoje) {
-        var nodes = dadosHoje.map(function(d){return d.node;});
-        var tphs = dadosHoje.map(function(d){return d.tph;});
+    function renderChartTPH(dados) {
+        var nodes = {};
+        dados.forEach(function(d) {
+            if (!nodes[d.node]) nodes[d.node] = { soma: 0, qtd: 0 };
+            nodes[d.node].soma += d.tph;
+            nodes[d.node].qtd += 1;
+        });
+
+        var labels = Object.keys(nodes).sort();
+        var tphs = labels.map(function(n) { return Math.round((nodes[n].soma / nodes[n].qtd) * 100) / 100; });
 
         Highcharts.chart('chartTPH', {
             chart: { type: 'bar' },
-            title: { text: 'TPH por EDSP', style: { fontSize: '13px' } },
-            xAxis: { categories: nodes },
-            yAxis: { title: { text: 'TPH' } },
+            title: { text: 'TPH Medio por EDSP', style: { fontSize: '13px' } },
+            xAxis: { categories: labels },
+            yAxis: { title: { text: 'TPH (pacotes/hora)' } },
             series: [{ name: 'TPH', data: tphs, color: '#FF9900' }],
             credits: { enabled: false },
             legend: { enabled: false }
         });
     }
 
-    function renderChartForaCPT(dadosHoje) {
-        var nodes = dadosHoje.map(function(d){return d.node;});
-        var fora = dadosHoje.map(function(d){return d.veiculosForaCPT;});
+    function renderChartForaCPT(dados) {
+        var nodes = {};
+        dados.forEach(function(d) {
+            nodes[d.node] = (nodes[d.node] || 0) + d.veiculosForaCPT;
+        });
+
+        var labels = Object.keys(nodes).sort();
+        var fora = labels.map(function(n) { return nodes[n]; });
 
         Highcharts.chart('chartForaCPT', {
             chart: { type: 'column' },
-            title: { text: 'Veiculos Fora do CPT', style: { fontSize: '13px' } },
-            xAxis: { categories: nodes },
+            title: { text: 'Veiculos Fora do CPT (Total no Periodo)', style: { fontSize: '13px' } },
+            xAxis: { categories: labels },
             yAxis: { title: { text: 'Veiculos' } },
             series: [{ name: 'Fora CPT', data: fora, color: '#C62828' }],
             credits: { enabled: false },
@@ -292,35 +488,48 @@
         });
     }
 
-    function renderChartEquipe(dadosHoje) {
-        var nodes = dadosHoje.map(function(d){return d.node;});
+    function renderChartEquipe(dados) {
+        var nodes = {};
+        dados.forEach(function(d) {
+            if (!nodes[d.node]) nodes[d.node] = { aas: 0, diar: 0, yb: 0, qtd: 0 };
+            nodes[d.node].aas += d.qtdAAs;
+            nodes[d.node].diar += d.qtdDiaristas;
+            nodes[d.node].yb += d.qtdLiderYB;
+            nodes[d.node].qtd += 1;
+        });
+
+        var labels = Object.keys(nodes).sort();
 
         Highcharts.chart('chartEquipe', {
             chart: { type: 'bar' },
-            title: { text: 'Composicao da Equipe', style: { fontSize: '13px' } },
-            xAxis: { categories: nodes },
+            title: { text: 'Composicao da Equipe (Media no Periodo)', style: { fontSize: '13px' } },
+            xAxis: { categories: labels },
             yAxis: { title: { text: 'Pessoas' }, stackLabels: { enabled: true } },
             plotOptions: { series: { stacking: 'normal' } },
             series: [
-                { name: "AA's", data: dadosHoje.map(function(d){return d.qtdAAs;}), color: '#232F3E' },
-                { name: 'Diaristas', data: dadosHoje.map(function(d){return d.qtdDiaristas;}), color: '#FF9900' },
-                { name: 'Lider YB', data: dadosHoje.map(function(d){return d.qtdLiderYB;}), color: '#37475A' }
+                { name: "AA's", data: labels.map(function(n){ return Math.round(nodes[n].aas / nodes[n].qtd); }), color: '#232F3E' },
+                { name: 'Diaristas', data: labels.map(function(n){ return Math.round(nodes[n].diar / nodes[n].qtd); }), color: '#FF9900' },
+                { name: 'Lider YB', data: labels.map(function(n){ return Math.round(nodes[n].yb / nodes[n].qtd); }), color: '#37475A' }
             ],
             credits: { enabled: false },
             legend: { enabled: true }
         });
     }
 
-    function renderTabela(dadosHoje) {
+    function renderTabela(dados) {
         var tbody = document.getElementById('tabelaNodes');
-        dadosHoje.sort(function(a, b) { return b.tph - a.tph; });
+        dados.sort(function(a, b) {
+            if (a.dataRef === b.dataRef) return b.tph - a.tph;
+            return b.dataRef > a.dataRef ? 1 : -1;
+        });
 
-        tbody.innerHTML = dadosHoje.map(function(d) {
+        tbody.innerHTML = dados.map(function(d) {
             var status = getStatus(d);
             var desvioClass = d.desvioForecast >= 0 ? 'pos' : 'neg';
             return '<tr>' +
                 '<td class="node-bold">' + d.node + '</td>' +
                 '<td>' + d.responsavel + '</td>' +
+                '<td>' + d.dataRef + '</td>' +
                 '<td>' + d.forecast + '</td>' +
                 '<td>' + d.processed + '</td>' +
                 '<td class="' + desvioClass + '">' + (d.desvioForecast >= 0 ? '+' : '') + d.desvioForecast.toFixed(1) + '%</td>' +
@@ -332,7 +541,7 @@
                 '<td>' + d.qtdAAs + '</td>' +
                 '<td>' + d.qtdDiaristas + '</td>' +
                 '<td>' + d.qtdLiderYB + '</td>' +
-                '<td>' + d.tph.toFixed(2) + '</td>' +
+                '<td>' + d.tph + '</td>' +
                 '<td><span class="badge ' + status.classe + '">' + status.texto + '</span></td>' +
                 '</tr>';
         }).join('');
@@ -344,9 +553,8 @@
         return { texto: 'OK', classe: 'badge-ok' };
     }
 
-    function media(arr, campo) { return arr.length > 0 ? arr.reduce(function(s,d){return s+d[campo];}, 0) / arr.length : 0; }
-    function soma(arr, campo) { return arr.reduce(function(s,d){return s+d[campo];}, 0); }
+    function media(arr, campo) { return arr.length > 0 ? arr.reduce(function(s, d) { return s + d[campo]; }, 0) / arr.length : 0; }
+    function soma(arr, campo) { return arr.reduce(function(s, d) { return s + d[campo]; }, 0); }
     </script>
 </body>
 </html>
-
