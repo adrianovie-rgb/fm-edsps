@@ -1,4 +1,4 @@
-var CACHE_NAME = 'fm-edsps-v1';
+var CACHE_NAME = 'fm-edsps-v2';
 var urlsToCache = [
   './',
   './index.html',
@@ -9,6 +9,7 @@ var urlsToCache = [
 ];
 
 self.addEventListener('install', function(event) {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
       return cache.addAll(urlsToCache);
