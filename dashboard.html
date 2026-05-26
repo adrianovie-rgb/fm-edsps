@@ -42,27 +42,6 @@
             font-size: 0.9em;
         }
         .install-banner button:active { opacity: 0.8; }
-        .nav-bar {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-        .nav-bar a {
-            flex: 1;
-            text-align: center;
-            padding: 10px;
-            background: #232F3E;
-            color: #FF9900;
-            text-decoration: none;
-            border-radius: 8px;
-            font-size: 0.78em;
-            font-weight: 700;
-        }
-        .nav-bar a.active {
-            background: #FF9900;
-            color: #232F3E;
-        }
-        .nav-bar a:active { opacity: 0.8; }
         .header {
             background: white;
             border-radius: 10px;
@@ -193,6 +172,10 @@
         }
         td { padding: 7px 6px; text-align: center; border-bottom: 1px solid #EEE; white-space: nowrap; }
         tr:hover td { background: #FFF8E1; }
+        tr.has-callout td { background: #FFF3E0; }
+        tr.has-callout td:first-child { border-left: 4px solid #FF9900; }
+        tr.has-callout { cursor: pointer; }
+        tr.has-callout:hover td { background: #FFE0B2; }
         .badge { padding: 3px 8px; border-radius: 10px; font-weight: 600; font-size: 0.72em; }
         .badge-ok { background: #E8F5E9; color: #2E7D32; }
         .badge-warn { background: #FFF3E0; color: #E65100; }
@@ -223,6 +206,89 @@
             margin-bottom: 12px;
         }
         .btn-refresh:active { opacity: 0.8; }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #FF9900;
+        }
+        .modal-header h3 { font-size: 0.95em; color: #232F3E; }
+        .modal-header .modal-close {
+            background: #EAEDED;
+            border: none;
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            font-size: 1.1em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-header .modal-close:active { background: #D5D9D9; }
+        .modal-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        .modal-info-item {
+            padding: 6px 8px;
+            background: #F9F9F9;
+            border-radius: 6px;
+        }
+        .modal-info-item .mi-label {
+            font-size: 0.65em;
+            color: #888;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .modal-info-item .mi-value {
+            font-size: 0.85em;
+            font-weight: 700;
+            color: #232F3E;
+        }
+        .modal-obs {
+            background: #FFF8E1;
+            border-left: 4px solid #FF9900;
+            border-radius: 8px;
+            padding: 12px;
+        }
+        .modal-obs .obs-label {
+            font-size: 0.7em;
+            color: #E65100;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        .modal-obs .obs-text {
+            font-size: 0.85em;
+            color: #333;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
         @media (min-width: 768px) {
             .kpi-cards { grid-template-columns: repeat(4, 1fr); }
             .charts-grid { grid-template-columns: 1fr 1fr; }
@@ -235,17 +301,10 @@
 </head>
 <body>
 
-    <!-- BANNER DE INSTALACAO PWA -->
     <div class="install-banner" id="installBanner">
         📲 Instale o Dashboard na sua tela inicial!
         <br>
         <button id="btnInstall">INSTALAR APP</button>
-    </div>
-
-    <!-- NAVEGACAO -->
-    <div class="nav-bar">
-        <a href="index.html">📝 Coleta</a>
-        <a href="dashboard.html" class="active">📊 Dashboard</a>
     </div>
 
     <div class="header">
@@ -254,7 +313,6 @@
         <div class="update" id="lastUpdate">Carregando...</div>
     </div>
 
-    <!-- FILTROS -->
     <div class="filtros">
         <div class="filtros-row">
             <label>Periodo:</label>
@@ -290,7 +348,6 @@
 
     <div class="periodo-info" id="periodoInfo">Mostrando todos os dados disponiveis</div>
 
-    <!-- KPI CARDS -->
     <div class="kpi-cards">
         <div class="kpi-card destaque">
             <div class="icon">📦</div>
@@ -342,7 +399,6 @@
         </div>
     </div>
 
-    <!-- GRAFICOS -->
     <div class="charts-grid">
         <div class="chart-box" id="chartForecast"></div>
         <div class="chart-box" id="chartTPH"></div>
@@ -350,10 +406,8 @@
         <div class="chart-box" id="chartEquipe"></div>
     </div>
 
-    <!-- GRAFICO BACKLOG (largura total) -->
     <div class="chart-full" id="chartBacklog"></div>
 
-    <!-- TABELA -->
     <div class="table-section">
         <h3>Detalhamento por EDSP</h3>
         <table>
@@ -391,22 +445,33 @@
 
     <button class="btn-refresh" onclick="carregarDados()">🔄 ATUALIZAR DADOS</button>
 
+    <div class="modal-overlay" id="modalOverlay" onclick="fecharModal(event)">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 id="modalTitle">📢 Callout</h3>
+                <button class="modal-close" onclick="fecharModal()">✕</button>
+            </div>
+            <div class="modal-info" id="modalInfo"></div>
+            <div class="modal-obs">
+                <div class="obs-label">📋 Observacao / Callout</div>
+                <div class="obs-text" id="modalObsText"></div>
+            </div>
+        </div>
+    </div>
+
+
     <script>
-    // ==============================================
-    // SUA URL (nao altere):
-    // ==============================================
     var BASE_URL = 'https://script.google.com/macros/s/AKfycbwL_9312RhpK_JNculKu_bCUiI662cTn2PXYrxZYoMA3NwAeJ5cxm8p38Ebk0aByT-Z/exec';
-    // ==============================================
 
     Highcharts.setOptions({ accessibility: { enabled: false } });
 
     var TODOS_DADOS = [];
+    window.DADOS_TABELA = [];
 
     carregarDados();
 
     function carregarDados() {
         document.getElementById('lastUpdate').textContent = 'Carregando...';
-
         var xhr = new XMLHttpRequest();
         xhr.open('GET', BASE_URL + '?action=getData', true);
         xhr.onreadystatechange = function() {
@@ -415,17 +480,11 @@
                     try {
                         var data = JSON.parse(xhr.responseText);
                         processarDados(data);
-                    } catch(e) {
-                        tentarJSONP();
-                    }
-                } else {
-                    tentarJSONP();
-                }
+                    } catch(e) { tentarJSONP(); }
+                } else { tentarJSONP(); }
             }
         };
-        xhr.onerror = function() {
-            tentarJSONP();
-        };
+        xhr.onerror = function() { tentarJSONP(); };
         xhr.send();
     }
 
@@ -446,27 +505,22 @@
     function processarDados(data) {
         document.getElementById('lastUpdate').textContent = 'Atualizado: ' + new Date(data.lastUpdate).toLocaleString('pt-BR');
         TODOS_DADOS = data.dados;
-
         for (var i = 0; i < TODOS_DADOS.length; i++) {
             if (TODOS_DADOS[i].dataRef && TODOS_DADOS[i].dataRef.length > 10) {
                 TODOS_DADOS[i].dataRef = TODOS_DADOS[i].dataRef.slice(0, 10);
             }
         }
-
         var hoje = new Date().toISOString().split('T')[0];
         var seteDiasAtras = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
         document.getElementById('dataFim').value = hoje;
         document.getElementById('dataInicio').value = seteDiasAtras;
-
         aplicarFiltro();
     }
 
     function toggleTodos() {
         var marcado = document.getElementById('chkTodos').checked;
         var checks = document.querySelectorAll('.chkEDSP');
-        for (var i = 0; i < checks.length; i++) {
-            checks[i].checked = marcado;
-        }
+        for (var i = 0; i < checks.length; i++) { checks[i].checked = marcado; }
     }
 
     function verificarTodos() {
@@ -486,9 +540,7 @@
     function getEDSPsSelecionados() {
         var checks = document.querySelectorAll('.chkEDSP:checked');
         var selecionados = [];
-        for (var i = 0; i < checks.length; i++) {
-            selecionados.push(checks[i].value);
-        }
+        for (var i = 0; i < checks.length; i++) { selecionados.push(checks[i].value); }
         return selecionados;
     }
 
@@ -496,38 +548,24 @@
         var dataInicio = document.getElementById('dataInicio').value;
         var dataFim = document.getElementById('dataFim').value;
         var edspsSelecionados = getEDSPsSelecionados();
-
         var dadosFiltrados = TODOS_DADOS.filter(function(d) {
             var passaData = true;
             var passaEDSP = true;
-
             if (dataInicio) passaData = d.dataRef >= dataInicio;
             if (dataFim) passaData = passaData && d.dataRef <= dataFim;
             if (edspsSelecionados.length > 0) {
                 passaEDSP = edspsSelecionados.indexOf(d.node) !== -1;
-            } else {
-                passaEDSP = false;
-            }
-
+            } else { passaEDSP = false; }
             return passaData && passaEDSP;
         });
-
         var info = '';
-        if (dataInicio && dataFim) {
-            info = 'Periodo: ' + dataInicio + ' ate ' + dataFim;
-        } else if (dataInicio) {
-            info = 'A partir de: ' + dataInicio;
-        } else if (dataFim) {
-            info = 'Ate: ' + dataFim;
-        } else {
-            info = 'Mostrando todos os dados disponiveis';
-        }
-        if (edspsSelecionados.length < 14) {
-            info += ' | EDSPs: ' + edspsSelecionados.join(', ');
-        }
+        if (dataInicio && dataFim) { info = 'Periodo: ' + dataInicio + ' ate ' + dataFim; }
+        else if (dataInicio) { info = 'A partir de: ' + dataInicio; }
+        else if (dataFim) { info = 'Ate: ' + dataFim; }
+        else { info = 'Mostrando todos os dados disponiveis'; }
+        if (edspsSelecionados.length < 14) { info += ' | EDSPs: ' + edspsSelecionados.join(', '); }
         info += ' (' + dadosFiltrados.length + ' registros)';
         document.getElementById('periodoInfo').textContent = info;
-
         renderizar(dadosFiltrados);
     }
 
@@ -550,10 +588,9 @@
             document.getElementById('kpiBacklog').textContent = '--';
             document.getElementById('kpiOTR').textContent = '--';
             document.getElementById('kpiWrongNode').textContent = '--';
-            document.getElementById('tabelaNodes').innerHTML = '<tr><td colspan="22">Nenhum dado encontrado para o periodo/filtro selecionado.</td></tr>';
+            document.getElementById('tabelaNodes').innerHTML = '<tr><td colspan="22">Nenhum dado encontrado.</td></tr>';
             return;
         }
-
         var totalProcessed = soma(dados, 'processed');
         var avgDesvio = media(dados, 'desvioForecast');
         var totalForaCPT = soma(dados, 'veiculosForaCPT');
@@ -585,25 +622,20 @@
         var datas = [];
         var forecastPorDia = {};
         var processedPorDia = {};
-
         dados.forEach(function(d) {
             if (datas.indexOf(d.dataRef) === -1) datas.push(d.dataRef);
             forecastPorDia[d.dataRef] = (forecastPorDia[d.dataRef] || 0) + d.forecast;
             processedPorDia[d.dataRef] = (processedPorDia[d.dataRef] || 0) + d.processed;
         });
         datas.sort();
-
-        var forecast = datas.map(function(dt) { return forecastPorDia[dt]; });
-        var processed = datas.map(function(dt) { return processedPorDia[dt]; });
-
         Highcharts.chart('chartForecast', {
             chart: { type: 'column' },
             title: { text: 'Forecast vs Processed', style: { fontSize: '12px' } },
             xAxis: { categories: datas.map(function(d){ return d.slice(5); }), labels: { style: { fontSize: '10px' } } },
             yAxis: { title: { text: '' }, labels: { style: { fontSize: '10px' } } },
             series: [
-                { name: 'Forecast', data: forecast, color: '#37475A' },
-                { name: 'Processed', data: processed, color: '#FF9900' }
+                { name: 'Forecast', data: datas.map(function(dt){ return forecastPorDia[dt]; }), color: '#37475A' },
+                { name: 'Processed', data: datas.map(function(dt){ return processedPorDia[dt]; }), color: '#FF9900' }
             ],
             credits: { enabled: false },
             legend: { itemStyle: { fontSize: '10px' } }
@@ -617,10 +649,8 @@
             nodes[d.node].soma += d.tph;
             nodes[d.node].qtd += 1;
         });
-
         var labels = Object.keys(nodes).sort();
         var tphs = labels.map(function(n) { return Math.round((nodes[n].soma / nodes[n].qtd) * 100) / 100; });
-
         Highcharts.chart('chartTPH', {
             chart: { type: 'bar' },
             title: { text: 'TPH Medio por EDSP', style: { fontSize: '12px' } },
@@ -637,16 +667,13 @@
         dados.forEach(function(d) {
             nodes[d.node] = (nodes[d.node] || 0) + (d.veiculosForaCPT || 0);
         });
-
         var labels = Object.keys(nodes).sort();
-        var fora = labels.map(function(n) { return nodes[n]; });
-
         Highcharts.chart('chartForaCPT', {
             chart: { type: 'column' },
             title: { text: 'Veiculos Fora CPT', style: { fontSize: '12px' } },
             xAxis: { categories: labels, labels: { style: { fontSize: '10px' } } },
             yAxis: { title: { text: '' }, labels: { style: { fontSize: '10px' } } },
-            series: [{ name: 'Fora CPT', data: fora, color: '#C62828' }],
+            series: [{ name: 'Fora CPT', data: labels.map(function(n){ return nodes[n]; }), color: '#C62828' }],
             credits: { enabled: false },
             legend: { enabled: false }
         });
@@ -661,14 +688,12 @@
             nodes[d.node].yb += d.qtdLiderYB;
             nodes[d.node].qtd += 1;
         });
-
         var labels = Object.keys(nodes).sort();
-
         Highcharts.chart('chartEquipe', {
             chart: { type: 'bar' },
             title: { text: 'Equipe Media por EDSP', style: { fontSize: '12px' } },
             xAxis: { categories: labels, labels: { style: { fontSize: '10px' } } },
-            yAxis: { title: { text: '' }, stackLabels: { enabled: false }, labels: { style: { fontSize: '10px' } } },
+            yAxis: { title: { text: '' }, labels: { style: { fontSize: '10px' } } },
             plotOptions: { series: { stacking: 'normal' } },
             series: [
                 { name: "AA's", data: labels.map(function(n){ return Math.round(nodes[n].aas / nodes[n].qtd); }), color: '#232F3E' },
@@ -687,12 +712,10 @@
             nodes[d.node].shuttles += (d.backlogShuttles || 0);
             nodes[d.node].pallets += (d.backlogPallets || 0);
         });
-
         var labels = Object.keys(nodes).sort();
-
         Highcharts.chart('chartBacklog', {
             chart: { type: 'column' },
-            title: { text: 'Backlog — Shuttles e Pallets', style: { fontSize: '12px' } },
+            title: { text: 'Backlog - Shuttles e Pallets', style: { fontSize: '12px' } },
             xAxis: { categories: labels, labels: { style: { fontSize: '10px' } } },
             yAxis: { title: { text: '' }, labels: { style: { fontSize: '10px' } } },
             series: [
@@ -710,12 +733,15 @@
             if (a.dataRef === b.dataRef) return b.tph - a.tph;
             return b.dataRef > a.dataRef ? 1 : -1;
         });
-
-        tbody.innerHTML = dados.map(function(d) {
+        window.DADOS_TABELA = dados;
+        tbody.innerHTML = dados.map(function(d, index) {
             var status = getStatus(d);
             var desvioClass = Number(d.desvioForecast) >= 0 ? 'pos' : 'neg';
             var obs = d.observacao ? d.observacao.substring(0, 30) : '';
-            return '<tr>' +
+            var temCallout = d.observacao && d.observacao.trim() !== '';
+            var rowClass = temCallout ? ' class="has-callout"' : '';
+            var rowClick = temCallout ? ' onclick="abrirModal(' + index + ')"' : '';
+            return '<tr' + rowClass + rowClick + '>' +
                 '<td class="node-bold">' + d.node + '</td>' +
                 '<td>' + (d.responsavel || '-') + '</td>' +
                 '<td>' + d.dataRef + '</td>' +
@@ -736,10 +762,31 @@
                 '<td>' + (d.qtdDiaristas || 0) + '</td>' +
                 '<td>' + (d.qtdLiderYB || 0) + '</td>' +
                 '<td>' + (d.tph || 0) + '</td>' +
-                '<td class="obs-cell" title="' + (d.observacao || '') + '">' + obs + '</td>' +
+                '<td class="obs-cell" title="' + (d.observacao || '') + '">' + (temCallout ? '📢 ' : '') + obs + '</td>' +
                 '<td><span class="badge ' + status.classe + '">' + status.texto + '</span></td>' +
                 '</tr>';
         }).join('');
+    }
+
+    function abrirModal(index) {
+        var d = window.DADOS_TABELA[index];
+        if (!d) return;
+        document.getElementById('modalTitle').textContent = '📢 Callout - ' + d.node;
+        document.getElementById('modalObsText').textContent = d.observacao;
+        document.getElementById('modalInfo').innerHTML =
+            '<div class="modal-info-item"><div class="mi-label">EDSP</div><div class="mi-value">' + d.node + '</div></div>' +
+            '<div class="modal-info-item"><div class="mi-label">Data</div><div class="mi-value">' + d.dataRef + '</div></div>' +
+            '<div class="modal-info-item"><div class="mi-label">Responsavel</div><div class="mi-value">' + (d.responsavel || '-') + '</div></div>' +
+            '<div class="modal-info-item"><div class="mi-label">TPH</div><div class="mi-value">' + (d.tph || 0) + '</div></div>' +
+            '<div class="modal-info-item"><div class="mi-label">Processed</div><div class="mi-value">' + (d.processed || 0) + '</div></div>' +
+            '<div class="modal-info-item"><div class="mi-label">Fora CPT</div><div class="mi-value">' + (d.veiculosForaCPT || 0) + '</div></div>';
+        document.getElementById('modalOverlay').classList.add('active');
+    }
+
+    function fecharModal(event) {
+        if (!event || event.target === document.getElementById('modalOverlay')) {
+            document.getElementById('modalOverlay').classList.remove('active');
+        }
     }
 
     function getStatus(d) {
@@ -751,19 +798,12 @@
     function media(arr, campo) { return arr.length > 0 ? arr.reduce(function(s, d) { return s + (d[campo] || 0); }, 0) / arr.length : 0; }
     function soma(arr, campo) { return arr.reduce(function(s, d) { return s + (d[campo] || 0); }, 0); }
 
-    // =============================================
-    // PWA - Service Worker + Instalacao
-    // =============================================
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./service-worker.js')
-        .then(function(reg) {
-            console.log('PWA ativo!');
-            reg.update();
-        })
+        .then(function(reg) { reg.update(); })
         .catch(function(err) { console.log('SW erro:', err); });
     }
 
-    // Banner de instalacao (Android/Chrome)
     var deferredPrompt;
     window.addEventListener('beforeinstallprompt', function(e) {
         e.preventDefault();
@@ -781,7 +821,6 @@
         }
     });
 
-    // iOS - detectar se nao esta instalado
     if (window.navigator.standalone === false) {
         document.getElementById('installBanner').style.display = 'block';
         document.getElementById('installBanner').innerHTML =
