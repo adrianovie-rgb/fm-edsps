@@ -58,7 +58,7 @@
             margin-bottom: 3px;
             font-weight: 600;
         }
-        .field input, .field select {
+        .field input, .field select, .field textarea {
             width: 100%;
             padding: 11px 12px;
             border: 1.5px solid #D5D9D9;
@@ -67,7 +67,7 @@
             background: #FAFAFA;
             -webkit-appearance: none;
         }
-        .field input:focus, .field select:focus {
+        .field input:focus, .field select:focus, .field textarea:focus {
             border-color: #FF9900;
             outline: none;
             background: white;
@@ -170,32 +170,35 @@
         <!-- IDENTIFICACAO -->
         <div class="card">
             <h3>Identificacao</h3>
-            <div class="field">
-                <label>Data Referencia</label>
-                <input type="date" id="dataRef" required>
-            </div>
-            <div class="field">
-                <label>EDSP</label>
-                <select id="node" required onchange="preencherResponsavel()">
-                    <option value="">Selecione o EDSP...</option>
-                    <option value="ECB8">ECB8</option>
-                    <option value="EGO8">EGO8</option>
-                    <option value="EIJ8">EIJ8</option>
-                    <option value="EJO8">EJO8</option>
-                    <option value="ELO8">ELO8</option>
-                    <option value="EME8">EME8</option>
-                    <option value="EMR8">EMR8</option>
-                    <option value="EOZ8">EOZ8</option>
-                    <option value="ERS8">ERS8</option>
-                    <option value="ESB8">ESB8</option>
-                    <option value="ESE8">ESE8</option>
-                    <option value="EUM8">EUM8</option>
-                    <option value="EVE8">EVE8</option>
-                </select>
+            <div class="field-row">
+                <div class="field">
+                    <label>Data Referencia</label>
+                    <input type="date" id="dataRef" required>
+                </div>
+                <div class="field">
+                    <label>EDSP</label>
+                    <select id="node" required onchange="preencherResponsavel()">
+                        <option value="">Selecione...</option>
+                        <option value="ECB8">ECB8</option>
+                        <option value="EGO8">EGO8</option>
+                        <option value="EIJ8">EIJ8</option>
+                        <option value="EJO8">EJO8</option>
+                        <option value="ELO8">ELO8</option>
+                        <option value="EME8">EME8</option>
+                        <option value="EMR8">EMR8</option>
+                        <option value="EOZ8">EOZ8</option>
+                        <option value="ERS8">ERS8</option>
+                        <option value="ESB8">ESB8</option>
+                        <option value="ESE8">ESE8</option>
+                        <option value="EUM8">EUM8</option>
+                        <option value="EVE8">EVE8</option>
+                        <option value="EXS9">EXS9</option>
+                    </select>
+                </div>
             </div>
             <div class="field">
                 <label>Responsavel</label>
-                <input type="text" id="responsavel" required placeholder="Sera preenchido automaticamente ou digite" style="background:#F[MAC_ADDRESS]E1;">
+                <input type="text" id="responsavel" required placeholder="Sera preenchido automaticamente ou digite" style="background:#F0F8E1;">
             </div>
         </div>
 
@@ -223,6 +226,16 @@
             <h3>Operacao</h3>
             <div class="field-row">
                 <div class="field">
+                    <label>Horario Inicio</label>
+                    <input type="time" id="horarioInicio" required>
+                </div>
+                <div class="field">
+                    <label>OTR/Veiculos</label>
+                    <input type="number" id="otrVeiculos" min="0" placeholder="0" required>
+                </div>
+            </div>
+            <div class="field-row">
+                <div class="field">
                     <label>Pacotes no Piso</label>
                     <input type="number" id="pacotesPiso" min="0" placeholder="0" required>
                 </div>
@@ -233,22 +246,22 @@
             </div>
             <div class="field-row">
                 <div class="field">
-                    <label>Qtd. Veiculos</label>
-                    <input type="number" id="qtdVeiculos" min="0" placeholder="0" required>
+                    <label>Qtd. Lanes</label>
+                    <input type="number" id="qtdLanes" min="0" placeholder="0" required>
                 </div>
                 <div class="field">
-                    <label>Veiculos Fora CPT</label>
-                    <input type="number" id="veiculosForaCPT" min="0" placeholder="0" required>
+                    <label>Qtd. Veiculos MM</label>
+                    <input type="number" id="qtdVeiculos" min="0" placeholder="0" required>
                 </div>
             </div>
             <div class="field-row">
                 <div class="field">
-                    <label>Horario Inicio Operacao</label>
-                    <input type="time" id="horarioInicio" required>
+                    <label>Veiculos Fora CPT</label>
+                    <input type="number" id="veiculosForaCPT" min="0" placeholder="0" required>
                 </div>
                 <div class="field">
-                    <label>Horario Lib. Veiculo</label>
-                    <input type="time" id="horarioLiberacao" required>
+                    <label>Horario Fim</label>
+                    <input type="time" id="horarioFim" required>
                 </div>
             </div>
             <div class="field-row">
@@ -263,9 +276,9 @@
             </div>
         </div>
 
-        <!-- EQUIPE -->
+        <!-- PESSOAS -->
         <div class="card">
-            <h3>Equipe</h3>
+            <h3>Pessoas</h3>
             <div class="field-row-3">
                 <div class="field">
                     <label>AA's</label>
@@ -284,6 +297,15 @@
                 <div class="lbl">TPH (Throughput por Hora)</div>
                 <div class="val" id="tphValor">--</div>
                 <div class="formula">Processed / ((AA x 345 + Diaristas x 420 + YB x 480) / 60)</div>
+            </div>
+        </div>
+
+        <!-- OBSERVACAO -->
+        <div class="card">
+            <h3>Observacao</h3>
+            <div class="field">
+                <label>Callouts / Observacoes</label>
+                <textarea id="observacao" rows="3" placeholder="Informe callouts, ausencias ou observacoes relevantes..."></textarea>
             </div>
         </div>
 
@@ -329,7 +351,8 @@
         'ESB8': '',
         'ESE8': 'Adriano',
         'EUM8': 'Matuza',
-        'EVE8': 'Julio'
+        'EVE8': 'Julio',
+        'EXS9': ''
     };
 
     function preencherResponsavel() {
@@ -339,7 +362,7 @@
         if (resp && resp !== '') {
             campo.value = resp;
             campo.readOnly = true;
-            campo.style.background = '#F[MAC_ADDRESS]E1';
+            campo.style.background = '#F0F8E1';
         } else {
             campo.value = '';
             campo.readOnly = false;
@@ -412,18 +435,21 @@
             forecast: forecast,
             processed: processed,
             desvioForecast: desvio,
+            horarioInicio: document.getElementById('horarioInicio').value,
+            otrVeiculos: Number(document.getElementById('otrVeiculos').value),
             pacotesPiso: Number(document.getElementById('pacotesPiso').value),
             wrongNode: Number(document.getElementById('wrongNode').value || 0),
+            qtdLanes: Number(document.getElementById('qtdLanes').value),
             qtdVeiculos: Number(document.getElementById('qtdVeiculos').value),
             veiculosForaCPT: Number(document.getElementById('veiculosForaCPT').value),
-            horarioInicio: document.getElementById('horarioInicio').value,
-            horarioLiberacao: document.getElementById('horarioLiberacao').value,
+            horarioFim: document.getElementById('horarioFim').value,
             backlogShuttles: Number(document.getElementById('backlogShuttles').value),
             backlogPallets: Number(document.getElementById('backlogPallets').value),
             qtdAAs: aas,
             qtdDiaristas: diaristas,
             qtdLiderYB: liderYB,
-            tph: tph
+            tph: tph,
+            observacao: document.getElementById('observacao').value
         };
 
         // Envio via iframe
@@ -451,14 +477,15 @@
             msgEl.className = 'msg ok';
             msgEl.textContent = 'Dados enviados! (' + dados.node + ' - ' + dados.dataRef + ')';
 
-            var limpar = ['forecast','processed','pacotesPiso','wrongNode','qtdVeiculos','veiculosForaCPT','backlogShuttles','backlogPallets','qtdAAs','qtdDiaristas','qtdLiderYB'];
+            var limpar = ['forecast','processed','otrVeiculos','pacotesPiso','wrongNode','qtdLanes','qtdVeiculos','veiculosForaCPT','backlogShuttles','backlogPallets','qtdAAs','qtdDiaristas','qtdLiderYB'];
             for (var i = 0; i < limpar.length; i++) {
                 document.getElementById(limpar[i]).value = '';
             }
             document.getElementById('horarioInicio').value = '';
-            document.getElementById('horarioLiberacao').value = '';
+            document.getElementById('horarioFim').value = '';
             document.getElementById('desvioForecast').value = '--';
             document.getElementById('tphValor').textContent = '--';
+            document.getElementById('observacao').value = '';
 
             btn.disabled = false;
             btn.textContent = 'ENVIAR DADOS';
