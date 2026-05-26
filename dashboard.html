@@ -289,6 +289,11 @@
             line-height: 1.5;
             word-wrap: break-word;
         }
+        /* MOBILE TOUCH FIX */
+        @media (hover: none) {
+            tr.has-callout td { background: #FFF3E0 !important; }
+            tr.has-callout td:first-child { border-left: 4px solid #FF9900 !important; }
+        }
         @media (min-width: 768px) {
             .kpi-cards { grid-template-columns: repeat(4, 1fr); }
             .charts-grid { grid-template-columns: 1fr 1fr; }
@@ -458,7 +463,6 @@
             </div>
         </div>
     </div>
-
 
     <script>
     var BASE_URL = 'https://script.google.com/macros/s/AKfycbwL_9312RhpK_JNculKu_bCUiI662cTn2PXYrxZYoMA3NwAeJ5cxm8p38Ebk0aByT-Z/exec';
@@ -740,8 +744,8 @@
             var obs = d.observacao ? d.observacao.substring(0, 30) : '';
             var temCallout = d.observacao && d.observacao.trim() !== '';
             var rowClass = temCallout ? ' class="has-callout"' : '';
-            var rowClick = temCallout ? ' onclick="abrirModal(' + index + ')"' : '';
-            return '<tr' + rowClass + rowClick + '>' +
+            var dataAttr = temCallout ? ' data-callout-index="' + index + '"' : '';
+            return '<tr' + rowClass + dataAttr + '>' +
                 '<td class="node-bold">' + d.node + '</td>' +
                 '<td>' + (d.responsavel || '-') + '</td>' +
                 '<td>' + d.dataRef + '</td>' +
@@ -766,6 +770,33 @@
                 '<td><span class="badge ' + status.classe + '">' + status.texto + '</span></td>' +
                 '</tr>';
         }).join('');
+
+        // Event listeners para touch mobile
+        var rowsCallout = tbody.querySelectorAll('tr.has-callout');
+        for (var j = 0; j < rowsCallout.length; j++) {
+            (function(row) {
+                var startX = 0;
+                var startY = 0;
+                row.addEventListener('touchstart', function(e) {
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                }, { passive: true });
+                row.addEventListener('touchend', function(e) {
+                    var endX = e.changedTouches[0].clientX;
+                    var endY = e.changedTouches[0].clientY;
+                    var diffX = Math.abs(endX - startX);
+                    var diffY = Math.abs(endY - startY);
+                    if (diffX < 10 && diffY < 10) {
+                        var idx = row.getAttribute('data-callout-index');
+                        abrirModal(parseInt(idx));
+                    }
+                });
+                row.addEventListener('click', function() {
+                    var idx = row.getAttribute('data-callout-index');
+                    abrirModal(parseInt(idx));
+                });
+            })(rowsCallout[j]);
+        }
     }
 
     function abrirModal(index) {
