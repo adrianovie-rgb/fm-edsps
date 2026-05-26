@@ -3,74 +3,124 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#232F3E">
     <title>FM EDSPs - Dashboard DF-SUL</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Calibri', 'Segoe UI', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #F5F5F5;
             color: #232F3E;
-            padding: 20px;
+            padding: 12px;
+            -webkit-text-size-adjust: 100%;
         }
+        .install-banner {
+            display: none;
+            background: #232F3E;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            text-align: center;
+            font-size: 0.8em;
+        }
+        .install-banner button {
+            background: #FF9900;
+            color: #232F3E;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            margin-top: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        .install-banner button:active { opacity: 0.8; }
+        .nav-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .nav-bar a {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            background: #232F3E;
+            color: #FF9900;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.78em;
+            font-weight: 700;
+        }
+        .nav-bar a.active {
+            background: #FF9900;
+            color: #232F3E;
+        }
+        .nav-bar a:active { opacity: 0.8; }
         .header {
             background: white;
-            border-radius: 12px;
-            padding: 20px 28px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            text-align: center;
             border-top: 4px solid #FF9900;
         }
-        .header h1 { font-size: 1.4em; color: #232F3E; }
+        .header h1 { font-size: 1.1em; color: #232F3E; }
         .header h1 span { color: #FF9900; }
-        .header .subtitle { font-size: 0.8em; color: #666; margin-top: 2px; }
+        .header .subtitle { font-size: 0.72em; color: #666; margin-top: 2px; }
         .header .update {
-            font-size: 0.78em; color: #666;
-            background: #FFF3E0; padding: 6px 12px; border-radius: 16px;
+            font-size: 0.7em; color: #666;
+            background: #FFF3E0; padding: 4px 10px; border-radius: 12px;
+            display: inline-block; margin-top: 6px;
         }
         .filtros {
             background: white;
-            border-radius: 12px;
-            padding: 16px 24px;
-            margin-bottom: 20px;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 12px;
             border-left: 4px solid #FF9900;
         }
         .filtros-row {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 8px;
             flex-wrap: wrap;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
         .filtros label {
-            font-size: 0.8em;
+            font-size: 0.75em;
             font-weight: 700;
             color: #232F3E;
         }
         .filtros input[type="date"] {
-            padding: 8px 12px;
+            padding: 8px 10px;
             border: 1.5px solid #D5D9D9;
             border-radius: 8px;
-            font-size: 0.85em;
+            font-size: 14px;
+            flex: 1;
+            min-width: 0;
         }
         .filtros input[type="date"]:focus {
             border-color: #FF9900;
             outline: none;
         }
         .filtros button {
-            padding: 8px 18px;
+            padding: 8px 14px;
             background: #FF9900;
             color: #232F3E;
             border: none;
             border-radius: 8px;
             font-weight: 700;
-            font-size: 0.85em;
+            font-size: 0.8em;
             cursor: pointer;
         }
-        .filtros button:hover { background: #E68A00; }
+        .filtros button:active { background: #E68A00; }
         .filtros .btn-limpar {
             background: #EAEDED;
             color: #555;
@@ -78,93 +128,129 @@
         .checkbox-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
             margin-top: 8px;
         }
         .checkbox-item {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
             background: #F9F9F9;
-            padding: 4px 10px;
+            padding: 4px 8px;
             border-radius: 6px;
             border: 1px solid #E0E0E0;
-            font-size: 0.78em;
+            font-size: 0.72em;
             cursor: pointer;
         }
         .checkbox-item:hover { background: #FFF8E1; border-color: #FF9900; }
-        .checkbox-item input { cursor: pointer; }
+        .checkbox-item input { cursor: pointer; width: 14px; height: 14px; }
         .checkbox-item.todos { background: #232F3E; color: white; border-color: #232F3E; }
-        .checkbox-item.todos:hover { background: #37475A; }
         .periodo-info {
-            font-size: 0.78em; color: #666;
-            margin-bottom: 16px; text-align: center;
+            font-size: 0.72em; color: #666;
+            margin-bottom: 12px; text-align: center;
             background: #FFF8E1; padding: 8px; border-radius: 8px;
         }
         .kpi-cards {
-            display: grid; grid-template-columns: repeat(6, 1fr);
-            gap: 14px; margin-bottom: 22px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 14px;
         }
         .kpi-card {
-            background: white; border-radius: 10px; padding: 16px;
+            background: white; border-radius: 10px; padding: 12px 10px;
             text-align: center; border-top: 3px solid #232F3E;
         }
         .kpi-card.destaque { border-top-color: #FF9900; }
-        .kpi-card .icon { font-size: 1.3em; margin-bottom: 4px; }
-        .kpi-card .label { font-size: 0.68em; color: #666; text-transform: uppercase; }
-        .kpi-card .valor { font-size: 1.5em; font-weight: 700; color: #232F3E; margin: 4px 0; }
-        .kpi-card .sub { font-size: 0.7em; color: #999; }
+        .kpi-card .icon { font-size: 1.2em; margin-bottom: 2px; }
+        .kpi-card .label { font-size: 0.62em; color: #666; text-transform: uppercase; font-weight: 600; }
+        .kpi-card .valor { font-size: 1.3em; font-weight: 700; color: #232F3E; margin: 2px 0; }
+        .kpi-card .sub { font-size: 0.62em; color: #999; }
         .charts-grid {
-            display: grid; grid-template-columns: 1fr 1fr;
-            gap: 18px; margin-bottom: 22px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 14px;
         }
         .chart-box {
-            background: white; border-radius: 10px; padding: 18px;
-            min-height: 320px;
+            background: white; border-radius: 10px; padding: 12px;
+            min-height: 260px;
         }
         .chart-full {
-            background: white; border-radius: 10px; padding: 18px;
-            min-height: 320px; margin-bottom: 22px;
+            background: white; border-radius: 10px; padding: 12px;
+            min-height: 260px; margin-bottom: 14px;
         }
         .table-section {
-            background: white; border-radius: 10px; padding: 20px;
-            margin-bottom: 20px; overflow-x: auto;
+            background: white; border-radius: 10px; padding: 14px;
+            margin-bottom: 14px; overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
-        .table-section h3 { color: #232F3E; margin-bottom: 14px; font-size: 1em; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.8em; }
+        .table-section h3 { color: #232F3E; margin-bottom: 10px; font-size: 0.9em; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.7em; min-width: 900px; }
         th {
-            background: #232F3E; color: #FF9900; padding: 10px 8px;
-            text-align: center; font-size: 0.76em; white-space: nowrap;
+            background: #232F3E; color: #FF9900; padding: 8px 6px;
+            text-align: center; font-size: 0.72em; white-space: nowrap;
+            position: sticky; top: 0;
         }
-        td { padding: 9px 8px; text-align: center; border-bottom: 1px solid #EEE; }
+        td { padding: 7px 6px; text-align: center; border-bottom: 1px solid #EEE; white-space: nowrap; }
         tr:hover td { background: #FFF8E1; }
-        .badge { padding: 3px 8px; border-radius: 10px; font-weight: 600; font-size: 0.76em; }
+        .badge { padding: 3px 8px; border-radius: 10px; font-weight: 600; font-size: 0.72em; }
         .badge-ok { background: #E8F5E9; color: #2E7D32; }
         .badge-warn { background: #FFF3E0; color: #E65100; }
         .badge-alert { background: #FFEBEE; color: #C62828; }
         .node-bold { font-weight: 700; }
         .pos { color: #2E7D32; font-weight: 700; }
         .neg { color: #C62828; font-weight: 700; }
-        @media (max-width: 1100px) {
-            .kpi-cards { grid-template-columns: repeat(3, 1fr); }
+        .obs-cell {
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 0.7em;
+            color: #555;
         }
-        @media (max-width: 900px) {
-            .kpi-cards { grid-template-columns: repeat(2, 1fr); }
-            .charts-grid { grid-template-columns: 1fr; }
-            .filtros-row { flex-direction: column; align-items: flex-start; }
+        .btn-refresh {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #232F3E;
+            color: #FF9900;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.85em;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            margin-bottom: 12px;
         }
-        @media (max-width: 600px) {
-            .kpi-cards { grid-template-columns: repeat(2, 1fr); }
-            .header { flex-direction: column; gap: 10px; text-align: center; }
+        .btn-refresh:active { opacity: 0.8; }
+        @media (min-width: 768px) {
+            .kpi-cards { grid-template-columns: repeat(4, 1fr); }
+            .charts-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (min-width: 1100px) {
+            .kpi-cards { grid-template-columns: repeat(4, 1fr); }
+            body { padding: 20px; }
         }
     </style>
 </head>
 <body>
+
+    <!-- BANNER DE INSTALACAO PWA -->
+    <div class="install-banner" id="installBanner">
+        📲 Instale o Dashboard na sua tela inicial!
+        <br>
+        <button id="btnInstall">INSTALAR APP</button>
+    </div>
+
+    <!-- NAVEGACAO -->
+    <div class="nav-bar">
+        <a href="index.html">📝 Coleta</a>
+        <a href="dashboard.html" class="active">📊 Dashboard</a>
+    </div>
+
     <div class="header">
-        <div>
-            <h1>FM EDSPs — <span>Regional DF-SUL</span></h1>
-            <p class="subtitle">Dashboard Operacional | Consolidado por Periodo</p>
-        </div>
+        <h1>FM EDSPs — <span>Regional DF-SUL</span></h1>
+        <p class="subtitle">Dashboard Operacional | Consolidado por Periodo</p>
         <div class="update" id="lastUpdate">Carregando...</div>
     </div>
 
@@ -173,7 +259,7 @@
         <div class="filtros-row">
             <label>Periodo:</label>
             <input type="date" id="dataInicio" title="Data inicio">
-            <span style="color:#999; font-size:0.85em;">ate</span>
+            <span style="color:#999; font-size:0.8em;">ate</span>
             <input type="date" id="dataFim" title="Data fim">
             <button onclick="aplicarFiltro()">Filtrar</button>
             <button class="btn-limpar" onclick="limparFiltro()">Limpar</button>
@@ -197,6 +283,7 @@
                 <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="ESE8" checked> ESE8</label>
                 <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="EUM8" checked> EUM8</label>
                 <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="EVE8" checked> EVE8</label>
+                <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="EXS9" checked> EXS9</label>
             </div>
         </div>
     </div>
@@ -219,8 +306,26 @@
         </div>
         <div class="kpi-card">
             <div class="icon">🚚</div>
-            <div class="label">Veiculos Fora CPT</div>
+            <div class="label">Fora CPT</div>
             <div class="valor" id="kpiForaCPT">--</div>
+            <div class="sub">veiculos no periodo</div>
+        </div>
+        <div class="kpi-card destaque">
+            <div class="icon">⚡</div>
+            <div class="label">TPH Medio</div>
+            <div class="valor" id="kpiTPH">--</div>
+            <div class="sub">throughput/hora</div>
+        </div>
+        <div class="kpi-card">
+            <div class="icon">🚛</div>
+            <div class="label">OTR Total</div>
+            <div class="valor" id="kpiOTR">--</div>
+            <div class="sub">veiculos coletados</div>
+        </div>
+        <div class="kpi-card">
+            <div class="icon">⚠️</div>
+            <div class="label">Wrong Node</div>
+            <div class="valor" id="kpiWrongNode">--</div>
             <div class="sub">total no periodo</div>
         </div>
         <div class="kpi-card">
@@ -228,12 +333,6 @@
             <div class="label">Equipe Total</div>
             <div class="valor" id="kpiEquipe">--</div>
             <div class="sub">AA + Diaristas + YB</div>
-        </div>
-        <div class="kpi-card destaque">
-            <div class="icon">⚡</div>
-            <div class="label">TPH Medio</div>
-            <div class="valor" id="kpiTPH">--</div>
-            <div class="sub">throughput/hora</div>
         </div>
         <div class="kpi-card">
             <div class="icon">📋</div>
@@ -261,31 +360,36 @@
             <thead>
                 <tr>
                     <th>EDSP</th>
-                    <th>Responsavel</th>
+                    <th>Resp.</th>
                     <th>Data</th>
                     <th>Forecast</th>
                     <th>Processed</th>
                     <th>Desvio %</th>
+                    <th>Inicio</th>
+                    <th>OTR</th>
                     <th>Piso</th>
-                    <th>Wrong Node</th>
-                    <th>Veiculos</th>
+                    <th>WN</th>
+                    <th>Lanes</th>
+                    <th>Veic. MM</th>
                     <th>Fora CPT</th>
-                    <th>Inicio Op.</th>
-                    <th>Lib. Veiculo</th>
-                    <th>Bklog Shuttles</th>
-                    <th>Bklog Pallets</th>
+                    <th>Fim</th>
+                    <th>Bkl Shut.</th>
+                    <th>Bkl Pall.</th>
                     <th>AA's</th>
-                    <th>Diaristas</th>
-                    <th>Lider YB</th>
+                    <th>Diar.</th>
+                    <th>YB</th>
                     <th>TPH</th>
+                    <th>Obs.</th>
                     <th>Status</th>
                 </tr>
             </thead>
             <tbody id="tabelaNodes">
-                <tr><td colspan="19">Aguardando dados...</td></tr>
+                <tr><td colspan="22">Aguardando dados...</td></tr>
             </tbody>
         </table>
     </div>
+
+    <button class="btn-refresh" onclick="carregarDados()">🔄 ATUALIZAR DADOS</button>
 
     <script>
     // ==============================================
@@ -301,13 +405,8 @@
     carregarDados();
 
     function carregarDados() {
-        // Usa Google Apps Script com redirect (evita CORS)
-        var iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
-        iframe.name = 'dataFrame';
-        document.body.appendChild(iframe);
+        document.getElementById('lastUpdate').textContent = 'Carregando...';
 
-        // Metodo alternativo: usar XMLHttpRequest com redirect follow
         var xhr = new XMLHttpRequest();
         xhr.open('GET', BASE_URL + '?action=getData', true);
         xhr.onreadystatechange = function() {
@@ -339,7 +438,7 @@
         var script = document.createElement('script');
         script.src = BASE_URL + '?action=getData&callback=' + callbackName;
         script.onerror = function() {
-            document.getElementById('lastUpdate').textContent = 'Erro ao carregar dados. Verifique a conexao.';
+            document.getElementById('lastUpdate').textContent = 'Erro ao carregar dados.';
         };
         document.body.appendChild(script);
     }
@@ -348,7 +447,6 @@
         document.getElementById('lastUpdate').textContent = 'Atualizado: ' + new Date(data.lastUpdate).toLocaleString('pt-BR');
         TODOS_DADOS = data.dados;
 
-        // Normalizar datas (remover horario se vier no formato ISO)
         for (var i = 0; i < TODOS_DADOS.length; i++) {
             if (TODOS_DADOS[i].dataRef && TODOS_DADOS[i].dataRef.length > 10) {
                 TODOS_DADOS[i].dataRef = TODOS_DADOS[i].dataRef.slice(0, 10);
@@ -363,7 +461,6 @@
         aplicarFiltro();
     }
 
-    // CHECKBOX - Marcar/Desmarcar todos
     function toggleTodos() {
         var marcado = document.getElementById('chkTodos').checked;
         var checks = document.querySelectorAll('.chkEDSP');
@@ -425,7 +522,7 @@
         } else {
             info = 'Mostrando todos os dados disponiveis';
         }
-        if (edspsSelecionados.length < 13) {
+        if (edspsSelecionados.length < 14) {
             info += ' | EDSPs: ' + edspsSelecionados.join(', ');
         }
         info += ' (' + dadosFiltrados.length + ' registros)';
@@ -451,7 +548,9 @@
             document.getElementById('kpiEquipe').textContent = '--';
             document.getElementById('kpiTPH').textContent = '--';
             document.getElementById('kpiBacklog').textContent = '--';
-            document.getElementById('tabelaNodes').innerHTML = '<tr><td colspan="19">Nenhum dado encontrado para o periodo/filtro selecionado.</td></tr>';
+            document.getElementById('kpiOTR').textContent = '--';
+            document.getElementById('kpiWrongNode').textContent = '--';
+            document.getElementById('tabelaNodes').innerHTML = '<tr><td colspan="22">Nenhum dado encontrado para o periodo/filtro selecionado.</td></tr>';
             return;
         }
 
@@ -461,6 +560,8 @@
         var totalEquipe = soma(dados, 'qtdAAs') + soma(dados, 'qtdDiaristas') + soma(dados, 'qtdLiderYB');
         var avgTPH = media(dados, 'tph');
         var totalBacklog = soma(dados, 'backlogShuttles');
+        var totalOTR = soma(dados, 'otrVeiculos');
+        var totalWrongNode = soma(dados, 'wrongNode');
 
         document.getElementById('kpiProcessed').textContent = totalProcessed.toLocaleString('pt-BR');
         document.getElementById('kpiDesvio').textContent = (avgDesvio >= 0 ? '+' : '') + avgDesvio.toFixed(1) + '%';
@@ -469,6 +570,8 @@
         document.getElementById('kpiEquipe').textContent = totalEquipe;
         document.getElementById('kpiTPH').textContent = avgTPH.toFixed(2);
         document.getElementById('kpiBacklog').textContent = totalBacklog;
+        document.getElementById('kpiOTR').textContent = totalOTR;
+        document.getElementById('kpiWrongNode').textContent = totalWrongNode;
 
         renderChartForecast(dados);
         renderChartTPH(dados);
@@ -495,15 +598,15 @@
 
         Highcharts.chart('chartForecast', {
             chart: { type: 'column' },
-            title: { text: 'Forecast vs Processed por Dia', style: { fontSize: '13px' } },
-            xAxis: { categories: datas.map(function(d){ return d.slice(5); }) },
-            yAxis: { title: { text: 'Pacotes' } },
+            title: { text: 'Forecast vs Processed', style: { fontSize: '12px' } },
+            xAxis: { categories: datas.map(function(d){ return d.slice(5); }), labels: { style: { fontSize: '10px' } } },
+            yAxis: { title: { text: '' }, labels: { style: { fontSize: '10px' } } },
             series: [
                 { name: 'Forecast', data: forecast, color: '#37475A' },
                 { name: 'Processed', data: processed, color: '#FF9900' }
             ],
             credits: { enabled: false },
-            legend: { enabled: true }
+            legend: { itemStyle: { fontSize: '10px' } }
         });
     }
 
@@ -520,9 +623,9 @@
 
         Highcharts.chart('chartTPH', {
             chart: { type: 'bar' },
-            title: { text: 'TPH Medio por EDSP', style: { fontSize: '13px' } },
-            xAxis: { categories: labels },
-            yAxis: { title: { text: 'TPH (pacotes/hora)' } },
+            title: { text: 'TPH Medio por EDSP', style: { fontSize: '12px' } },
+            xAxis: { categories: labels, labels: { style: { fontSize: '10px' } } },
+            yAxis: { title: { text: '' }, labels: { style: { fontSize: '10px' } } },
             series: [{ name: 'TPH', data: tphs, color: '#FF9900' }],
             credits: { enabled: false },
             legend: { enabled: false }
@@ -540,9 +643,9 @@
 
         Highcharts.chart('chartForaCPT', {
             chart: { type: 'column' },
-            title: { text: 'Veiculos Fora do CPT (Total no Periodo)', style: { fontSize: '13px' } },
-            xAxis: { categories: labels },
-            yAxis: { title: { text: 'Veiculos' } },
+            title: { text: 'Veiculos Fora CPT', style: { fontSize: '12px' } },
+            xAxis: { categories: labels, labels: { style: { fontSize: '10px' } } },
+            yAxis: { title: { text: '' }, labels: { style: { fontSize: '10px' } } },
             series: [{ name: 'Fora CPT', data: fora, color: '#C62828' }],
             credits: { enabled: false },
             legend: { enabled: false }
@@ -563,9 +666,9 @@
 
         Highcharts.chart('chartEquipe', {
             chart: { type: 'bar' },
-            title: { text: 'Composicao da Equipe (Media no Periodo)', style: { fontSize: '13px' } },
-            xAxis: { categories: labels },
-            yAxis: { title: { text: 'Pessoas' }, stackLabels: { enabled: true } },
+            title: { text: 'Equipe Media por EDSP', style: { fontSize: '12px' } },
+            xAxis: { categories: labels, labels: { style: { fontSize: '10px' } } },
+            yAxis: { title: { text: '' }, stackLabels: { enabled: false }, labels: { style: { fontSize: '10px' } } },
             plotOptions: { series: { stacking: 'normal' } },
             series: [
                 { name: "AA's", data: labels.map(function(n){ return Math.round(nodes[n].aas / nodes[n].qtd); }), color: '#232F3E' },
@@ -573,7 +676,7 @@
                 { name: 'Lider YB', data: labels.map(function(n){ return Math.round(nodes[n].yb / nodes[n].qtd); }), color: '#37475A' }
             ],
             credits: { enabled: false },
-            legend: { enabled: true }
+            legend: { itemStyle: { fontSize: '10px' } }
         });
     }
 
@@ -589,15 +692,15 @@
 
         Highcharts.chart('chartBacklog', {
             chart: { type: 'column' },
-            title: { text: 'Backlog por EDSP — Shuttles e Pallets (Total no Periodo)', style: { fontSize: '13px' } },
-            xAxis: { categories: labels },
-            yAxis: { title: { text: 'Quantidade' } },
+            title: { text: 'Backlog — Shuttles e Pallets', style: { fontSize: '12px' } },
+            xAxis: { categories: labels, labels: { style: { fontSize: '10px' } } },
+            yAxis: { title: { text: '' }, labels: { style: { fontSize: '10px' } } },
             series: [
-                { name: 'Backlog Shuttles', data: labels.map(function(n){ return nodes[n].shuttles; }), color: '#FF9900' },
-                { name: 'Backlog Pallets', data: labels.map(function(n){ return nodes[n].pallets; }), color: '#232F3E' }
+                { name: 'Shuttles', data: labels.map(function(n){ return nodes[n].shuttles; }), color: '#FF9900' },
+                { name: 'Pallets', data: labels.map(function(n){ return nodes[n].pallets; }), color: '#232F3E' }
             ],
             credits: { enabled: false },
-            legend: { enabled: true }
+            legend: { itemStyle: { fontSize: '10px' } }
         });
     }
 
@@ -611,25 +714,29 @@
         tbody.innerHTML = dados.map(function(d) {
             var status = getStatus(d);
             var desvioClass = Number(d.desvioForecast) >= 0 ? 'pos' : 'neg';
+            var obs = d.observacao ? d.observacao.substring(0, 30) : '';
             return '<tr>' +
                 '<td class="node-bold">' + d.node + '</td>' +
-                '<td>' + d.responsavel + '</td>' +
+                '<td>' + (d.responsavel || '-') + '</td>' +
                 '<td>' + d.dataRef + '</td>' +
                 '<td>' + d.forecast + '</td>' +
                 '<td>' + d.processed + '</td>' +
                 '<td class="' + desvioClass + '">' + (Number(d.desvioForecast) >= 0 ? '+' : '') + Number(d.desvioForecast).toFixed(1) + '%</td>' +
-                '<td>' + d.pacotesPiso + '</td>' +
-                '<td>' + (d.wrongNode || 0) + '</td>' +
-                '<td>' + d.qtdVeiculos + '</td>' +
-                '<td>' + d.veiculosForaCPT + '</td>' +
                 '<td>' + (d.horarioInicio || '-') + '</td>' +
-                '<td>' + (d.horarioLiberacao || '-') + '</td>' +
+                '<td>' + (d.otrVeiculos || 0) + '</td>' +
+                '<td>' + (d.pacotesPiso || 0) + '</td>' +
+                '<td>' + (d.wrongNode || 0) + '</td>' +
+                '<td>' + (d.qtdLanes || 0) + '</td>' +
+                '<td>' + (d.qtdVeiculos || 0) + '</td>' +
+                '<td>' + (d.veiculosForaCPT || 0) + '</td>' +
+                '<td>' + (d.horarioFim || '-') + '</td>' +
                 '<td>' + (d.backlogShuttles || 0) + '</td>' +
                 '<td>' + (d.backlogPallets || 0) + '</td>' +
-                '<td>' + d.qtdAAs + '</td>' +
-                '<td>' + d.qtdDiaristas + '</td>' +
-                '<td>' + d.qtdLiderYB + '</td>' +
-                '<td>' + d.tph + '</td>' +
+                '<td>' + (d.qtdAAs || 0) + '</td>' +
+                '<td>' + (d.qtdDiaristas || 0) + '</td>' +
+                '<td>' + (d.qtdLiderYB || 0) + '</td>' +
+                '<td>' + (d.tph || 0) + '</td>' +
+                '<td class="obs-cell" title="' + (d.observacao || '') + '">' + obs + '</td>' +
                 '<td><span class="badge ' + status.classe + '">' + status.texto + '</span></td>' +
                 '</tr>';
         }).join('');
@@ -643,6 +750,43 @@
 
     function media(arr, campo) { return arr.length > 0 ? arr.reduce(function(s, d) { return s + (d[campo] || 0); }, 0) / arr.length : 0; }
     function soma(arr, campo) { return arr.reduce(function(s, d) { return s + (d[campo] || 0); }, 0); }
+
+    // =============================================
+    // PWA - Service Worker + Instalacao
+    // =============================================
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./service-worker.js')
+        .then(function(reg) {
+            console.log('PWA ativo!');
+            reg.update();
+        })
+        .catch(function(err) { console.log('SW erro:', err); });
+    }
+
+    // Banner de instalacao (Android/Chrome)
+    var deferredPrompt;
+    window.addEventListener('beforeinstallprompt', function(e) {
+        e.preventDefault();
+        deferredPrompt = e;
+        document.getElementById('installBanner').style.display = 'block';
+    });
+
+    document.getElementById('btnInstall').addEventListener('click', function() {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then(function(choiceResult) {
+                document.getElementById('installBanner').style.display = 'none';
+                deferredPrompt = null;
+            });
+        }
+    });
+
+    // iOS - detectar se nao esta instalado
+    if (window.navigator.standalone === false) {
+        document.getElementById('installBanner').style.display = 'block';
+        document.getElementById('installBanner').innerHTML =
+            '📲 Para instalar: toque em <strong>Compartilhar</strong> e depois <strong>Adicionar a Tela Inicio</strong>';
+    }
     </script>
 </body>
 </html>
