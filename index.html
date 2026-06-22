@@ -1,6 +1,3 @@
-Fetched: https://raw.githubusercontent.com/adrianovie-rgb/fm-edsps/main/index.html
-
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -9,522 +6,395 @@ Fetched: https://raw.githubusercontent.com/adrianovie-rgb/fm-edsps/main/index.ht
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#232F3E">
-    <title>FM EDSPs | Regional DF-SUL</title>
+    <title>Wash Report | FM EDSPs DF-SUL</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192.png">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #EAEDED;
-            min-height: 100vh;
-            padding: 12px;
-        }
-        .header {
-            background: #232F3E;
-            color: white;
-            padding: 18px 16px;
-            border-radius: 10px;
-            margin-bottom: 14px;
-            text-align: center;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #EAEDED; min-height: 100vh; padding: 12px; padding-bottom: 30px; color: #232F3E; }
+        .install-banner { display: none; background: #232F3E; color: white; padding: 12px 16px; border-radius: 10px; margin-bottom: 14px; text-align: center; font-size: 0.82em; }
+        .install-banner button { background: #FF9900; color: #232F3E; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; margin-top: 8px; cursor: pointer; }
+        .header { background: #232F3E; color: white; padding: 18px 16px; border-radius: 10px; margin-bottom: 14px; text-align: center; }
         .header h1 { font-size: 1.2em; color: #FF9900; }
         .header p { font-size: 0.8em; opacity: 0.8; margin-top: 4px; }
-        .header .tag {
-            display: inline-block;
-            background: #FF9900;
-            color: #232F3E;
-            padding: 3px 12px;
-            border-radius: 12px;
-            font-size: 0.7em;
-            font-weight: 700;
-            margin-top: 8px;
-        }
-        .card {
-            background: white;
-            border-radius: 10px;
-            padding: 16px;
-            margin-bottom: 12px;
-            border-left: 4px solid #FF9900;
-        }
-        .card h3 {
-            color: #232F3E;
-            margin-bottom: 10px;
-            font-size: 0.9em;
-        }
+        .header .tag { display: inline-block; background: #FF9900; color: #232F3E; padding: 3px 12px; border-radius: 12px; font-size: 0.7em; font-weight: 700; margin-top: 8px; }
+        .aviso { background: #FFEBEE; border: 2px solid #EF5350; border-radius: 10px; padding: 12px; margin-bottom: 14px; font-size: 0.78em; color: #C62828; text-align: center; }
+        .aviso.pronto { background: #E8F5E9; border-color: #66BB6A; color: #2E7D32; }
+        .card { background: white; border-radius: 10px; padding: 16px; margin-bottom: 12px; border-left: 4px solid #FF9900; }
+        .card h3 { color: #232F3E; margin-bottom: 12px; font-size: 0.92em; display: flex; align-items: center; gap: 6px; padding-bottom: 10px; border-bottom: 1px solid #F0F0F0; }
         .field { margin-bottom: 12px; }
-        .field label {
-            display: block;
-            font-size: 0.78em;
-            color: #555;
-            margin-bottom: 3px;
-            font-weight: 600;
-        }
-        .field input, .field select, .field textarea {
-            width: 100%;
-            padding: 11px 12px;
-            border: 1.5px solid #D5D9D9;
-            border-radius: 8px;
-            font-size: 16px;
-            background: #FAFAFA;
-            -webkit-appearance: none;
-        }
-        .field input:focus, .field select:focus, .field textarea:focus {
-            border-color: #FF9900;
-            outline: none;
-            background: white;
-        }
-        .field-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
+        .field:last-child { margin-bottom: 0; }
+        .field label { display: block; font-size: 0.78em; color: #555; margin-bottom: 4px; font-weight: 600; }
+        .field input, .field select, .field textarea { width: 100%; padding: 11px 12px; border: 1.5px solid #D5D9D9; border-radius: 8px; font-size: 16px; background: #FAFAFA; -webkit-appearance: none; color: #232F3E; }
+        .field input:focus, .field select:focus, .field textarea:focus { border-color: #FF9900; outline: none; background: white; }
+        .field textarea { resize: vertical; min-height: 70px; font-size: 15px; }
+        .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
         .field-row .field { margin-bottom: 0; }
-        .field-row-3 {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-        .field-row-3 .field { margin-bottom: 0; }
-        .auto-field {
-            background: #F0F8E8 !important;
-            border-color: #4CAF50 !important;
-            font-weight: 700;
-        }
+        .auto-field { background: #F0F8E8 !important; border-color: #4CAF50 !important; font-weight: 700; color: #2E7D32 !important; }
         .auto-label { color: #2E7D32 !important; }
-        .btn-submit {
-            width: 100%;
-            padding: 14px;
-            background: #FF9900;
-            color: #232F3E;
-            border: none;
-            border-radius: 10px;
-            font-size: 1em;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 4px;
-        }
+        .kpi-box { background: #232F3E; border-radius: 8px; padding: 14px 12px; text-align: center; margin-top: 8px; }
+        .kpi-box .kpi-label { font-size: 0.66em; color: #FF9900; text-transform: uppercase; letter-spacing: 0.5px; }
+        .kpi-box .kpi-val { font-size: 2.2em; font-weight: 700; color: white; margin: 4px 0 2px; }
+        .kpi-box .kpi-formula { font-size: 0.6em; color: #999; }
+        .kpi-box .kpi-detail { font-size: 0.66em; color: #aaa; margin-top: 4px; }
+        .kpi-box.ok .kpi-val { color: #66BB6A; }
+        .kpi-box.warn .kpi-val { color: #FF9900; }
+        .kpi-box.bad .kpi-val { color: #EF5350; }
+        .horario-item { border: 1px solid #E8E8E8; border-radius: 8px; padding: 10px; margin-bottom: 10px; background: #FAFAFA; }
+        .horario-item:last-child { margin-bottom: 0; }
+        .horario-nome { font-size: 0.78em; font-weight: 700; color: #232F3E; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #ECECEC; }
+        .horario-linha { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+        .horario-tipo { font-size: 0.68em; font-weight: 700; color: #888; width: 70px; flex-shrink: 0; text-transform: uppercase; }
+        .horario-linha input[type="time"] { flex: 1; padding: 8px 6px; border: 1.5px solid #D5D9D9; border-radius: 6px; font-size: 14px; background: white; text-align: center; }
+        .horario-linha input[type="time"]:focus { border-color: #FF9900; outline: none; }
+        .horario-seta { color: #CCC; font-size: 0.85em; flex-shrink: 0; }
+        .horario-status { margin-top: 6px; font-size: 0.7em; display: flex; flex-wrap: wrap; gap: 5px; min-height: 4px; }
+        .st-ok { color: #2E7D32; font-weight: 600; }
+        .st-bad { color: #C62828; font-weight: 600; }
+        .st-dur { color: #37475A; background: #EAEDED; padding: 2px 8px; border-radius: 10px; font-weight: 700; }
+        .toggle-row { display: flex; gap: 8px; margin-bottom: 12px; }
+        .toggle-btn { flex: 1; padding: 11px; border: 2px solid #D5D9D9; border-radius: 8px; background: #FAFAFA; font-size: 0.88em; font-weight: 700; cursor: pointer; text-align: center; color: #666; }
+        .toggle-btn.active-sim { background: #E8F5E9; border-color: #4CAF50; color: #2E7D32; }
+        .toggle-btn.active-nao { background: #FFEBEE; border-color: #EF5350; color: #C62828; }
+        .checkbox-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+        .checkbox-item { display: flex; align-items: center; gap: 6px; background: #F5F5F5; border: 1.5px solid #E0E0E0; border-radius: 8px; padding: 8px 12px; cursor: pointer; font-size: 0.82em; font-weight: 600; color: #444; user-select: none; }
+        .checkbox-item:hover { border-color: #FF9900; background: #FFF8E1; }
+        .checkbox-item input { width: 16px; height: 16px; cursor: pointer; accent-color: #FF9900; }
+        .checkbox-item.checked { background: #FFF3E0; border-color: #FF9900; color: #232F3E; }
+        .atraso-section { display: none; }
+        .atraso-section.visible { display: block; }
+        .sub-label { font-size: 0.72em; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 8px; margin-top: 14px; padding-bottom: 4px; border-bottom: 1px dashed #DDD; }
+        .sub-label:first-child { margin-top: 0; }
+        .field.safety label { color: #C62828; }
+        .field.safety textarea { border-color: #FFCDD2 !important; background: #FFF5F5 !important; }
+        .field.safety textarea:focus { border-color: #EF5350 !important; }
+        .btn-submit { width: 100%; padding: 16px; background: #FF9900; color: #232F3E; border: none; border-radius: 10px; font-size: 1.05em; font-weight: 700; cursor: pointer; margin-top: 4px; letter-spacing: 0.5px; }
         .btn-submit:active { background: #E68A00; }
         .btn-submit:disabled { background: #D5D9D9; color: #888; }
-        .msg {
-            text-align: center; padding: 10px; border-radius: 8px;
-            margin-top: 10px; font-weight: 600; font-size: 0.85em; display: none;
-        }
+        .msg { text-align: center; padding: 12px; border-radius: 8px; margin-top: 10px; font-weight: 600; font-size: 0.85em; display: none; }
         .msg.ok { display: block; background: #E8F5E9; color: #2E7D32; }
         .msg.erro { display: block; background: #FFEBEE; color: #C62828; }
         .msg.enviando { display: block; background: #FFF3E0; color: #E65100; }
-        .tph-box {
-            text-align: center; padding: 12px;
-            background: #232F3E; border-radius: 8px; margin-top: 8px;
-        }
-        .tph-box .lbl { font-size: 0.7em; color: #FF9900; text-transform: uppercase; }
-        .tph-box .val { font-size: 1.8em; font-weight: 700; color: white; }
-        .tph-box .formula { font-size: 0.6em; color: #999; margin-top: 4px; }
-        .aviso {
-            background: #FFEBEE; border: 2px solid #EF5350;
-            border-radius: 10px; padding: 12px; margin-bottom: 14px;
-            font-size: 0.78em; color: #C62828; text-align: center;
-        }
-        .aviso.pronto { background: #E8F5E9; border-color: #66BB6A; color: #2E7D32; }
-        .install-banner {
-            display: none;
-            background: #232F3E;
-            color: white;
-            padding: 12px 16px;
-            border-radius: 10px;
-            margin-bottom: 14px;
-            text-align: center;
-            font-size: 0.82em;
-        }
-        .install-banner button {
-            background: #FF9900;
-            color: #232F3E;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 700;
-            margin-top: 8px;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
-    <!-- BANNER DE INSTALACAO PWA -->
-    <div class="install-banner" id="installBanner">
-        📲 Instale o app na sua tela inicial para acesso rapido!
-        <br>
-        <button id="btnInstall">INSTALAR APP</button>
+<div class="install-banner" id="installBanner">
+    📲 Instale o app na sua tela inicial!
+    <br><button id="btnInstall">INSTALAR APP</button>
+</div>
+<div class="header">
+    <h1>📝 Wash Report</h1>
+    <p>Coleta Diária de Operações</p>
+    <div class="tag">REGIONAL DF-SUL</div>
+</div>
+<div class="aviso" id="aviso">Verificando conexão...</div>
+<form id="formColeta">
+  <div class="card">
+    <h3>🗂 Identificação</h3>
+    <div class="field-row">
+      <div class="field"><label>Data</label><input type="date" id="dataRef" required></div>
+      <div class="field"><label>Site</label>
+        <select id="node" required onchange="preencherResponsavel()">
+          <option value="">Selecione...</option>
+          <option value="ECB8">ECB8</option><option value="EGO8">EGO8</option>
+          <option value="EIJ8">EIJ8</option><option value="EJO8">EJO8</option>
+          <option value="ELO8">ELO8</option><option value="EME8">EME8</option>
+          <option value="EMR8">EMR8</option><option value="EOZ8">EOZ8</option>
+          <option value="ERS8">ERS8</option><option value="ESB8">ESB8</option>
+          <option value="ESE8">ESE8</option><option value="EUM8">EUM8</option>
+          <option value="EVE8">EVE8</option><option value="EXS9">EXS9</option>
+        </select>
+      </div>
     </div>
-
-    <div class="header">
-        <h1>FM EDSPs</h1>
-        <p>Coleta Diaria de Operacoes</p>
-        <div class="tag">REGIONAL DF-SUL</div>
+    <div class="field"><label>Responsável</label>
+      <input type="text" id="responsavel" required placeholder="Preenchido automaticamente" style="background:#F0F8E1;">
     </div>
-
-    <div class="aviso" id="aviso">
-        CONFIGURE: Abra este arquivo no Bloco de Notas e substitua a URL pela URL do Apps Script.
+  </div>
+  <div class="card">
+    <h3>⏱ Horários Planejados vs Realizados</h3>
+    <div class="horario-item">
+      <div class="horario-nome">Horário do Turno</div>
+      <div class="horario-linha"><span class="horario-tipo">Planejado</span>
+        <input type="time" id="turnoInicioPlano" oninput="calcHorario('turno')">
+        <span class="horario-seta">→</span>
+        <input type="time" id="turnoFimPlano" oninput="calcHorario('turno')"></div>
+      <div class="horario-linha"><span class="horario-tipo">Realizado</span>
+        <input type="time" id="turnoInicioReal" oninput="calcHorario('turno')">
+        <span class="horario-seta">→</span>
+        <input type="time" id="turnoFimReal" oninput="calcHorario('turno')"></div>
+      <div class="horario-status" id="turnoStatus"></div>
     </div>
-
-    <form id="formColeta">
-        <!-- IDENTIFICACAO -->
-        <div class="card">
-            <h3>Identificacao</h3>
-            <div class="field-row">
-                <div class="field">
-                    <label>Data Referencia</label>
-                    <input type="date" id="dataRef" required>
-                </div>
-                <div class="field">
-                    <label>EDSP</label>
-                    <select id="node" required onchange="preencherResponsavel()">
-                        <option value="">Selecione...</option>
-                        <option value="ECB8">ECB8</option>
-                        <option value="EGO8">EGO8</option>
-                        <option value="EIJ8">EIJ8</option>
-                        <option value="EJO8">EJO8</option>
-                        <option value="ELO8">ELO8</option>
-                        <option value="EME8">EME8</option>
-                        <option value="EMR8">EMR8</option>
-                        <option value="EOZ8">EOZ8</option>
-                        <option value="ERS8">ERS8</option>
-                        <option value="ESB8">ESB8</option>
-                        <option value="ESE8">ESE8</option>
-                        <option value="EUM8">EUM8</option>
-                        <option value="EVE8">EVE8</option>
-                        <option value="EXS9">EXS9</option>
-                    </select>
-                </div>
-            </div>
-            <div class="field">
-                <label>Responsavel</label>
-                <input type="text" id="responsavel" required placeholder="Sera preenchido automaticamente ou digite" style="background:#F0F8E1;">
-            </div>
-        </div>
-
-        <!-- VOLUME -->
-        <div class="card">
-            <h3>Volume</h3>
-            <div class="field-row">
-                <div class="field">
-                    <label>Forecast</label>
-                    <input type="number" id="forecast" min="0" placeholder="0" required oninput="calcularAuto()">
-                </div>
-                <div class="field">
-                    <label>Processed</label>
-                    <input type="number" id="processed" min="0" placeholder="0" required oninput="calcularAuto()">
-                </div>
-            </div>
-            <div class="field">
-                <label class="auto-label">Desvio de Forecast (%) - automatico</label>
-                <input type="text" id="desvioForecast" class="auto-field" readonly placeholder="--">
-            </div>
-        </div>
-
-        <!-- OPERACAO -->
-        <div class="card">
-            <h3>Operacao</h3>
-            <div class="field-row">
-                <div class="field">
-                    <label>Horario Inicio</label>
-                    <input type="time" id="horarioInicio" required>
-                </div>
-                <div class="field">
-                    <label>OTR/Veiculos</label>
-                    <input type="number" id="otrVeiculos" min="0" placeholder="0" required>
-                </div>
-            </div>
-            <div class="field-row">
-                <div class="field">
-                    <label>Pacotes no Piso</label>
-                    <input type="number" id="pacotesPiso" min="0" placeholder="0" required>
-                </div>
-                <div class="field">
-                    <label>Wrong Node</label>
-                    <input type="number" id="wrongNode" min="0" placeholder="0">
-                </div>
-            </div>
-            <div class="field-row">
-                <div class="field">
-                    <label>Qtd. Lanes</label>
-                    <input type="number" id="qtdLanes" min="0" placeholder="0" required>
-                </div>
-                <div class="field">
-                    <label>Qtd. Veiculos MM</label>
-                    <input type="number" id="qtdVeiculos" min="0" placeholder="0" required>
-                </div>
-            </div>
-            <div class="field-row">
-                <div class="field">
-                    <label>Veiculos Fora CPT</label>
-                    <input type="number" id="veiculosForaCPT" min="0" placeholder="0" required>
-                </div>
-                <div class="field">
-                    <label>Horario Fim</label>
-                    <input type="time" id="horarioFim" required>
-                </div>
-            </div>
-            <div class="field-row">
-                <div class="field">
-                    <label>Backlog Shuttles</label>
-                    <input type="number" id="backlogShuttles" min="0" placeholder="0" required>
-                </div>
-                <div class="field">
-                    <label>Backlog Pallets</label>
-                    <input type="number" id="backlogPallets" min="0" placeholder="0" required>
-                </div>
-            </div>
-        </div>
-
-        <!-- PESSOAS -->
-        <div class="card">
-            <h3>Pessoas</h3>
-            <div class="field-row-3">
-                <div class="field">
-                    <label>AA's</label>
-                    <input type="number" id="qtdAAs" min="0" placeholder="0" required oninput="calcularAuto()">
-                </div>
-                <div class="field">
-                    <label>Diaristas</label>
-                    <input type="number" id="qtdDiaristas" min="0" placeholder="0" required oninput="calcularAuto()">
-                </div>
-                <div class="field">
-                    <label>Lider YB</label>
-                    <input type="number" id="qtdLiderYB" min="0" placeholder="0" required oninput="calcularAuto()">
-                </div>
-            </div>
-            <div class="tph-box">
-                <div class="lbl">TPH (Throughput por Hora)</div>
-                <div class="val" id="tphValor">--</div>
-                <div class="formula">Processed / ((AA x 345 + Diaristas x 420 + YB x 480) / 60)</div>
-            </div>
-        </div>
-
-        <!-- OBSERVACAO -->
-        <div class="card">
-            <h3>Observacao</h3>
-            <div class="field">
-                <label>Callouts / Observacoes</label>
-                <textarea id="observacao" rows="3" placeholder="Informe callouts, ausencias ou observacoes relevantes..."></textarea>
-            </div>
-        </div>
-
-        <button type="submit" class="btn-submit" id="btnSubmit">ENVIAR DADOS</button>
-    </form>
-
-    <div id="msg" class="msg"></div>
-
-    <script>
-    // ==============================================
-    // SUA URL (nao altere):
-    // ==============================================
-    var MINHA_URL = 'https://script.google.com/macros/s/AKfycbwL_9312RhpK_JNculKu_bCUiI662cTn2PXYrxZYoMA3NwAeJ5cxm8p38Ebk0aByT-Z/exec';
-    // ==============================================
-
-    // Verificar configuracao
-    if (MINHA_URL === 'COLOQUE_SUA_URL_AQUI') {
-        document.getElementById('aviso').style.display = 'block';
-    } else {
-        var avisoEl = document.getElementById('aviso');
-        avisoEl.className = 'aviso pronto';
-        avisoEl.textContent = 'Conectado! Pronto para enviar dados.';
-    }
-
-    // Data de HOJE (fuso horario local)
-    var hoje = new Date();
-    var ano = hoje.getFullYear();
-    var mes = String(hoje.getMonth() + 1).padStart(2, '0');
-    var dia = String(hoje.getDate()).padStart(2, '0');
-    document.getElementById('dataRef').value = ano + '-' + mes + '-' + dia;
-
-    // Tabela EDSP -> Responsavel
-    var RESPONSAVEIS = {
-        'ECB8': 'Vinicius',
-        'EGO8': 'Kimberly',
-        'EIJ8': 'Caio',
-        'EJO8': '',
-        'ELO8': '',
-        'EME8': '',
-        'EMR8': '',
-        'EOZ8': 'Bruno',
-        'ERS8': 'Kimberly',
-        'ESB8': '',
-        'ESE8': 'Ernesto',
-        'EUM8': 'Matuza',
-        'EVE8': 'Julio',
-        'EXS9': ''
-    };
-
-    function preencherResponsavel() {
-        var node = document.getElementById('node').value;
-        var resp = RESPONSAVEIS[node];
-        var campo = document.getElementById('responsavel');
-        if (resp && resp !== '') {
-            campo.value = resp;
-            campo.readOnly = true;
-            campo.style.background = '#F0F8E1';
-        } else {
-            campo.value = '';
-            campo.readOnly = false;
-            campo.style.background = '#FAFAFA';
-            campo.placeholder = 'Digite o nome do responsavel';
-        }
-    }
-
-    // CALCULO AUTOMATICO: Desvio + TPH
-    function calcularAuto() {
-        var forecast = Number(document.getElementById('forecast').value) || 0;
-        var processed = Number(document.getElementById('processed').value) || 0;
-        var elDesvio = document.getElementById('desvioForecast');
-
-        if (forecast > 0 && processed > 0) {
-            var desvio = (processed / forecast - 1) * 100;
-            elDesvio.value = (desvio >= 0 ? '+' : '') + desvio.toFixed(1) + '%';
-            elDesvio.style.color = desvio < 0 ? '#D32F2F' : '#2E7D32';
-        } else {
-            elDesvio.value = '--';
-            elDesvio.style.color = '#2E7D32';
-        }
-
-        var aas = Number(document.getElementById('qtdAAs').value) || 0;
-        var diaristas = Number(document.getElementById('qtdDiaristas').value) || 0;
-        var liderYB = Number(document.getElementById('qtdLiderYB').value) || 0;
-        var elTPH = document.getElementById('tphValor');
-
-        if (processed > 0 && (aas + diaristas + liderYB) > 0) {
-            var cap = ((aas * 345) + (diaristas * 420) + (liderYB * 480)) / 60;
-            var tph = processed / cap;
-            elTPH.textContent = tph.toFixed(2);
-            elTPH.style.color = tph >= 1 ? '#4CAF50' : '#FF5722';
-        } else {
-            elTPH.textContent = '--';
-            elTPH.style.color = 'white';
-        }
-    }
-
-    // ENVIO DOS DADOS
-    document.getElementById('formColeta').addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        if (MINHA_URL === 'COLOQUE_SUA_URL_AQUI') {
-            alert('Configure a URL primeiro!');
-            return;
-        }
-
-        var btn = document.getElementById('btnSubmit');
-        var msgEl = document.getElementById('msg');
-        btn.disabled = true;
-        btn.textContent = 'Enviando...';
-        msgEl.className = 'msg enviando';
-        msgEl.textContent = 'Enviando dados para a planilha...';
-
-        var forecast = Number(document.getElementById('forecast').value);
-        var processed = Number(document.getElementById('processed').value);
-        var aas = Number(document.getElementById('qtdAAs').value);
-        var diaristas = Number(document.getElementById('qtdDiaristas').value);
-        var liderYB = Number(document.getElementById('qtdLiderYB').value);
-        var desvio = forecast > 0 ? Math.round((processed / forecast - 1) * 10000) / 100 : 0;
-        var cap = ((aas * 345) + (diaristas * 420) + (liderYB * 480)) / 60;
-        var tph = cap > 0 ? Math.round((processed / cap) * 100) / 100 : 0;
-
-        var dados = {
-            timestamp: new Date().toISOString(),
-            dataRef: document.getElementById('dataRef').value,
-            node: document.getElementById('node').value,
-            responsavel: document.getElementById('responsavel').value,
-            forecast: forecast,
-            processed: processed,
-            desvioForecast: desvio,
-            horarioInicio: document.getElementById('horarioInicio').value,
-            otrVeiculos: Number(document.getElementById('otrVeiculos').value),
-            pacotesPiso: Number(document.getElementById('pacotesPiso').value),
-            wrongNode: Number(document.getElementById('wrongNode').value || 0),
-            qtdLanes: Number(document.getElementById('qtdLanes').value),
-            qtdVeiculos: Number(document.getElementById('qtdVeiculos').value),
-            veiculosForaCPT: Number(document.getElementById('veiculosForaCPT').value),
-            horarioFim: document.getElementById('horarioFim').value,
-            backlogShuttles: Number(document.getElementById('backlogShuttles').value),
-            backlogPallets: Number(document.getElementById('backlogPallets').value),
-            qtdAAs: aas,
-            qtdDiaristas: diaristas,
-            qtdLiderYB: liderYB,
-            tph: tph,
-            observacao: document.getElementById('observacao').value
-        };
-
-        // Envio via iframe
-        var nomeFrame = 'frame_' + Date.now();
-        var iframe = document.createElement('iframe');
-        iframe.name = nomeFrame;
-        iframe.style.display = 'none';
-        document.body.appendChild(iframe);
-
-        var form = document.createElement('form');
-        form.method = 'POST';
-        form.action = MINHA_URL;
-        form.target = nomeFrame;
-
-        var input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'payload';
-        input.value = JSON.stringify(dados);
-        form.appendChild(input);
-
-        document.body.appendChild(form);
-        form.submit();
-
-        setTimeout(function() {
-            msgEl.className = 'msg ok';
-            msgEl.textContent = 'Dados enviados! (' + dados.node + ' - ' + dados.dataRef + ')';
-
-            var limpar = ['forecast','processed','otrVeiculos','pacotesPiso','wrongNode','qtdLanes','qtdVeiculos','veiculosForaCPT','backlogShuttles','backlogPallets','qtdAAs','qtdDiaristas','qtdLiderYB'];
-            for (var i = 0; i < limpar.length; i++) {
-                document.getElementById(limpar[i]).value = '';
-            }
-            document.getElementById('horarioInicio').value = '';
-            document.getElementById('horarioFim').value = '';
-            document.getElementById('desvioForecast').value = '--';
-            document.getElementById('tphValor').textContent = '--';
-            document.getElementById('observacao').value = '';
-
-            btn.disabled = false;
-            btn.textContent = 'ENVIAR DADOS';
-
-            document.body.removeChild(iframe);
-            document.body.removeChild(form);
-        }, 3000);
-    });
-
-    // =============================================
-    // PWA - Service Worker + Instalacao
-    // =============================================
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./service-worker.js')
-        .then(function() { console.log('PWA ativo!'); })
-        .catch(function(err) { console.log('SW erro:', err); });
-    }
-
-    // Banner de instalacao (Android)
-    var deferredPrompt;
-    window.addEventListener('beforeinstallprompt', function(e) {
-        e.preventDefault();
-        deferredPrompt = e;
-        document.getElementById('installBanner').style.display = 'block';
-    });
-
-    document.getElementById('btnInstall').addEventListener('click', function() {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then(function(choiceResult) {
-                document.getElementById('installBanner').style.display = 'none';
-                deferredPrompt = null;
-            });
-        }
-    });
-    </script>
+    <div class="horario-item">
+      <div class="horario-nome">Indução</div>
+      <div class="horario-linha"><span class="horario-tipo">Planejado</span>
+        <input type="time" id="inducaoInicioPlano" oninput="calcHorario('inducao')">
+        <span class="horario-seta">→</span>
+        <input type="time" id="inducaoFimPlano" oninput="calcHorario('inducao')"></div>
+      <div class="horario-linha"><span class="horario-tipo">Realizado</span>
+        <input type="time" id="inducaoInicioReal" oninput="calcHorario('inducao')">
+        <span class="horario-seta">→</span>
+        <input type="time" id="inducaoFimReal" oninput="calcHorario('inducao')"></div>
+      <div class="horario-status" id="inducaoStatus"></div>
+    </div>
+    <div class="horario-item">
+      <div class="horario-nome">Stow</div>
+      <div class="horario-linha"><span class="horario-tipo">Planejado</span>
+        <input type="time" id="stowInicioPlano" oninput="calcHorario('stow')">
+        <span class="horario-seta">→</span>
+        <input type="time" id="stowFimPlano" oninput="calcHorario('stow')"></div>
+      <div class="horario-linha"><span class="horario-tipo">Realizado</span>
+        <input type="time" id="stowInicioReal" oninput="calcHorario('stow')">
+        <span class="horario-seta">→</span>
+        <input type="time" id="stowFimReal" oninput="calcHorario('stow')"></div>
+      <div class="horario-status" id="stowStatus"></div>
+    </div>
+    <div class="horario-item">
+      <div class="horario-nome">Descarregamento OTR</div>
+      <div class="horario-linha"><span class="horario-tipo">Planejado</span>
+        <input type="time" id="otrInicioPlano" oninput="calcHorario('otr')">
+        <span class="horario-seta">→</span>
+        <input type="time" id="otrFimPlano" oninput="calcHorario('otr')"></div>
+      <div class="horario-linha"><span class="horario-tipo">Realizado</span>
+        <input type="time" id="otrInicioReal" oninput="calcHorario('otr')">
+        <span class="horario-seta">→</span>
+        <input type="time" id="otrFimReal" oninput="calcHorario('otr')"></div>
+      <div class="horario-status" id="otrStatus"></div>
+    </div>
+    <div class="horario-item">
+      <div class="horario-nome">Carregamento</div>
+      <div class="horario-linha"><span class="horario-tipo">Planejado</span>
+        <input type="time" id="carregamentoInicioPlano" oninput="calcHorario('carregamento')">
+        <span class="horario-seta">→</span>
+        <input type="time" id="carregamentoFimPlano" oninput="calcHorario('carregamento')"></div>
+      <div class="horario-linha"><span class="horario-tipo">Realizado</span>
+        <input type="time" id="carregamentoInicioReal" oninput="calcHorario('carregamento')">
+        <span class="horario-seta">→</span>
+        <input type="time" id="carregamentoFimReal" oninput="calcHorario('carregamento')"></div>
+      <div class="horario-status" id="carregamentoStatus"></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>📦 Quantidades Operacionais</h3>
+    <div class="field-row">
+      <div class="field"><label>Pacotes Processados</label>
+        <input type="number" id="processed" min="0" placeholder="0" required oninput="calcularAuto()"></div>
+      <div class="field"><label>Forecast</label>
+        <input type="number" id="forecast" min="0" placeholder="0" required oninput="calcularAuto()"></div>
+    </div>
+    <div class="field"><label class="auto-label">Desvio Forecast × Real (%) — automático</label>
+      <input type="text" id="desvioForecast" class="auto-field" readonly placeholder="--"></div>
+    <div class="field-row">
+      <div class="field"><label>Pending Stow</label>
+        <input type="number" id="pendingStow" min="0" placeholder="0" required></div>
+      <div class="field"><label>Pacotes no Piso</label>
+        <input type="number" id="pacotesPiso" min="0" placeholder="0" required oninput="calcularAuto()"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Wrong Node</label>
+        <input type="number" id="wrongNode" min="0" placeholder="0"></div>
+      <div class="field"><label>Qtd. Lanes</label>
+        <input type="number" id="qtdLanes" min="0" placeholder="0" required></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Veículos OTR</label>
+        <input type="number" id="qtdVeiculosOTR" min="0" placeholder="0" required></div>
+      <div class="field"><label>Qtd. Caminhões</label>
+        <input type="number" id="qtdCaminhoes" min="0" placeholder="0" required oninput="calcularAuto()"></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>⚡ TPH Puro</h3>
+    <div class="field"><label>Horas Trabalhadas <span style="color:#999;font-weight:400;">(decimal — ex: 5.75)</span></label>
+      <input type="number" id="horasTrabalhadas" min="0" step="0.01" placeholder="0.00" required oninput="calcularAuto()"></div>
+    <div class="kpi-box" id="tphBox">
+      <div class="kpi-label">TPH Puro (Throughput por Hora)</div>
+      <div class="kpi-val" id="tphValor">--</div>
+      <div class="kpi-formula">Pacotes ÷ Horas Trabalhadas</div>
+      <div class="kpi-detail" id="tphDetail">Pacotes: 0 | Horas: 0</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>👥 Associados</h3>
+    <div class="field-row">
+      <div class="field"><label>AAs Efetivos</label>
+        <input type="number" id="qtdAAsEfetivos" min="0" placeholder="0" required oninput="calcularAuto()"></div>
+      <div class="field"><label>AAs Intermitentes</label>
+        <input type="number" id="qtdAAsIntermitentes" min="0" placeholder="0" required oninput="calcularAuto()"></div>
+    </div>
+    <div class="field"><label class="auto-label">Total de AAs — automático</label>
+      <input type="text" id="totalAAs" class="auto-field" readonly placeholder="--"></div>
+  </div>
+  <div class="card">
+    <h3>🎯 CPT Success</h3>
+    <div class="field"><label>Caminhões com Atraso no Carregamento CPT</label>
+      <input type="number" id="caminhoesAtrasoCPT" min="0" placeholder="0" required oninput="calcularAuto()"></div>
+    <div class="kpi-box" id="cptBox">
+      <div class="kpi-label">CPT Success</div>
+      <div class="kpi-val" id="cptValor">--</div>
+      <div class="kpi-formula">(Processados − Piso) ÷ Processados × 100</div>
+      <div class="kpi-detail" id="cptDetail">Processados: 0 | No Piso: 0</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>🕐 OTD</h3>
+    <div class="kpi-box" id="otdBox" style="margin-bottom:14px;">
+      <div class="kpi-label">OTD Success</div>
+      <div class="kpi-val" id="otdValor">--</div>
+      <div class="kpi-formula">(Caminhões − Atraso CPT) ÷ Caminhões × 100</div>
+      <div class="kpi-detail" id="otdDetail">Caminhões: 0 | Atraso: 0</div>
+    </div>
+    <div class="field"><label>OTD no Horário?</label>
+      <div class="toggle-row">
+        <button type="button" class="toggle-btn" id="btnSim" onclick="setOTD(true)">✅ Sim</button>
+        <button type="button" class="toggle-btn" id="btnNao" onclick="setOTD(false)">❌ Não</button>
+      </div>
+    </div>
+    <div class="atraso-section" id="atrasoSection">
+      <div class="field"><label>Horas de Atraso</label>
+        <select id="horasAtrasoOTD">
+          <option value="">Selecione...</option>
+          <option value="< 1h">&lt; 1h</option>
+          <option value="1h - 2h">1h – 2h</option>
+          <option value="2h - 4h">2h – 4h</option>
+          <option value="> 4h">&gt; 4h</option>
+        </select>
+      </div>
+      <div class="field"><label>Justificativa do Atraso OTD</label>
+        <textarea id="justificativaOTD" placeholder="Descreva o motivo do atraso no OTD..."></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>📋 Observações</h3>
+    <div class="sub-label">Call Outs — Tipo de Falha</div>
+    <div class="checkbox-group">
+      <label class="checkbox-item" id="lblFalhaUTR">
+        <input type="checkbox" id="falhaUTR" onchange="toggleCheck('lblFalhaUTR')"> Falha UTR</label>
+      <label class="checkbox-item" id="lblFalhaOTR">
+        <input type="checkbox" id="falhaOTR" onchange="toggleCheck('lblFalhaOTR')"> Falha OTR</label>
+      <label class="checkbox-item" id="lblFalhaPUDO">
+        <input type="checkbox" id="falhaPUDO" onchange="toggleCheck('lblFalhaPUDO')"> Falha PUDO</label>
+      <label class="checkbox-item" id="lblFalhaMM">
+        <input type="checkbox" id="falhaMM" onchange="toggleCheck('lblFalhaMM')"> Falha MM</label>
+    </div>
+    <div class="field"><label>Detalhes / Observações Adicionais</label>
+      <textarea id="observacoes" rows="3" placeholder="Descreva call outs relevantes da operação..."></textarea></div>
+    <div class="field safety" style="margin-top:12px;"><label>⚠️ Ocorrências e Incidentes WHS Safety</label>
+      <textarea id="whsSafety" rows="2" placeholder="Relate ocorrências de segurança, incidentes ou near misses..."></textarea></div>
+  </div>
+  <button type="submit" class="btn-submit" id="btnSubmit">✓ ENVIAR RELATÓRIO</button>
+</form>
+<div id="msg" class="msg"></div>
+<script>
+var MINHA_URL = 'https://script.google.com/macros/s/AKfycbwL_9312RhpK_JNculKu_bCUiI662cTn2PXYrxZYoMA3NwAeJ5cxm8p38Ebk0aByT-Z/exec';
+(function() {
+  var el = document.getElementById('aviso');
+  if (MINHA_URL === 'COLOQUE_SUA_URL_AQUI') { el.textContent = 'CONFIGURE a URL.'; }
+  else { el.className = 'aviso pronto'; el.textContent = 'Conectado! Pronto para enviar.'; }
+})();
+(function() {
+  var d = new Date();
+  document.getElementById('dataRef').value = d.getFullYear() + '-' +
+    String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+})();
+var RESPONSAVEIS = {
+  'ECB8':'Vinicius','EGO8':'Kimberly','EIJ8':'Caio','EJO8':'','ELO8':'','EME8':'','EMR8':'',
+  'EOZ8':'Bruno','ERS8':'Kimberly','ESB8':'','ESE8':'Ernesto','EUM8':'Matuza','EVE8':'Julio','EXS9':''
+};
+function preencherResponsavel() {
+  var node = document.getElementById('node').value;
+  var resp = RESPONSAVEIS[node] || '';
+  var campo = document.getElementById('responsavel');
+  if (resp) { campo.value=resp; campo.readOnly=true; campo.style.background='#F0F8E1'; }
+  else { campo.value=''; campo.readOnly=false; campo.style.background='#FAFAFA'; campo.placeholder='Digite o nome do responsável'; }
+}
+function calcularAuto() {
+  var processed=Number(document.getElementById('processed').value)||0;
+  var forecast=Number(document.getElementById('forecast').value)||0;
+  var piso=Number(document.getElementById('pacotesPiso').value)||0;
+  var horas=Number(document.getElementById('horasTrabalhadas').value)||0;
+  var caminhoes=Number(document.getElementById('qtdCaminhoes').value)||0;
+  var atrasoCPT=Number(document.getElementById('caminhoesAtrasoCPT').value)||0;
+  var aasEf=Number(document.getElementById('qtdAAsEfetivos').value)||0;
+  var aasInt=Number(document.getElementById('qtdAAsIntermitentes').value)||0;
+  var el=document.getElementById('desvioForecast');
+  if (forecast>0&&processed>0) { var dev=(processed/forecast-1)*100; el.value=(dev>=0?'+':'')+dev.toFixed(1)+'%'; el.style.color=dev<0?'#D32F2F':'#2E7D32'; } else { el.value='--'; }
+  document.getElementById('totalAAs').value=(aasEf+aasInt)>0?(aasEf+aasInt):'--';
+  var tphEl=document.getElementById('tphValor'); var tphBox=document.getElementById('tphBox');
+  document.getElementById('tphDetail').textContent='Pacotes: '+processed+' | Horas: '+horas;
+  if (processed>0&&horas>0) { var tph=processed/horas; tphEl.textContent=tph.toFixed(1); tphBox.className='kpi-box'+(tph>=60?' ok':tph>=40?' warn':' bad'); } else { tphEl.textContent='--'; tphBox.className='kpi-box'; }
+  var cptEl=document.getElementById('cptValor'); var cptBox=document.getElementById('cptBox');
+  document.getElementById('cptDetail').textContent='Processados: '+processed+' | No Piso: '+piso;
+  if (processed>0) { var cpt=((processed-piso)/processed)*100; cptEl.textContent=cpt.toFixed(1)+'%'; cptBox.className='kpi-box'+(cpt>=98?' ok':cpt>=90?' warn':' bad'); } else { cptEl.textContent='--'; cptBox.className='kpi-box'; }
+  var otdEl=document.getElementById('otdValor'); var otdBox=document.getElementById('otdBox');
+  document.getElementById('otdDetail').textContent='Caminhões: '+caminhoes+' | Atraso: '+atrasoCPT;
+  if (caminhoes>0) { var otd=((caminhoes-atrasoCPT)/caminhoes)*100; otdEl.textContent=otd.toFixed(1)+'%'; otdBox.className='kpi-box'+(otd>=95?' ok':otd>=80?' warn':' bad'); } else { otdEl.textContent='--'; otdBox.className='kpi-box'; }
+}
+function toMin(t) { if (!t) return null; var p=t.split(':'); return parseInt(p[0])*60+parseInt(p[1]); }
+function diffMin(plano,real) { var p=toMin(plano),r=toMin(real); if (p===null||r===null) return null; var d=r-p; if (d>720) d-=1440; return d; }
+function fmtMin(m) { if (m===null||isNaN(m)) return '--'; var a=Math.abs(m); return (Math.floor(a/60)>0?Math.floor(a/60)+'h ':'')+(a%60)+'min'; }
+function calcHorario(a) {
+  var iniP=document.getElementById(a+'InicioPlano').value, fimP=document.getElementById(a+'FimPlano').value;
+  var iniR=document.getElementById(a+'InicioReal').value, fimR=document.getElementById(a+'FimReal').value;
+  var out=[];
+  if (iniR&&fimR) { var dur=toMin(fimR)-toMin(iniR); if (dur<0) dur+=1440; out.push('<span class="st-dur">'+fmtMin(dur)+'</span>'); }
+  if (iniP&&iniR) { var di=diffMin(iniP,iniR); out.push(di<=0?'<span class="st-ok">✅ Início no horário</span>':'<span class="st-bad">🔴 Início +'+fmtMin(di)+'</span>'); }
+  if (fimP&&fimR) { var df=diffMin(fimP,fimR); out.push(df<=0?'<span class="st-ok">✅ Fim no horário</span>':'<span class="st-bad">🔴 Fim +'+fmtMin(df)+'</span>'); }
+  document.getElementById(a+'Status').innerHTML=out.join('');
+}
+var otdNoHorario=null;
+function setOTD(sim) {
+  otdNoHorario=sim;
+  document.getElementById('btnSim').className='toggle-btn'+(sim?' active-sim':'');
+  document.getElementById('btnNao').className='toggle-btn'+(!sim?' active-nao':'');
+  document.getElementById('atrasoSection').className='atraso-section'+(!sim?' visible':'');
+}
+function toggleCheck(id) { var l=document.getElementById(id); l.className='checkbox-item'+(l.querySelector('input').checked?' checked':''); }
+document.getElementById('formColeta').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var btn=document.getElementById('btnSubmit'); var msgEl=document.getElementById('msg');
+  btn.disabled=true; btn.textContent='Enviando...'; msgEl.className='msg enviando'; msgEl.textContent='Enviando relatório...';
+  function tv(id){return document.getElementById(id).value;} function nv(id){return Number(document.getElementById(id).value)||0;} function bv(id){return document.getElementById(id).checked;}
+  var processed=nv('processed'),forecast=nv('forecast'),piso=nv('pacotesPiso'),horas=nv('horasTrabalhadas');
+  var caminhoes=nv('qtdCaminhoes'),atrasoCPT=nv('caminhoesAtrasoCPT'),aasEf=nv('qtdAAsEfetivos'),aasInt=nv('qtdAAsIntermitentes');
+  var dados={timestamp:new Date().toISOString(),dataRef:tv('dataRef'),node:tv('node'),responsavel:tv('responsavel'),
+    turnoInicioPlano:tv('turnoInicioPlano'),turnoFimPlano:tv('turnoFimPlano'),turnoInicioReal:tv('turnoInicioReal'),turnoFimReal:tv('turnoFimReal'),
+    inducaoInicioPlano:tv('inducaoInicioPlano'),inducaoFimPlano:tv('inducaoFimPlano'),inducaoInicioReal:tv('inducaoInicioReal'),inducaoFimReal:tv('inducaoFimReal'),
+    stowInicioPlano:tv('stowInicioPlano'),stowFimPlano:tv('stowFimPlano'),stowInicioReal:tv('stowInicioReal'),stowFimReal:tv('stowFimReal'),
+    otrInicioPlano:tv('otrInicioPlano'),otrFimPlano:tv('otrFimPlano'),otrInicioReal:tv('otrInicioReal'),otrFimReal:tv('otrFimReal'),
+    carregamentoInicioPlano:tv('carregamentoInicioPlano'),carregamentoFimPlano:tv('carregamentoFimPlano'),carregamentoInicioReal:tv('carregamentoInicioReal'),carregamentoFimReal:tv('carregamentoFimReal'),
+    processed:processed,forecast:forecast,desvioForecast:forecast>0?Math.round((processed/forecast-1)*10000)/100:0,
+    pendingStow:nv('pendingStow'),pacotesPiso:piso,wrongNode:nv('wrongNode'),qtdLanes:nv('qtdLanes'),
+    qtdVeiculosOTR:nv('qtdVeiculosOTR'),qtdCaminhoes:caminhoes,horasTrabalhadas:horas,
+    tph:horas>0?Math.round(processed/horas*10)/10:0,
+    qtdAAsEfetivos:aasEf,qtdAAsIntermitentes:aasInt,totalAAs:aasEf+aasInt,
+    caminhoesAtrasoCPT:atrasoCPT,cptSuccess:processed>0?Math.round((processed-piso)/processed*1000)/10:0,
+    otdSuccess:caminhoes>0?Math.round((caminhoes-atrasoCPT)/caminhoes*1000)/10:0,
+    otdNoHorario:otdNoHorario,horasAtrasoOTD:otdNoHorario===false?tv('horasAtrasoOTD'):'',justificativaOTD:otdNoHorario===false?tv('justificativaOTD'):'',
+    falhaUTR:bv('falhaUTR'),falhaOTR:bv('falhaOTR'),falhaPUDO:bv('falhaPUDO'),falhaMM:bv('falhaMM'),
+    observacoes:tv('observacoes'),whsSafety:tv('whsSafety'),formVersion:'wash-v2'};
+  var nomeFrame='frame_'+Date.now(); var iframe=document.createElement('iframe');
+  iframe.name=nomeFrame; iframe.style.display='none'; document.body.appendChild(iframe);
+  var form=document.createElement('form'); form.method='POST'; form.action=MINHA_URL; form.target=nomeFrame;
+  var inp=document.createElement('input'); inp.type='hidden'; inp.name='payload'; inp.value=JSON.stringify(dados);
+  form.appendChild(inp); document.body.appendChild(form); form.submit();
+  setTimeout(function() {
+    msgEl.className='msg ok'; msgEl.textContent='Relatório enviado! ('+dados.node+' — '+dados.dataRef+')';
+    ['processed','forecast','pendingStow','pacotesPiso','wrongNode','qtdLanes','qtdVeiculosOTR','qtdCaminhoes','horasTrabalhadas','qtdAAsEfetivos','qtdAAsIntermitentes','caminhoesAtrasoCPT'].forEach(function(id){document.getElementById(id).value='';});
+    ['turno','inducao','stow','otr','carregamento'].forEach(function(a){['InicioPlano','FimPlano','InicioReal','FimReal'].forEach(function(s){document.getElementById(a+s).value='';});document.getElementById(a+'Status').innerHTML='';});
+    ['desvioForecast','totalAAs'].forEach(function(id){document.getElementById(id).value='--';});
+    ['tphValor','cptValor','otdValor'].forEach(function(id){document.getElementById(id).textContent='--';});
+    ['observacoes','whsSafety','justificativaOTD'].forEach(function(id){document.getElementById(id).value='';});
+    ['falhaUTR','falhaOTR','falhaPUDO','falhaMM'].forEach(function(id){document.getElementById(id).checked=false;toggleCheck('lbl'+id.charAt(0).toUpperCase()+id.slice(1));});
+    otdNoHorario=null; document.getElementById('btnSim').className='toggle-btn'; document.getElementById('btnNao').className='toggle-btn'; document.getElementById('atrasoSection').className='atraso-section';
+    btn.disabled=false; btn.textContent='✓ ENVIAR RELATÓRIO';
+    document.body.removeChild(iframe); document.body.removeChild(form);
+  }, 3000);
+});
+if ('serviceWorker' in navigator) { navigator.serviceWorker.register('./service-worker.js').catch(function(){}); }
+var deferredPrompt;
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;document.getElementById('installBanner').style.display='block';});
+document.getElementById('btnInstall').addEventListener('click',function(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(function(){document.getElementById('installBanner').style.display='none';deferredPrompt=null;});}});
+</script>
 </body>
 </html>
-
-
