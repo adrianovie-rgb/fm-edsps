@@ -2,6 +2,10 @@ Fetched: https://raw.githubusercontent.com/adrianovie-rgb/fm-edsps/main/dashboar
 Content-Type: text/plain; charset=utf-8
 Tier: direct
 
+Fetched: https://raw.githubusercontent.com/adrianovie-rgb/fm-edsps/main/dashboard.html
+Content-Type: text/plain; charset=utf-8
+Tier: direct
+
 
 
 <!DOCTYPE html>
@@ -1694,128 +1698,233 @@ Tier: direct
         document.getElementById('relatorioOverlay').classList.remove('active');
     }
 
-    function kpiCard(icon, label, valor) {
-        return '<div style="background:white; border-radius:8px; padding:14px; text-align:center; box-shadow:0 2px 6px rgba(0,0,0,0.08); border-top:3px solid #FF9900;">' +
-            '<div style="font-size:20px; margin-bottom:4px;">' + icon + '</div>' +
-            '<div style="font-size:10px; color:#666; text-transform:uppercase; font-weight:600; margin-bottom:6px;">' + label + '</div>' +
-            '<div style="font-size:22px; font-weight:700; color:#232F3E;">' + valor + '</div>' +
-            '</div>';
-    }
-
     function gerarRelatorio() {
         var inicio = document.getElementById('relInicio').value;
         var fim = document.getElementById('relFim').value;
-
         if (!inicio || !fim) { alert('Selecione o período completo.'); return; }
-
         fecharModalRelatorio();
 
-        var dados = TODOS_DADOS.filter(function(d) {
-            return d.dataRef >= inicio && d.dataRef <= fim;
-        });
-
+        var dados = TODOS_DADOS.filter(function(d) { return d.dataRef >= inicio && d.dataRef <= fim; });
         if (dados.length === 0) { alert('Nenhum dado encontrado para o período selecionado.'); return; }
-
-        // KPIs regionais
-        var totalProcessed = soma(dados, 'processed');
-        var totalForecast = soma(dados, 'forecast');
-        var desvioMedio = totalForecast > 0 ? ((totalProcessed - totalForecast) / totalForecast * 100) : 0;
-        var avgTPH = media(dados, 'tph');
-        var totalForaCPT = soma(dados, 'veiculosForaCPT');
-        var totalOTR = soma(dados, 'otrVeiculos');
-        var totalWN = soma(dados, 'wrongNode');
-        var totalEquipe = soma(dados, 'qtdAAs') + soma(dados, 'qtdDiaristas') + soma(dados, 'qtdLiderYB');
-        var totalBacklog = soma(dados, 'backlogShuttles');
-        var cptPct = totalOTR > 0 ? ((totalOTR - totalForaCPT) / totalOTR * 100) : 0;
-        var desvioColor = desvioMedio >= 0 ? '#2E7D32' : '#C62828';
-
-        // Breakdown por node
-        var nodes = {};
-        dados.forEach(function(d) {
-            if (!nodes[d.node]) nodes[d.node] = {
-                node: d.node, responsavel: d.responsavel || '-',
-                processed: 0, forecast: 0, tphSoma: 0, tphQtd: 0,
-                equipe: 0, wrongNode: 0, foraCPT: 0, otr: 0, dias: 0
-            };
-            var n = nodes[d.node];
-            n.processed += (d.processed || 0);
-            n.forecast += (d.forecast || 0);
-            n.tphSoma += (d.tph || 0);
-            n.tphQtd += 1;
-            n.equipe += (d.qtdAAs || 0) + (d.qtdDiaristas || 0) + (d.qtdLiderYB || 0);
-            n.wrongNode += (d.wrongNode || 0);
-            n.foraCPT += (d.veiculosForaCPT || 0);
-            n.otr += (d.otrVeiculos || 0);
-            n.dias += 1;
-        });
-
-        var linhasNodes = Object.keys(nodes).sort().map(function(key) {
-            var n = nodes[key];
-            var dev = n.forecast > 0 ? ((n.processed - n.forecast) / n.forecast * 100) : 0;
-            var tphMed = n.tphQtd > 0 ? (n.tphSoma / n.tphQtd) : 0;
-            var cpt = n.otr > 0 ? ((n.otr - n.foraCPT) / n.otr * 100) : 0;
-            var devColor = dev >= 0 ? '#2E7D32' : '#C62828';
-            var cptColor = cpt >= 95 ? '#2E7D32' : cpt >= 85 ? '#E65100' : '#C62828';
-            var bgRow = Object.keys(nodes).sort().indexOf(key) % 2 === 0 ? '#fff' : '#F9F9F9';
-            return '<tr style="background:' + bgRow + ';">' +
-                '<td style="font-weight:700; padding:9px 12px; border-bottom:1px solid #eee;">' + n.node + '</td>' +
-                '<td style="padding:9px 8px; border-bottom:1px solid #eee; text-align:center;">' + n.responsavel + '</td>' +
-                '<td style="padding:9px 8px; border-bottom:1px solid #eee; text-align:center;">' + n.dias + '</td>' +
-                '<td style="padding:9px 8px; border-bottom:1px solid #eee; text-align:center;">' + n.processed.toLocaleString('pt-BR') + '</td>' +
-                '<td style="padding:9px 8px; border-bottom:1px solid #eee; text-align:center;">' + n.forecast.toLocaleString('pt-BR') + '</td>' +
-                '<td style="padding:9px 8px; border-bottom:1px solid #eee; text-align:center; color:' + devColor + '; font-weight:700;">' + (dev >= 0 ? '+' : '') + dev.toFixed(1) + '%</td>' +
-                '<td style="padding:9px 8px; border-bottom:1px solid #eee; text-align:center;">' + tphMed.toFixed(2) + '</td>' +
-                '<td style="padding:9px 8px; border-bottom:1px solid #eee; text-align:center;">' + Math.round(n.equipe / (n.dias || 1)) + '</td>' +
-                '<td style="padding:9px 8px; border-bottom:1px solid #eee; text-align:center;">' + n.wrongNode + '</td>' +
-                '<td style="padding:9px 8px; border-bottom:1px solid #eee; text-align:center; color:' + cptColor + '; font-weight:700;">' + cpt.toFixed(1) + '%</td>' +
-                '</tr>';
-        }).join('');
 
         var geradoEm = new Date().toLocaleString('pt-BR');
 
-        var html = '<div style="max-width:920px; margin:0 auto; font-family:Arial,sans-serif; font-size:13px; color:#232F3E;">' +
-            // Header
-            '<div style="background:#232F3E; color:white; padding:22px 28px; border-radius:12px; margin-bottom:20px;">' +
-            '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">' +
-            '<div><h1 style="font-size:20px; margin:0 0 4px 0;">FM EDSPs — Regional DF-SUL</h1>' +
-            '<p style="font-size:12px; margin:0; opacity:0.8;">Relatório Operacional | Período: ' + inicio + ' a ' + fim + '</p></div>' +
-            '<div style="text-align:right; font-size:11px; opacity:0.7;">Gerado em: ' + geradoEm + '<br>' + dados.length + ' registros</div>' +
-            '</div></div>' +
-            // KPI cards
-            '<div style="display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:20px;">' +
-            kpiCard('📦', 'Processed Total', totalProcessed.toLocaleString('pt-BR')) +
-            kpiCard('📊', 'Desvio Forecast', (desvioMedio >= 0 ? '+' : '') + desvioMedio.toFixed(1) + '%') +
-            kpiCard('⚡', 'TPH Médio Regional', avgTPH.toFixed(2)) +
-            kpiCard('✅', 'CPT%', cptPct.toFixed(1) + '%') +
-            kpiCard('🚛', 'OTR Total', totalOTR.toString()) +
-            kpiCard('⚠️', 'Wrong Node', totalWN.toString()) +
-            kpiCard('👥', 'Equipe Total', totalEquipe.toString()) +
-            kpiCard('📋', 'Backlog Shuttles', totalBacklog.toString()) +
-            '</div>' +
-            // Tabela breakdown
-            '<div style="background:white; border-radius:10px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.08);">' +
-            '<div style="background:#FF9900; padding:12px 18px;"><h3 style="margin:0; font-size:14px; color:#232F3E;">Breakdown por Estação</h3></div>' +
-            '<div style="overflow-x:auto;">' +
-            '<table style="width:100%; border-collapse:collapse; font-size:12px;">' +
-            '<thead><tr style="background:#F5F5F5;">' +
-            '<th style="padding:10px 12px; text-align:left; border-bottom:2px solid #ddd; font-weight:700; color:#232F3E;">EDSP</th>' +
-            '<th style="padding:10px 8px; border-bottom:2px solid #ddd; text-align:center;">Resp.</th>' +
-            '<th style="padding:10px 8px; border-bottom:2px solid #ddd; text-align:center;">Dias</th>' +
-            '<th style="padding:10px 8px; border-bottom:2px solid #ddd; text-align:center;">Processed</th>' +
-            '<th style="padding:10px 8px; border-bottom:2px solid #ddd; text-align:center;">Forecast</th>' +
-            '<th style="padding:10px 8px; border-bottom:2px solid #ddd; text-align:center;">Desvio%</th>' +
-            '<th style="padding:10px 8px; border-bottom:2px solid #ddd; text-align:center;">TPH Médio</th>' +
-            '<th style="padding:10px 8px; border-bottom:2px solid #ddd; text-align:center;">AA Médio/dia</th>' +
-            '<th style="padding:10px 8px; border-bottom:2px solid #ddd; text-align:center;">Wrong Node</th>' +
-            '<th style="padding:10px 8px; border-bottom:2px solid #ddd; text-align:center;">CPT%</th>' +
-            '</tr></thead>' +
-            '<tbody>' + linhasNodes + '</tbody>' +
-            '</table></div></div></div>';
+        // ── Visão Geral (todos os dados) ──────────────────────────────────
+        var totalProcessed = soma(dados, 'processed');
+        var totalForecast  = soma(dados, 'forecast');
+        var desvioGeral    = totalForecast > 0 ? ((totalProcessed - totalForecast) / totalForecast * 100) : 0;
+        var avgTPH         = media(dados, 'tph');
+        var totalWN        = soma(dados, 'wrongNode');
+        var totalAAs       = soma(dados, 'qtdAAs') + soma(dados, 'qtdDiaristas') + soma(dados, 'qtdLiderYB');
+        var totalOTR       = soma(dados, 'otrVeiculos');
+        var totalForaCPT   = soma(dados, 'veiculosForaCPT');
+        var totalVeic      = soma(dados, 'qtdVeiculos');
+        var totalPiso      = soma(dados, 'pacotesPiso');
+
+        // CPT% = (processed - piso) / processed | OTD% = (qtdVeiculos - foraCPT) / qtdVeiculos
+        var cptGeralPct = totalProcessed > 0 ? ((totalProcessed - totalPiso) / totalProcessed * 100) : 0;
+        var otdGeralPct = totalVeic > 0 ? ((totalVeic - totalForaCPT) / totalVeic * 100) : 0;
+
+        // sites únicos
+        var sitesSet = {};
+        dados.forEach(function(d) { sitesSet[d.node] = true; });
+        var sitesTotal = Object.keys(sitesSet).length;
+
+        // OTD/CPT no horário (% de estações com OTD/CPT = 100%)
+        var nodeStats = {};
+        dados.forEach(function(d) {
+            if (!nodeStats[d.node]) nodeStats[d.node] = { cpt100: true, otd100: true, processados: 0, piso: 0, veic: 0, foraCPT: 0 };
+            var ns = nodeStats[d.node];
+            ns.processados += (d.processed || 0);
+            ns.piso        += (d.pacotesPiso || 0);
+            ns.veic        += (d.qtdVeiculos || 0);
+            ns.foraCPT     += (d.veiculosForaCPT || 0);
+        });
+        var nodeKeys = Object.keys(nodeStats);
+        var cptOK = 0, otdOK = 0;
+        nodeKeys.forEach(function(k) {
+            var ns = nodeStats[k];
+            var cpt = ns.processados > 0 ? ((ns.processados - ns.piso) / ns.processados * 100) : 0;
+            var otd = ns.veic > 0 ? ((ns.veic - ns.foraCPT) / ns.veic * 100) : 0;
+            if (cpt >= 99) cptOK++;
+            if (otd >= 99) otdOK++;
+        });
+
+        // ── Regional DF Sul ──────────────────────────────────────────────
+        var REGIONAL = ['ECB8','EGO8','EIJ8','EJO8','ELO8','EME8','EMR8','EOZ8','ERS8','ESB8','ESE8','EUM8','EVE8','EXS9'];
+        var dadosReg = dados.filter(function(d) { return REGIONAL.indexOf(d.node) !== -1; });
+
+        var regProcessed = soma(dadosReg, 'processed');
+        var regForecast  = soma(dadosReg, 'forecast');
+        var regDesvio    = regForecast > 0 ? ((regProcessed - regForecast) / regForecast * 100) : 0;
+        var regTPH       = media(dadosReg, 'tph');
+        var regAAs       = soma(dadosReg, 'qtdAAs') + soma(dadosReg, 'qtdDiaristas') + soma(dadosReg, 'qtdLiderYB');
+        var regWN        = soma(dadosReg, 'wrongNode');
+        var regVeic      = soma(dadosReg, 'qtdVeiculos');
+        var regForaCPT   = soma(dadosReg, 'veiculosForaCPT');
+        var regPiso      = soma(dadosReg, 'pacotesPiso');
+        var regProc      = soma(dadosReg, 'processed');
+
+        var regCPT = regProc > 0 ? ((regProc - regPiso) / regProc * 100) : 0;
+        var regOTD = regVeic > 0 ? ((regVeic - regForaCPT) / regVeic * 100) : 0;
+
+        var regSitesSet = {};
+        dadosReg.forEach(function(d) { regSitesSet[d.node] = true; });
+        var regSites = Object.keys(regSitesSet).length;
+
+        // Relatórios submetidos (registros únicos por node no período)
+        var relSub = 0;
+        var relNodes = {};
+        dadosReg.forEach(function(d) { relNodes[d.node + '_' + d.dataRef] = true; });
+        relSub = Object.keys(relNodes).length;
+
+        // Breakdown por estação (regional)
+        var nodes = {};
+        dadosReg.forEach(function(d) {
+            if (!nodes[d.node]) nodes[d.node] = {
+                node: d.node, responsavel: d.responsavel || '-',
+                processed: 0, forecast: 0, tphSoma: 0, tphQtd: 0,
+                aas: 0, wrongNode: 0, foraCPT: 0, veic: 0, piso: 0
+            };
+            var n = nodes[d.node];
+            n.processed += (d.processed || 0);
+            n.forecast  += (d.forecast || 0);
+            n.tphSoma   += (d.tph || 0);
+            n.tphQtd    += 1;
+            n.aas       += (d.qtdAAs || 0) + (d.qtdDiaristas || 0) + (d.qtdLiderYB || 0);
+            n.wrongNode += (d.wrongNode || 0);
+            n.foraCPT   += (d.veiculosForaCPT || 0);
+            n.veic      += (d.qtdVeiculos || 0);
+            n.piso      += (d.pacotesPiso || 0);
+        });
+
+        var linhasNodes = Object.keys(nodes).sort().map(function(key, idx) {
+            var n = nodes[key];
+            var dev    = n.forecast > 0 ? ((n.processed - n.forecast) / n.forecast * 100) : 0;
+            var tphMed = n.tphQtd > 0 ? (n.tphSoma / n.tphQtd) : 0;
+            var cpt    = n.processed > 0 ? ((n.processed - n.piso) / n.processed * 100) : 0;
+            var otd    = n.veic > 0 ? ((n.veic - n.foraCPT) / n.veic * 100) : 0;
+
+            var devStr   = (dev >= 0 ? '+' : '') + dev.toFixed(1) + '%';
+            var devColor = dev >= 0 ? '#E65100' : (dev < -10 ? '#C62828' : '#232F3E');
+            var tphColor = tphMed < 10 ? '#C62828' : (tphMed < 30 ? '#E65100' : '#232F3E');
+            var tphStr   = tphMed.toFixed(1);
+            var cptStr   = cpt.toFixed(1) + '%';
+            var otdStr   = otd.toFixed(1) + '%';
+            var cptColor = cpt >= 100 ? '#2E7D32' : (cpt >= 90 ? '#E65100' : '#C62828');
+            var otdColor = otd >= 100 ? '#2E7D32' : (otd >= 90 ? '#E65100' : '#C62828');
+            var bg = idx % 2 === 0 ? '#FFFFFF' : '#F9F9F9';
+
+            return '<tr style="background:' + bg + ';">' +
+                '<td style="padding:8px 12px; font-weight:700; border-bottom:1px solid #eee;">' + n.node + '</td>' +
+                '<td style="padding:8px 10px; text-align:center; border-bottom:1px solid #eee;">' + n.processed.toLocaleString('pt-BR') + '</td>' +
+                '<td style="padding:8px 10px; text-align:center; border-bottom:1px solid #eee;">' + n.forecast.toLocaleString('pt-BR') + '</td>' +
+                '<td style="padding:8px 10px; text-align:center; border-bottom:1px solid #eee; font-weight:700; color:' + devColor + ';">' + devStr + '</td>' +
+                '<td style="padding:8px 10px; text-align:center; border-bottom:1px solid #eee; font-weight:700; color:' + tphColor + ';">' + tphStr + '</td>' +
+                '<td style="padding:8px 10px; text-align:center; border-bottom:1px solid #eee;">' + n.aas + '</td>' +
+                '<td style="padding:8px 10px; text-align:center; border-bottom:1px solid #eee;">' + n.wrongNode + '</td>' +
+                '<td style="padding:8px 10px; text-align:center; border-bottom:1px solid #eee; font-weight:700; color:' + cptColor + ';">' + cptStr + '</td>' +
+                '<td style="padding:8px 10px; text-align:center; border-bottom:1px solid #eee; font-weight:700; color:' + otdColor + ';">' + otdStr + '</td>' +
+                '</tr>';
+        }).join('');
+
+        // ── Helpers inline ────────────────────────────────────────────────
+        function kpi(valor, label, color) {
+            var c = color || '#232F3E';
+            return '<div style="background:#fff; border-radius:6px; padding:16px 12px; text-align:center; border:1px solid #e8e8e8; min-width:100px;">' +
+                '<div style="font-size:22px; font-weight:700; color:' + c + '; margin-bottom:4px;">' + valor + '</div>' +
+                '<div style="font-size:10px; color:#888; text-transform:uppercase; letter-spacing:0.5px;">' + label + '</div>' +
+                '</div>';
+        }
+        function metricRow(items) {
+            var cells = items.map(function(item) {
+                return '<div style="flex:1; padding:6px 0;">' +
+                    '<span style="font-size:12px; color:#444; font-weight:500;">' + item.label + ':</span>&nbsp;' +
+                    '<span style="font-size:12px; font-weight:700; color:' + (item.color || '#232F3E') + ';">' + item.valor + '</span></div>';
+            }).join('');
+            return '<div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; padding:12px; background:#F9F9F9; border-radius:6px;">' + cells + '</div>';
+        }
+
+        // ── Build HTML ────────────────────────────────────────────────────
+        var html = '<div style="max-width:900px; margin:0 auto; font-family:-apple-system,BlinkMacSystemFont,Arial,sans-serif; font-size:13px; color:#232F3E;">' +
+
+        // Header
+        '<div style="background:#1B2631; color:white; padding:20px 24px; border-radius:10px; margin-bottom:20px;">' +
+        '<div style="display:flex; align-items:center; gap:10px; margin-bottom:4px;">' +
+        '<span style="font-size:18px;">📊</span>' +
+        '<h1 style="margin:0; font-size:17px; font-weight:700;">Relatório Consolidado — Wash Report</h1></div>' +
+        '<p style="margin:0; font-size:11px; color:#aaa;">Período: ' + inicio + ' a ' + fim + ' &nbsp;|&nbsp; Gerado em: ' + geradoEm + '</p>' +
+        '</div>' +
+
+        // ── Visão Geral ──
+        '<div style="background:#fff; border-radius:10px; padding:20px; margin-bottom:16px; border:1px solid #e8e8e8;">' +
+        '<div style="display:flex; align-items:center; gap:8px; margin-bottom:14px; padding-bottom:10px; border-bottom:2px solid #F0F0F0;">' +
+        '<span style="font-size:15px;">📋</span><h2 style="margin:0; font-size:14px; font-weight:700;">Visão Geral Consolidada</h2></div>' +
+        '<div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:10px;">' +
+        kpi(totalProcessed.toLocaleString('pt-BR'), 'Pacotes Processados', '#E65100') +
+        kpi(avgTPH.toFixed(1), 'TPH Puro Médio', '#E65100') +
+        kpi((desvioGeral >= 0 ? '+' : '') + desvioGeral.toFixed(1) + '%', 'Desvio Forecast', '#E65100') +
+        kpi(sitesTotal, 'Sites com Dados') +
+        '</div>' +
+        '<div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:14px;">' +
+        kpi(totalAAs, 'Total Associados') +
+        kpi(totalWN, 'Wrong Node', '#C62828') +
+        kpi(cptGeralPct.toFixed(1) + '%', 'CPT Success Médio', cptGeralPct >= 99 ? '#2E7D32' : '#E65100') +
+        kpi(otdGeralPct.toFixed(1) + '%', 'OTD Success Médio', otdGeralPct >= 99 ? '#2E7D32' : '#E65100') +
+        '</div>' +
+        '<div style="font-size:12px; line-height:2;">' +
+        '<div><span style="font-weight:600;">OTD no Horário</span>: ' + otdOK + '/' + nodeKeys.length + ' estações (' + Math.round(otdOK/nodeKeys.length*100) + '%)</div>' +
+        '<div><span style="font-weight:600;">CPT no Horário</span>: ' + cptOK + '/' + nodeKeys.length + ' estações (' + Math.round(cptOK/nodeKeys.length*100) + '%)</div>' +
+        '</div>' +
+        '</div>' +
+
+        // ── Regional DF Sul ──
+        '<div style="background:#fff; border-radius:10px; overflow:hidden; border:1px solid #e8e8e8;">' +
+        '<div style="background:#232F3E; padding:14px 20px; display:flex; align-items:center; gap:8px;">' +
+        '<span style="background:#FF9900; width:12px; height:12px; border-radius:50%; display:inline-block;"></span>' +
+        '<h2 style="margin:0; font-size:14px; font-weight:700; color:white;">Regional: DF Sul <span style="font-weight:400; font-size:12px; color:#aaa;">(' + regSites + ' sites com dados)</span></h2>' +
+        '</div>' +
+        '<div style="padding:18px 20px;">' +
+        '<div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:14px;">' +
+        kpi(regProcessed.toLocaleString('pt-BR'), 'Pacotes', '#E65100') +
+        kpi(regTPH.toFixed(1), 'TPH Puro Médio', '#E65100') +
+        kpi((regDesvio >= 0 ? '+' : '') + regDesvio.toFixed(1) + '%', 'Desvio Forecast', '#E65100') +
+        kpi(regAAs, 'Associados') +
+        '</div>' +
+        metricRow([
+            { label: 'CPT Success Médio', valor: regCPT.toFixed(1) + '%', color: regCPT >= 99 ? '#2E7D32' : '#E65100' },
+            { label: 'OTD Success Médio', valor: regOTD.toFixed(1) + '%', color: regOTD >= 99 ? '#2E7D32' : '#E65100' },
+            { label: 'Wrong Node', valor: regWN.toString() },
+            { label: 'Relatórios', valor: relSub.toString() }
+        ]) +
+
+        // Breakdown table
+        '<div style="margin-top:16px;">' +
+        '<div style="display:flex; align-items:center; gap:6px; margin-bottom:10px;">' +
+        '<span style="color:#FF9900; font-size:13px;">●</span>' +
+        '<span style="font-size:13px; font-weight:700;">Breakdown por Estação</span>' +
+        '</div>' +
+        '<div style="overflow-x:auto;">' +
+        '<table style="width:100%; border-collapse:collapse; font-size:12px;">' +
+        '<thead><tr style="background:#F5F5F5;">' +
+        '<th style="padding:9px 12px; text-align:left; font-weight:700; font-size:11px; color:#444; text-transform:uppercase; letter-spacing:0.5px; border-bottom:2px solid #ddd;">SITE</th>' +
+        '<th style="padding:9px 10px; text-align:center; font-weight:700; font-size:11px; color:#444; text-transform:uppercase; border-bottom:2px solid #ddd;">PACOTES</th>' +
+        '<th style="padding:9px 10px; text-align:center; font-weight:700; font-size:11px; color:#444; text-transform:uppercase; border-bottom:2px solid #ddd;">FORECAST</th>' +
+        '<th style="padding:9px 10px; text-align:center; font-weight:700; font-size:11px; color:#444; text-transform:uppercase; border-bottom:2px solid #ddd;">DESVIO</th>' +
+        '<th style="padding:9px 10px; text-align:center; font-weight:700; font-size:11px; color:#444; text-transform:uppercase; border-bottom:2px solid #ddd;">TPH PURO</th>' +
+        '<th style="padding:9px 10px; text-align:center; font-weight:700; font-size:11px; color:#444; text-transform:uppercase; border-bottom:2px solid #ddd;">AAs</th>' +
+        '<th style="padding:9px 10px; text-align:center; font-weight:700; font-size:11px; color:#444; text-transform:uppercase; border-bottom:2px solid #ddd;">WRONG NODE</th>' +
+        '<th style="padding:9px 10px; text-align:center; font-weight:700; font-size:11px; color:#444; text-transform:uppercase; border-bottom:2px solid #ddd;">CPT%</th>' +
+        '<th style="padding:9px 10px; text-align:center; font-weight:700; font-size:11px; color:#444; text-transform:uppercase; border-bottom:2px solid #ddd;">OTD%</th>' +
+        '</tr></thead>' +
+        '<tbody>' + linhasNodes + '</tbody>' +
+        '</table></div></div></div></div></div>';
 
         document.getElementById('relatorioConteudo').innerHTML = html;
         document.getElementById('relatorioOverlay').classList.add('active');
         document.getElementById('relatorioOverlay').scrollTop = 0;
     }
+
 
     if ('serviceWorker' in navigator) {
 
@@ -1878,5 +1987,6 @@ Tier: direct
 </body>
 
 </html>
+
 
 
