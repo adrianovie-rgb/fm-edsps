@@ -1,4 +1,4 @@
-var CACHE_NAME = 'fm-edsps-v2';
+var CACHE_NAME = 'fm-edsps-v3';
 var urlsToCache = [
   './',
   './index.html',
@@ -29,6 +29,7 @@ self.addEventListener('activate', function(event) {
       );
     })
   );
+  return self.clients.claim();
 });
 
 self.addEventListener('fetch', function(event) {
