@@ -1579,7 +1579,7 @@ Tier: direct
 
                 '<td class="' + desvioClass + '">' + (Number(d.desvioForecast) >= 0 ? '+' : '') + Number(d.desvioForecast).toFixed(1) + '%</td>' +
 
-                '<td>' + (d.horarioInicio || '-') + '</td>' +
+                '<td>' + formatHora(d.horarioInicio) + '</td>' +
 
                 '<td>' + (d.otrVeiculos || 0) + '</td>' +
 
@@ -1593,7 +1593,7 @@ Tier: direct
 
                 '<td>' + (d.veiculosForaCPT || 0) + '</td>' +
 
-                '<td>' + (d.horarioFim || '-') + '</td>' +
+                '<td>' + formatHora(d.horarioFim) + '</td>' +
 
                 '<td>' + (d.backlogShuttles || 0) + '</td>' +
 
@@ -1672,6 +1672,21 @@ Tier: direct
     }
 
 
+
+    function formatHora(val) {
+        if (!val) return '-';
+        var s = String(val);
+        // "2026-05-29T08:30:00" ou "08:30:00" ou "8:30 AM" → extrai HH:MM
+        var m = s.match(/(\d{1,2}):(\d{2})/);
+        if (m) {
+            var h = m[1].padStart(2,'0');
+            // corrige AM/PM se presente
+            if (/PM/i.test(s) && h !== '12') h = String(parseInt(h)+12).padStart(2,'0');
+            if (/AM/i.test(s) && h === '12') h = '00';
+            return h + ':' + m[2];
+        }
+        return s.slice(0,5); // fallback: primeiros 5 chars
+    }
 
     function media(arr, campo) { return arr.length > 0 ? arr.reduce(function(s, d) { return s + (d[campo] || 0); }, 0) / arr.length : 0; }
 
