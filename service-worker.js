@@ -1,4 +1,4 @@
-var CACHE_NAME = 'fm-edsps-v3';
+var CACHE_NAME = 'fm-edsps-v4';
 var urlsToCache = [
   './',
   './index.html',
