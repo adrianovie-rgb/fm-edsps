@@ -917,13 +917,15 @@ Tier: direct
 
                     <th>Bkl Pall.</th>
 
-                    <th>AA's</th>
+                    <th>AAs Efet.</th>
 
-                    <th>Diar.</th>
-
-                    <th>YB</th>
+                    <th>AAs Interm.</th>
 
                     <th>TPH</th>
+
+                    <th>CPT%</th>
+
+                    <th>OTD%</th>
 
                     <th>Obs.</th>
 
@@ -1271,7 +1273,7 @@ Tier: direct
 
         var totalForaCPT = soma(dados, 'veiculosForaCPT');
 
-        var totalEquipe = soma(dados, 'qtdAAs') + soma(dados, 'qtdDiaristas') + soma(dados, 'qtdLiderYB');
+        var totalEquipe = (soma(dados, 'qtdAAsEfetivos') || soma(dados, 'qtdAAs')) + (soma(dados, 'qtdAAsIntermitentes') || soma(dados, 'qtdDiaristas'));
 
         var avgTPH = media(dados, 'tph');
 
@@ -1449,11 +1451,11 @@ Tier: direct
 
             if (!nodes[d.node]) nodes[d.node] = { aas: 0, diar: 0, yb: 0, qtd: 0 };
 
-            nodes[d.node].aas += d.qtdAAs;
+            nodes[d.node].aas += (d.qtdAAsEfetivos || d.qtdAAs || 0);
 
-            nodes[d.node].diar += d.qtdDiaristas;
+            nodes[d.node].diar += (d.qtdAAsIntermitentes || d.qtdDiaristas || 0);
 
-            nodes[d.node].yb += d.qtdLiderYB;
+            // yb removed
 
             nodes[d.node].qtd += 1;
 
@@ -1557,9 +1559,9 @@ Tier: direct
 
             var desvioClass = Number(d.desvioForecast) >= 0 ? 'pos' : 'neg';
 
-            var obs = d.observacao ? d.observacao.substring(0, 30) : '';
+            var obs = (d.observacoes || d.observacao) ? (d.observacoes || d.observacao).substring(0, 30) : '';
 
-            var temCallout = d.observacao && d.observacao.trim() !== '';
+            var temCallout = (d.observacoes || d.observacao) && (d.observacoes || d.observacao).trim() !== '';
 
             var rowClass = temCallout ? ' class="has-callout"' : '';
 
@@ -1599,13 +1601,15 @@ Tier: direct
 
                 '<td>' + (d.backlogPallets || 0) + '</td>' +
 
-                '<td>' + (d.qtdAAs || 0) + '</td>' +
+                '<td>' + (d.qtdAAsEfetivos || d.qtdAAs || 0) + '</td>' +
 
-                '<td>' + (d.qtdDiaristas || 0) + '</td>' +
-
-                '<td>' + (d.qtdLiderYB || 0) + '</td>' +
+                '<td>' + (d.qtdAAsIntermitentes || d.qtdDiaristas || 0) + '</td>' +
 
                 '<td>' + (d.tph || 0) + '</td>' +
+
+                '<td>' + (typeof d.cptSuccess !== 'undefined' ? Number(d.cptSuccess).toFixed(1) + '%' : '-') + '</td>' +
+
+                '<td>' + (typeof d.otdSuccess !== 'undefined' ? Number(d.otdSuccess).toFixed(1) + '%' : '-') + '</td>' +
 
                 '<td class="obs-cell" title="' + (d.observacao || '') + '">' + (temCallout ? '📢 ' : '') + obs + '</td>' +
 
@@ -1627,7 +1631,7 @@ Tier: direct
 
         document.getElementById('modalTitle').textContent = '📢 Callout - ' + d.node;
 
-        document.getElementById('modalObsText').textContent = d.observacao;
+        document.getElementById('modalObsText').textContent = d.observacoes || d.observacao || '';
 
         document.getElementById('modalInfo').innerHTML =
 
@@ -1730,7 +1734,7 @@ Tier: direct
         var desvioGeral    = totalForecast > 0 ? ((totalProcessed - totalForecast) / totalForecast * 100) : 0;
         var avgTPH         = media(dados, 'tph');
         var totalWN        = soma(dados, 'wrongNode');
-        var totalAAs       = soma(dados, 'qtdAAs') + soma(dados, 'qtdDiaristas') + soma(dados, 'qtdLiderYB');
+        var totalAAs       = (soma(dados, 'qtdAAsEfetivos') || soma(dados, 'qtdAAs')) + (soma(dados, 'qtdAAsIntermitentes') || soma(dados, 'qtdDiaristas'));
         var totalOTR       = soma(dados, 'otrVeiculos');
         var totalForaCPT   = soma(dados, 'veiculosForaCPT');
         var totalVeic      = soma(dados, 'qtdVeiculos');
@@ -1773,7 +1777,7 @@ Tier: direct
         var regForecast  = soma(dadosReg, 'forecast');
         var regDesvio    = regForecast > 0 ? ((regProcessed - regForecast) / regForecast * 100) : 0;
         var regTPH       = media(dadosReg, 'tph');
-        var regAAs       = soma(dadosReg, 'qtdAAs') + soma(dadosReg, 'qtdDiaristas') + soma(dadosReg, 'qtdLiderYB');
+        var regAAs       = (soma(dadosReg, 'qtdAAsEfetivos') || soma(dadosReg, 'qtdAAs')) + (soma(dadosReg, 'qtdAAsIntermitentes') || soma(dadosReg, 'qtdDiaristas'));
         var regWN        = soma(dadosReg, 'wrongNode');
         var regVeic      = soma(dadosReg, 'qtdVeiculos');
         var regForaCPT   = soma(dadosReg, 'veiculosForaCPT');
