@@ -845,9 +845,9 @@ Tier: direct
 
             <div class="icon">📋</div>
 
-            <div class="label">Backlog Shuttles</div>
+            <div class="label">Pending Stow</div>
 
-            <div class="valor" id="kpiBacklog">--</div>
+            <div class="valor" id="kpiPendingStow">--</div>
 
             <div class="sub">total no periodo</div>
 
@@ -897,7 +897,9 @@ Tier: direct
 
                     <th>Desvio %</th>
 
-                    <th>Inicio</th>
+                    <th>H.Ini</th>
+
+                    <th>H.Fim</th>
 
                     <th>OTR</th>
 
@@ -911,11 +913,7 @@ Tier: direct
 
                     <th>Fora CPT</th>
 
-                    <th>Fim</th>
-
-                    <th>Bkl Shut.</th>
-
-                    <th>Bkl Pall.</th>
+                    <th>Pend.Stow</th>
 
                     <th>AAs Efet.</th>
 
@@ -926,6 +924,10 @@ Tier: direct
                     <th>CPT%</th>
 
                     <th>OTD%</th>
+
+                    <th>WHS</th>
+
+                    <th>Falhas</th>
 
                     <th>Obs.</th>
 
@@ -1255,13 +1257,13 @@ Tier: direct
 
             document.getElementById('kpiTPH').textContent = '--';
 
-            document.getElementById('kpiBacklog').textContent = '--';
+            document.getElementById('kpiPendingStow').textContent = '--';
 
             document.getElementById('kpiOTR').textContent = '--';
 
             document.getElementById('kpiWrongNode').textContent = '--';
 
-            document.getElementById('tabelaNodes').innerHTML = '<tr><td colspan="22">Nenhum dado encontrado.</td></tr>';
+            document.getElementById('tabelaNodes').innerHTML = '<tr><td colspan="23">Nenhum dado encontrado.</td></tr>';
 
             return;
 
@@ -1271,13 +1273,13 @@ Tier: direct
 
         var avgDesvio = media(dados, 'desvioForecast');
 
-        var totalForaCPT = soma(dados, 'veiculosForaCPT');
+        var totalForaCPT = soma(dados, 'caminhoesAtrasoCPT') || soma(dados, 'veiculosForaCPT');
 
         var totalEquipe = (soma(dados, 'qtdAAsEfetivos') || soma(dados, 'qtdAAs')) + (soma(dados, 'qtdAAsIntermitentes') || soma(dados, 'qtdDiaristas'));
 
         var avgTPH = media(dados, 'tph');
 
-        var totalBacklog = soma(dados, 'backlogShuttles');
+        var totalPendingStow = soma(dados, 'pendingStow');
 
         var totalOTR = soma(dados, 'otrVeiculos');
 
@@ -1297,7 +1299,7 @@ Tier: direct
 
         document.getElementById('kpiTPH').textContent = avgTPH.toFixed(2);
 
-        document.getElementById('kpiBacklog').textContent = totalBacklog;
+        document.getElementById('kpiPendingStow').textContent = totalPendingStow;
 
         document.getElementById('kpiOTR').textContent = totalOTR;
 
@@ -1313,7 +1315,7 @@ Tier: direct
 
         renderChartEquipe(dados);
 
-        renderChartBacklog(dados);
+        renderChartFalhas(dados);
 
         renderTabela(dados);
 
@@ -1495,46 +1497,28 @@ Tier: direct
 
 
 
-    function renderChartBacklog(dados) {
-
+    function renderChartFalhas(dados) {
         var nodes = {};
-
         dados.forEach(function(d) {
-
-            if (!nodes[d.node]) nodes[d.node] = { shuttles: 0, pallets: 0 };
-
-            nodes[d.node].shuttles += (d.backlogShuttles || 0);
-
-            nodes[d.node].pallets += (d.backlogPallets || 0);
-
+            if (!nodes[d.node]) nodes[d.node] = { cpt: 0, otd: 0, qtd: 0 };
+            nodes[d.node].cpt += (typeof d.cptSuccess !== 'undefined' ? Number(d.cptSuccess) : 100);
+            nodes[d.node].otd += (typeof d.otdSuccess !== 'undefined' ? Number(d.otdSuccess) : 100);
+            nodes[d.node].qtd += 1;
         });
-
         var labels = Object.keys(nodes).sort();
-
         Highcharts.chart('chartBacklog', {
-
             chart: { type: 'column' },
-
-            title: { text: 'Backlog - Shuttles e Pallets', style: { fontSize: '12px' } },
-
+            title: { text: 'CPT% e OTD% médio por Node', style: { fontSize: '12px' } },
             xAxis: { categories: labels, labels: { style: { fontSize: '10px' } } },
-
-            yAxis: { title: { text: '' }, labels: { style: { fontSize: '10px' } } },
-
+            yAxis: { title: { text: '%' }, min: 0, max: 100, labels: { style: { fontSize: '10px' } } },
+            plotOptions: { column: { grouping: true } },
             series: [
-
-                { name: 'Shuttles', data: labels.map(function(n){ return nodes[n].shuttles; }), color: '#FF9900' },
-
-                { name: 'Pallets', data: labels.map(function(n){ return nodes[n].pallets; }), color: '#232F3E' }
-
+                { name: 'CPT%', data: labels.map(function(n){ return parseFloat((nodes[n].cpt/nodes[n].qtd).toFixed(1)); }), color: '#FF9900' },
+                { name: 'OTD%', data: labels.map(function(n){ return parseFloat((nodes[n].otd/nodes[n].qtd).toFixed(1)); }), color: '#232F3E' }
             ],
-
             credits: { enabled: false },
-
             legend: { itemStyle: { fontSize: '10px' } }
-
         });
-
     }
 
 
@@ -1561,7 +1545,7 @@ Tier: direct
 
             var obs = (d.observacoes || d.observacao) ? (d.observacoes || d.observacao).substring(0, 30) : '';
 
-            var temCallout = (d.observacoes || d.observacao) && (d.observacoes || d.observacao).trim() !== '';
+            var temCallout = (d.observacoes || d.observacao || d.justificativaOTD) && (d.observacoes || d.observacao || d.justificativaOTD).trim() !== '';
 
             var rowClass = temCallout ? ' class="has-callout"' : '';
 
@@ -1581,7 +1565,9 @@ Tier: direct
 
                 '<td class="' + desvioClass + '">' + (Number(d.desvioForecast) >= 0 ? '+' : '') + Number(d.desvioForecast).toFixed(1) + '%</td>' +
 
-                '<td>' + formatHora(d.horarioInicio) + '</td>' +
+                '<td>' + formatHora(d.turnoIniReal || d.horarioInicio) + '</td>' +
+
+                '<td>' + formatHora(d.turnoFimReal || d.horarioFim) + '</td>' +
 
                 '<td>' + (d.otrVeiculos || 0) + '</td>' +
 
@@ -1591,15 +1577,11 @@ Tier: direct
 
                 '<td>' + (d.qtdLanes || 0) + '</td>' +
 
-                '<td>' + (d.qtdVeiculos || 0) + '</td>' +
+                '<td>' + (d.qtdCaminhoes || d.qtdVeiculos || 0) + '</td>' +
 
-                '<td>' + (d.veiculosForaCPT || 0) + '</td>' +
+                '<td>' + (d.caminhoesAtrasoCPT || d.veiculosForaCPT || 0) + '</td>' +
 
-                '<td>' + formatHora(d.horarioFim) + '</td>' +
-
-                '<td>' + (d.backlogShuttles || 0) + '</td>' +
-
-                '<td>' + (d.backlogPallets || 0) + '</td>' +
+                '<td>' + (d.pendingStow || 0) + '</td>' +
 
                 '<td>' + (d.qtdAAsEfetivos || d.qtdAAs || 0) + '</td>' +
 
@@ -1611,7 +1593,11 @@ Tier: direct
 
                 '<td>' + (typeof d.otdSuccess !== 'undefined' ? Number(d.otdSuccess).toFixed(1) + '%' : '-') + '</td>' +
 
-                '<td class="obs-cell" title="' + (d.observacao || '') + '">' + (temCallout ? '📢 ' : '') + obs + '</td>' +
+                '<td>' + (d.whsSafety ? '✅' : '—') + '</td>' +
+
+                '<td>' + [d.falhaUTR?'UTR':'',d.falhaOTR?'OTR':'',d.falhaPUDO?'PUDO':'',d.falhaMM?'MM':''].filter(Boolean).join(',') + '</td>' +
+
+                '<td class="obs-cell" title="' + (d.observacoes || d.observacao || '') + '">' + (temCallout ? '📢 ' : '') + obs + '</td>' +
 
                 '<td><span class="badge ' + status.classe + '">' + status.texto + '</span></td>' +
 
@@ -1666,13 +1652,13 @@ Tier: direct
 
 
     function getStatus(d) {
-
-        if (d.veiculosForaCPT > 3 || d.desvioForecast < -10) return { texto: 'Critico', classe: 'badge-alert' };
-
-        if (d.veiculosForaCPT > 0 || d.desvioForecast < -5) return { texto: 'Atencao', classe: 'badge-warn' };
-
+        var foraCPT = d.caminhoesAtrasoCPT || d.veiculosForaCPT || 0;
+        var cpt = typeof d.cptSuccess !== 'undefined' ? Number(d.cptSuccess) : null;
+        var otd = typeof d.otdSuccess !== 'undefined' ? Number(d.otdSuccess) : null;
+        var temFalha = d.falhaUTR || d.falhaOTR || d.falhaPUDO || d.falhaMM;
+        if (foraCPT > 3 || (cpt !== null && cpt < 90) || d.desvioForecast < -10) return { texto: 'Critico', classe: 'badge-alert' };
+        if (foraCPT > 0 || (cpt !== null && cpt < 100) || (otd !== null && otd < 100) || temFalha || d.desvioForecast < -5) return { texto: 'Atencao', classe: 'badge-warn' };
         return { texto: 'OK', classe: 'badge-ok' };
-
     }
 
 
@@ -1736,8 +1722,8 @@ Tier: direct
         var totalWN        = soma(dados, 'wrongNode');
         var totalAAs       = (soma(dados, 'qtdAAsEfetivos') || soma(dados, 'qtdAAs')) + (soma(dados, 'qtdAAsIntermitentes') || soma(dados, 'qtdDiaristas'));
         var totalOTR       = soma(dados, 'otrVeiculos');
-        var totalForaCPT   = soma(dados, 'veiculosForaCPT');
-        var totalVeic      = soma(dados, 'qtdVeiculos');
+        var totalForaCPT   = soma(dados, 'caminhoesAtrasoCPT') || soma(dados, 'veiculosForaCPT');
+        var totalVeic      = soma(dados, 'qtdCaminhoes') || soma(dados, 'qtdVeiculos');
         var totalPiso      = soma(dados, 'pacotesPiso');
 
         // CPT% = (processed - piso) / processed | OTD% = (qtdVeiculos - foraCPT) / qtdVeiculos
@@ -1779,8 +1765,8 @@ Tier: direct
         var regTPH       = media(dadosReg, 'tph');
         var regAAs       = (soma(dadosReg, 'qtdAAsEfetivos') || soma(dadosReg, 'qtdAAs')) + (soma(dadosReg, 'qtdAAsIntermitentes') || soma(dadosReg, 'qtdDiaristas'));
         var regWN        = soma(dadosReg, 'wrongNode');
-        var regVeic      = soma(dadosReg, 'qtdVeiculos');
-        var regForaCPT   = soma(dadosReg, 'veiculosForaCPT');
+        var regVeic      = soma(dadosReg, 'qtdCaminhoes') || soma(dadosReg, 'qtdVeiculos');
+        var regForaCPT   = soma(dadosReg, 'caminhoesAtrasoCPT') || soma(dadosReg, 'veiculosForaCPT');
         var regPiso      = soma(dadosReg, 'pacotesPiso');
         var regProc      = soma(dadosReg, 'processed');
 
@@ -1810,10 +1796,10 @@ Tier: direct
             n.forecast  += (d.forecast || 0);
             n.tphSoma   += (d.tph || 0);
             n.tphQtd    += 1;
-            n.aas       += (d.qtdAAs || 0) + (d.qtdDiaristas || 0) + (d.qtdLiderYB || 0);
+            n.aas       += (d.qtdAAsEfetivos || d.qtdAAs || 0) + (d.qtdAAsIntermitentes || d.qtdDiaristas || 0);
             n.wrongNode += (d.wrongNode || 0);
-            n.foraCPT   += (d.veiculosForaCPT || 0);
-            n.veic      += (d.qtdVeiculos || 0);
+            n.foraCPT   += (d.caminhoesAtrasoCPT || d.veiculosForaCPT || 0);
+            n.veic      += (d.qtdCaminhoes || d.qtdVeiculos || 0);
             n.piso      += (d.pacotesPiso || 0);
         });
 
