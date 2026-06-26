@@ -826,7 +826,61 @@ document.getElementById('formColeta').addEventListener('submit',function(e){
 
   var btn=document.getElementById('btnSubmit'),msgEl=document.getElementById('msg');
 
-  btn.disabled=true;btn.textContent='Enviando...';msgEl.className='msg enviando';msgEl.textContent='Enviando relatorio...';
+  // ── Validação de campos obrigatórios ────────────────────────────────
+  var OBRIGATORIOS = [
+    {id:'dataRef',        label:'Data Referência'},
+    {id:'node',           label:'Site'},
+    {id:'responsavel',    label:'Responsável'},
+    {id:'turnoInicioPlano',  label:'Turno Início Planejado'},
+    {id:'turnoFimPlano',     label:'Turno Fim Planejado'},
+    {id:'turnoInicioReal',   label:'Turno Início Real'},
+    {id:'turnoFimReal',      label:'Turno Fim Real'},
+    {id:'inducaoInicioPlano',label:'Indução Início Planejado'},
+    {id:'inducaoFimPlano',   label:'Indução Fim Planejado'},
+    {id:'inducaoInicioReal', label:'Indução Início Real'},
+    {id:'inducaoFimReal',    label:'Indução Fim Real'},
+    {id:'stowInicioPlano',   label:'Stow Início Planejado'},
+    {id:'stowFimPlano',      label:'Stow Fim Planejado'},
+    {id:'stowInicioReal',    label:'Stow Início Real'},
+    {id:'stowFimReal',       label:'Stow Fim Real'},
+    {id:'otrInicioPlano',    label:'OTR Início Planejado'},
+    {id:'otrFimPlano',       label:'OTR Fim Planejado'},
+    {id:'otrInicioReal',     label:'OTR Início Real'},
+    {id:'otrFimReal',        label:'OTR Fim Real'},
+    {id:'carregamentoInicioPlano', label:'Carregamento Início Planejado'},
+    {id:'carregamentoFimPlano',    label:'Carregamento Fim Planejado'},
+    {id:'carregamentoInicioReal',  label:'Carregamento Início Real'},
+    {id:'carregamentoFimReal',     label:'Carregamento Fim Real'},
+    {id:'processed',      label:'Processed'},
+    {id:'forecast',       label:'Forecast'},
+    {id:'qtdCaminhoes',   label:'Qtd Caminhões'},
+    {id:'horasTrabalhadas',label:'Horas Trabalhadas'},
+    {id:'qtdAAsEfetivos', label:'AAs Efetivos'},
+    {id:'whsSafety',      label:'WHS Safety'}
+  ];
+  var campoVazio = null;
+  for (var vi=0; vi<OBRIGATORIOS.length; vi++) {
+    var el = document.getElementById(OBRIGATORIOS[vi].id);
+    if (!el) continue;
+    var v = el.value === undefined ? '' : String(el.value).trim();
+    if (v === '' || v === '0' && OBRIGATORIOS[vi].id === 'processed') {
+      campoVazio = OBRIGATORIOS[vi].label;
+      el.focus();
+      el.style.borderColor = '#C62828';
+      break;
+    }
+  }
+  if (campoVazio) {
+    msgEl.className = 'msg erro';
+    msgEl.textContent = 'Campo obrigatório não preenchido: ' + campoVazio;
+    // Remover destaque após 3s
+    setTimeout(function(){ var e2=document.getElementById(campoVazio); }, 3000);
+    return;
+  }
+  // Limpar bordas vermelhas ao passar na validação
+  OBRIGATORIOS.forEach(function(o){ var e2=document.getElementById(o.id); if(e2) e2.style.borderColor=''; });
+
+    btn.disabled=true;btn.textContent='Enviando...';msgEl.className='msg enviando';msgEl.textContent='Enviando relatorio...';
 
   function tv(id){return document.getElementById(id).value;}function nv(id){return Number(document.getElementById(id).value)||0;}function bv(id){return document.getElementById(id).checked;}
 
