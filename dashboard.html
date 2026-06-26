@@ -3454,15 +3454,11 @@ Tier: direct
 
 
 
-        // CPT%/OTD% — usa campos diretos quando disponíveis, fallback para cálculo
-        var _dadosComCPT = dados.filter(function(d){ return typeof d.cptSuccess !== 'undefined'; });
-        var cptGeralPct = _dadosComCPT.length > 0
-            ? media(_dadosComCPT, 'cptSuccess')
-            : (totalProcessed > 0 ? ((totalProcessed - totalPiso) / totalProcessed * 100) : 0);
-        var _dadosComOTD = dados.filter(function(d){ return typeof d.otdSuccess !== 'undefined'; });
-        var otdGeralPct = _dadosComOTD.length > 0
-            ? media(_dadosComOTD, 'otdSuccess')
-            : (totalVeic > 0 ? ((totalVeic - totalForaCPT) / totalVeic * 100) : 0);
+        // CPT% = (processed - piso) / processed | OTD% = (qtdVeiculos - foraCPT) / qtdVeiculos
+
+        var cptGeralPct = totalProcessed > 0 ? ((totalProcessed - totalPiso) / totalProcessed * 100) : 0;
+
+        var otdGeralPct = totalVeic > 0 ? ((totalVeic - totalForaCPT) / totalVeic * 100) : 0;
 
 
 
@@ -3490,9 +3486,9 @@ Tier: direct
 
             ns.piso        += (d.pacotesPiso || 0);
 
-            ns.veic        += (d.qtdCaminhoes || d.qtdVeiculos || 0);
+            ns.veic        += (d.qtdVeiculos || 0);
 
-            ns.foraCPT     += (d.caminhoesAtrasoCPT || d.veiculosForaCPT || 0);
+            ns.foraCPT     += (d.veiculosForaCPT || 0);
 
         });
 
