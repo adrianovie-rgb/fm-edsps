@@ -1,753 +1,1506 @@
 Fetched: https://raw.githubusercontent.com/adrianovie-rgb/fm-edsps/main/dashboard.html
+
 Content-Type: text/plain; charset=utf-8
+
 Tier: direct
 
+
+
 Fetched: https://raw.githubusercontent.com/adrianovie-rgb/fm-edsps/main/dashboard.html
+
 Content-Type: text/plain; charset=utf-8
+
 Tier: direct
+
+
+
+
 
 
 
 <!DOCTYPE html>
 
+
+
 <html lang="pt-BR">
+
+
 
 <head>
 
+
+
     <meta charset="UTF-8">
+
+
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 
+
+
     <meta name="apple-mobile-web-app-capable" content="yes">
+
+
 
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
+
+
     <meta name="theme-color" content="#232F3E">
+
+
 
     <title>FM EDSPs - Dashboard DF-SUL</title>
 
+
+
     <link rel="manifest" href="manifest.json">
+
+
 
     <link rel="apple-touch-icon" href="icon-192.png">
 
+
+
     <script src="https://code.highcharts.com/highcharts.js"></script>
+
+
 
     <style>
 
+
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
+
 
         body {
 
+
+
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+
 
             background: #F5F5F5;
 
+
+
             color: #232F3E;
 
+
+
             padding: 12px;
+
+
 
             -webkit-text-size-adjust: 100%;
 
+
+
         }
+
+
 
         .install-banner {
 
+
+
             display: none;
 
+
+
             background: #232F3E;
+
+
 
             color: white;
 
+
+
             padding: 12px 16px;
+
+
 
             border-radius: 10px;
 
+
+
             margin-bottom: 12px;
+
+
 
             text-align: center;
 
+
+
             font-size: 0.8em;
 
+
+
         }
+
+
 
         .install-banner button {
 
+
+
             background: #FF9900;
+
+
 
             color: #232F3E;
 
+
+
             border: none;
+
+
 
             padding: 8px 16px;
 
+
+
             border-radius: 8px;
+
+
 
             font-weight: 700;
 
+
+
             margin-top: 8px;
 
+
+
             cursor: pointer;
+
+
 
             font-size: 0.9em;
 
+
+
         }
+
+
 
         .install-banner button:active { opacity: 0.8; }
 
+
+
         .header {
+
+
 
             background: white;
 
+
+
             border-radius: 10px;
+
+
 
             padding: 14px 16px;
 
+
+
             margin-bottom: 12px;
 
+
+
             text-align: center;
+
+
 
             border-top: 4px solid #FF9900;
 
+
+
         }
+
+
 
         .header h1 { font-size: 1.1em; color: #232F3E; }
 
+
+
         .header h1 span { color: #FF9900; }
+
+
 
         .header .subtitle { font-size: 0.72em; color: #666; margin-top: 2px; }
 
+
+
         .header .update {
+
+
 
             font-size: 0.7em; color: #666;
 
+
+
             background: #FFF3E0; padding: 4px 10px; border-radius: 12px;
+
+
 
             display: inline-block; margin-top: 6px;
 
+
+
         }
+
+
 
         .filtros {
 
+
+
             background: white;
 
+
+
             border-radius: 10px;
+
+
 
             padding: 14px;
 
+
+
             margin-bottom: 12px;
+
+
 
             border-left: 4px solid #FF9900;
 
+
+
         }
+
+
 
         .filtros-row {
 
+
+
             display: flex;
+
+
 
             align-items: center;
 
+
+
             gap: 8px;
 
+
+
             flex-wrap: wrap;
+
+
 
             margin-bottom: 10px;
 
+
+
         }
+
+
 
         .filtros label {
 
+
+
             font-size: 0.75em;
+
+
 
             font-weight: 700;
 
+
+
             color: #232F3E;
 
+
+
         }
+
+
 
         .filtros input[type="date"] {
 
+
+
             padding: 8px 10px;
+
+
 
             border: 1.5px solid #D5D9D9;
 
+
+
             border-radius: 8px;
+
+
 
             font-size: 14px;
 
+
+
             flex: 1;
+
+
 
             min-width: 0;
 
+
+
         }
+
+
 
         .filtros input[type="date"]:focus {
 
+
+
             border-color: #FF9900;
+
+
 
             outline: none;
 
+
+
         }
+
+
 
         .filtros button {
 
+
+
             padding: 8px 14px;
+
+
 
             background: #FF9900;
 
+
+
             color: #232F3E;
+
+
 
             border: none;
 
+
+
             border-radius: 8px;
 
+
+
             font-weight: 700;
+
+
 
             font-size: 0.8em;
 
+
+
             cursor: pointer;
 
+
+
         }
+
+
 
         .filtros button:active { background: #E68A00; }
 
+
+
         .filtros .btn-limpar {
+
+
 
             background: #EAEDED;
 
+
+
             color: #555;
 
+
+
         }
+
+
 
         .checkbox-grid {
 
+
+
             display: flex;
+
+
 
             flex-wrap: wrap;
 
+
+
             gap: 6px;
+
+
 
             margin-top: 8px;
 
+
+
         }
+
+
 
         .checkbox-item {
 
+
+
             display: flex;
 
+
+
             align-items: center;
+
+
 
             gap: 3px;
 
+
+
             background: #F9F9F9;
+
+
 
             padding: 4px 8px;
 
+
+
             border-radius: 6px;
+
+
 
             border: 1px solid #E0E0E0;
 
+
+
             font-size: 0.72em;
+
+
 
             cursor: pointer;
 
+
+
         }
+
+
 
         .checkbox-item:hover { background: #FFF8E1; border-color: #FF9900; }
 
+
+
         .checkbox-item input { cursor: pointer; width: 14px; height: 14px; }
+
+
 
         .checkbox-item.todos { background: #232F3E; color: white; border-color: #232F3E; }
 
+
+
         .periodo-info {
+
+
 
             font-size: 0.72em; color: #666;
 
+
+
             margin-bottom: 12px; text-align: center;
+
+
 
             background: #FFF8E1; padding: 8px; border-radius: 8px;
 
+
+
         }
+
+
 
         .kpi-cards {
 
+
+
             display: grid;
+
+
 
             grid-template-columns: repeat(2, 1fr);
 
+
+
             gap: 10px;
+
+
 
             margin-bottom: 14px;
 
+
+
         }
+
+
 
         .kpi-card {
 
+
+
             background: white; border-radius: 10px; padding: 12px 10px;
+
+
 
             text-align: center; border-top: 3px solid #232F3E;
 
+
+
         }
+
+
 
         .kpi-card.destaque { border-top-color: #FF9900; }
 
+
+
         .kpi-card .icon { font-size: 1.2em; margin-bottom: 2px; }
+
+
 
         .kpi-card .label { font-size: 0.62em; color: #666; text-transform: uppercase; font-weight: 600; }
 
+
+
         .kpi-card .valor { font-size: 1.3em; font-weight: 700; color: #232F3E; margin: 2px 0; }
+
+
 
         .kpi-card .sub { font-size: 0.62em; color: #999; }
 
+
+
         .charts-grid {
 
+
+
             display: grid;
+
+
 
             grid-template-columns: 1fr;
 
+
+
             gap: 12px;
+
+
 
             margin-bottom: 14px;
 
+
+
         }
+
+
 
         .chart-box {
 
+
+
             background: white; border-radius: 10px; padding: 12px;
+
+
 
             min-height: 260px;
 
+
+
         }
+
+
 
         .chart-full {
 
+
+
             background: white; border-radius: 10px; padding: 12px;
+
+
 
             min-height: 260px; margin-bottom: 14px;
 
+
+
         }
+
+
 
         .table-section {
 
+
+
             background: white; border-radius: 10px; padding: 14px;
+
+
 
             margin-bottom: 14px; overflow-x: auto;
 
+
+
             -webkit-overflow-scrolling: touch;
 
+
+
         }
+
+
 
         .table-section h3 { color: #232F3E; margin-bottom: 10px; font-size: 0.9em; }
 
+
+
         table { width: 100%; border-collapse: collapse; font-size: 0.7em; min-width: 900px; }
+
+
 
         th {
 
+
+
             background: #232F3E; color: #FF9900; padding: 8px 6px;
+
+
 
             text-align: center; font-size: 0.72em; white-space: nowrap;
 
+
+
             position: sticky; top: 0;
 
+
+
         }
+
+
 
         td { padding: 7px 6px; text-align: center; border-bottom: 1px solid #EEE; white-space: nowrap; }
 
+
+
         tr:hover td { background: #FFF8E1; }
+
+
 
         tr.has-callout td { background: #FFF3E0; }
 
+
+
         tr.has-callout td:first-child { border-left: 4px solid #FF9900; }
+
+
 
         tr.has-callout { cursor: pointer; }
 
+
+
         tr.has-callout:hover td { background: #FFE0B2; }
+
+
 
         .badge { padding: 3px 8px; border-radius: 10px; font-weight: 600; font-size: 0.72em; }
 
+
+
         .badge-ok { background: #E8F5E9; color: #2E7D32; }
+
+
 
         .badge-warn { background: #FFF3E0; color: #E65100; }
 
+
+
         .badge-alert { background: #FFEBEE; color: #C62828; }
+
+
 
         .node-bold { font-weight: 700; }
 
+
+
         .pos { color: #2E7D32; font-weight: 700; }
+
+
 
         .neg { color: #C62828; font-weight: 700; }
 
+
+
         .obs-cell {
+
+
 
             max-width: 120px;
 
+
+
             overflow: hidden;
+
+
 
             text-overflow: ellipsis;
 
+
+
             white-space: nowrap;
 
+
+
             font-size: 0.7em;
+
+
 
             color: #555;
 
+
+
         }
+
+
 
         .btn-refresh {
 
+
+
             display: block;
+
+
 
             width: 100%;
 
+
+
             padding: 12px;
+
+
 
             background: #232F3E;
 
+
+
             color: #FF9900;
 
+
+
             border: none;
+
+
 
             border-radius: 10px;
 
+
+
             font-size: 0.85em;
+
+
 
             font-weight: 700;
 
+
+
             cursor: pointer;
+
+
 
             text-align: center;
 
+
+
             margin-bottom: 12px;
 
+
+
         }
+
+
 
         .btn-refresh:active { opacity: 0.8; }
 
+
+
         .modal-overlay {
+
+
 
             display: none;
 
+
+
             position: fixed;
+
+
 
             top: 0; left: 0; right: 0; bottom: 0;
 
+
+
             background: rgba(0,0,0,0.5);
+
+
 
             z-index: 9999;
 
+
+
             justify-content: center;
+
+
 
             align-items: center;
 
+
+
             padding: 20px;
 
+
+
         }
+
+
 
         .modal-overlay.active { display: flex; }
 
+
+
         .modal-box {
+
+
 
             background: white;
 
+
+
             border-radius: 12px;
+
+
 
             padding: 20px;
 
+
+
             max-width: 400px;
+
+
 
             width: 100%;
 
+
+
             max-height: 80vh;
+
+
 
             overflow-y: auto;
 
+
+
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
 
+
+
         }
+
+
 
         .modal-header {
 
+
+
             display: flex;
+
+
 
             justify-content: space-between;
 
+
+
             align-items: center;
 
+
+
             margin-bottom: 14px;
+
+
 
             padding-bottom: 10px;
 
+
+
             border-bottom: 2px solid #FF9900;
 
+
+
         }
+
+
 
         .modal-header h3 { font-size: 0.95em; color: #232F3E; }
 
+
+
         .modal-header .modal-close {
+
+
 
             background: #EAEDED;
 
+
+
             border: none;
+
+
 
             width: 30px; height: 30px;
 
+
+
             border-radius: 50%;
+
+
 
             font-size: 1.1em;
 
+
+
             cursor: pointer;
+
+
 
             display: flex;
 
+
+
             align-items: center;
+
+
 
             justify-content: center;
 
+
+
         }
+
+
 
         .modal-header .modal-close:active { background: #D5D9D9; }
 
+
+
         .modal-info {
+
+
 
             display: grid;
 
+
+
             grid-template-columns: 1fr 1fr;
+
+
 
             gap: 8px;
 
+
+
             margin-bottom: 14px;
 
+
+
         }
+
+
 
         .modal-info-item {
 
+
+
             padding: 6px 8px;
+
+
 
             background: #F9F9F9;
 
+
+
             border-radius: 6px;
 
+
+
         }
+
+
 
         .modal-info-item .mi-label {
 
+
+
             font-size: 0.65em;
+
+
 
             color: #888;
 
+
+
             text-transform: uppercase;
+
+
 
             font-weight: 600;
 
+
+
         }
+
+
 
         .modal-info-item .mi-value {
 
+
+
             font-size: 0.85em;
 
+
+
             font-weight: 700;
+
+
 
             color: #232F3E;
 
+
+
         }
+
+
 
         .modal-obs {
 
+
+
             background: #FFF8E1;
+
+
 
             border-left: 4px solid #FF9900;
 
+
+
             border-radius: 8px;
+
+
 
             padding: 12px;
 
+
+
         }
+
+
 
         .modal-obs .obs-label {
 
+
+
             font-size: 0.7em;
+
+
 
             color: #E65100;
 
+
+
             font-weight: 700;
+
+
 
             text-transform: uppercase;
 
+
+
             margin-bottom: 6px;
 
+
+
         }
+
+
 
         .modal-obs .obs-text {
 
+
+
             font-size: 0.85em;
+
+
 
             color: #333;
 
+
+
             line-height: 1.5;
+
+
 
             word-wrap: break-word;
 
+
+
         }
+
+
+
 
 
         .btn-relatorio {
+
             padding: 8px 14px; background: #232F3E; color: #FF9900;
+
             border: none; border-radius: 8px; font-weight: 700;
+
             font-size: 0.8em; cursor: pointer;
+
         }
+
         .btn-relatorio:active { opacity: 0.8; }
+
         .modal-relatorio-overlay {
+
             display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+
             background: rgba(0,0,0,0.5); z-index: 9998;
+
             justify-content: center; align-items: center; padding: 20px;
+
         }
+
         .modal-relatorio-overlay.active { display: flex; }
+
         .modal-relatorio-box {
+
             background: white; border-radius: 12px; padding: 22px;
+
             max-width: 380px; width: 100%;
+
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+
         }
+
         .modal-relatorio-box h3 { font-size: 1em; color: #232F3E; margin-bottom: 16px; border-bottom: 2px solid #FF9900; padding-bottom: 10px; }
+
         .modal-relatorio-box label { font-size: 0.78em; font-weight: 600; color: #555; display: block; margin-bottom: 4px; }
+
         .modal-relatorio-box input[type="date"] { width: 100%; padding: 10px 12px; border: 1.5px solid #D5D9D9; border-radius: 8px; font-size: 15px; margin-bottom: 12px; }
+
         .modal-relatorio-box input:focus { border-color: #FF9900; outline: none; }
+
         .modal-relatorio-btns { display: flex; gap: 8px; margin-top: 6px; }
+
         .modal-relatorio-btns button { flex: 1; padding: 11px; border: none; border-radius: 8px; font-weight: 700; font-size: 0.88em; cursor: pointer; }
+
         .btn-gerar { background: #FF9900; color: #232F3E; }
+
         .btn-cancelar { background: #EAEDED; color: #555; }
 
+
+
         .relatorio-overlay {
+
             display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+
             background: #F5F5F5; z-index: 100000; overflow-y: auto; padding: 20px;
+
         }
+
         .relatorio-overlay.active { display: block; }
+
         .relatorio-toolbar {
+
             display: flex; gap: 10px; justify-content: flex-end; margin-bottom: 20px;
+
         }
+
         .btn-imprimir {
+
             padding: 10px 20px; background: #FF9900; color: #232F3E;
+
             border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.9em;
+
         }
+
         .btn-fechar-rel {
+
             padding: 10px 20px; background: #EAEDED; color: #555;
+
             border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.9em;
+
         }
+
         @media print {
+
             body > *:not(.relatorio-overlay) { display: none !important; }
+
             .relatorio-overlay { display: block !important; position: static !important; padding: 0; }
+
             .relatorio-toolbar { display: none !important; }
+
         }
+
         @media (min-width: 768px) {
 
+
+
             .kpi-cards { grid-template-columns: repeat(4, 1fr); }
+
+
 
             .charts-grid { grid-template-columns: 1fr 1fr; }
 
+
+
         }
+
+
 
         @media (min-width: 1100px) {
 
+
+
             .kpi-cards { grid-template-columns: repeat(4, 1fr); }
+
+
 
             body { padding: 20px; }
 
+
+
         }
+
+
 
     </style>
 
+
+
 </head>
+
+
 
 <body>
 
 
 
+
+
+
+
     <div class="install-banner" id="installBanner">
+
+
 
         📲 Instale o Dashboard na sua tela inicial!
 
+
+
         <br>
+
+
 
         <button id="btnInstall">INSTALAR APP</button>
 
+
+
     </div>
+
+
+
+
 
 
 
     <div class="header">
 
+
+
         <h1>FM EDSPs — <span>Regional DF-SUL</span></h1>
+
+
 
         <p class="subtitle">Dashboard Operacional | Consolidado por Periodo</p>
 
+
+
         <div class="update" id="lastUpdate">Carregando...</div>
 
+
+
     </div>
+
+
+
+
 
 
 
     <div class="filtros">
 
+
+
         <div class="filtros-row">
+
+
 
             <label>Periodo:</label>
 
+
+
             <input type="date" id="dataInicio" title="Data inicio">
+
+
 
             <span style="color:#999; font-size:0.8em;">ate</span>
 
+
+
             <input type="date" id="dataFim" title="Data fim">
+
+
 
             <button onclick="aplicarFiltro()">Filtrar</button>
 
+
+
             <button class="btn-limpar" onclick="limparFiltro()">Limpar</button>
+
             <button class="btn-relatorio" onclick="abrirModalRelatorio()">&#x1F4C4; Gerar Relatorio PDF</button>
 
+
+
         </div>
+
+
 
         <div>
 
+
+
             <label>EDSPs:</label>
+
+
 
             <div class="checkbox-grid">
 
+
+
                 <label class="checkbox-item todos">
+
+
 
                     <input type="checkbox" id="chkTodos" checked onchange="toggleTodos()"> Todos
 
+
+
                 </label>
+
+
 
                 <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="ECB8" checked> ECB8</label>
 
+
+
                 <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="EGO8" checked> EGO8</label>
+
+
 
                 <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="EIJ8" checked> EIJ8</label>
 
+
+
                 <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="EJO8" checked> EJO8</label>
+
+
 
                 <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="ELO8" checked> ELO8</label>
 
+
+
                 <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="EME8" checked> EME8</label>
+
+
 
                 <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="EMR8" checked> EMR8</label>
 
+
+
                 <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="EOZ8" checked> EOZ8</label>
+
+
 
                 <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="ERS8" checked> ERS8</label>
 
+
+
                 <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="ESB8" checked> ESB8</label>
+
+
 
                 <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="ESE8" checked> ESE8</label>
 
+
+
                 <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="EUM8" checked> EUM8</label>
+
+
 
                 <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="EVE8" checked> EVE8</label>
 
+
+
                 <label class="checkbox-item"><input type="checkbox" class="chkEDSP" value="EXS9" checked> EXS9</label>
+
+
 
             </div>
 
+
+
         </div>
 
+
+
     </div>
+
+
+
+
 
 
 
@@ -755,119 +1508,239 @@ Tier: direct
 
 
 
+
+
+
+
     <div class="kpi-cards">
 
+
+
         <div class="kpi-card destaque">
+
+
 
             <div class="icon">📦</div>
 
+
+
             <div class="label">Total Processed</div>
+
+
 
             <div class="valor" id="kpiProcessed">--</div>
 
+
+
             <div class="sub">pacotes no periodo</div>
+
+
 
         </div>
 
+
+
         <div class="kpi-card">
+
+
 
             <div class="icon">📊</div>
 
+
+
             <div class="label">Desvio Forecast</div>
+
+
 
             <div class="valor" id="kpiDesvio">--</div>
 
+
+
             <div class="sub">media regional</div>
+
+
 
         </div>
 
+
+
         <div class="kpi-card">
+
+
 
             <div class="icon">🚚</div>
 
+
+
             <div class="label">Fora CPT</div>
+
+
 
             <div class="valor" id="kpiForaCPT">--</div>
 
+
+
             <div class="sub">Veículos no período</div>
 
+
+
         </div>
+
+
 
         <div class="kpi-card destaque">
 
+
+
             <div class="icon">⚡</div>
+
+
 
             <div class="label">TPH Medio</div>
 
+
+
             <div class="valor" id="kpiTPH">--</div>
+
+
 
             <div class="sub">throughput/hora</div>
 
+
+
         </div>
 
+
+
         <div class="kpi-card">
+
+
 
             <div class="icon">🚛</div>
 
+
+
             <div class="label">OTR Total</div>
+
+
 
             <div class="valor" id="kpiOTR">--</div>
 
+
+
             <div class="sub">Veículos coletados</div>
+
+
 
         </div>
 
+
+
         <div class="kpi-card">
+
+
 
             <div class="icon">⚠️</div>
 
+
+
             <div class="label">Wrong Node</div>
+
+
 
             <div class="valor" id="kpiWrongNode">--</div>
 
+
+
             <div class="sub">total no periodo</div>
+
+
 
         </div>
 
+
+
         <div class="kpi-card">
+
+
 
             <div class="icon">👥</div>
 
+
+
             <div class="label">Equipe Total</div>
+
+
 
             <div class="valor" id="kpiEquipe">--</div>
 
+
+
             <div class="sub">AA + Diaristas + YB</div>
 
+
+
         </div>
+
+
 
         <div class="kpi-card">
 
+
+
             <div class="icon">📋</div>
+
+
 
             <div class="label">Pending Stow</div>
 
+
+
             <div class="valor" id="kpiPendingStow">--</div>
+
+
 
             <div class="sub">total no periodo</div>
 
+
+
         </div>
 
+
+
     </div>
+
+
+
+
 
 
 
     <div class="charts-grid">
 
+
+
         <div class="chart-box" id="chartForecast"></div>
+
+
 
         <div class="chart-box" id="chartTPH"></div>
 
+
+
         <div class="chart-box" id="chartForaCPT"></div>
+
+
 
         <div class="chart-box" id="chartEquipe"></div>
 
+
+
     </div>
+
+
+
+
 
 
 
@@ -875,77 +1748,155 @@ Tier: direct
 
 
 
+
+
+
+
     <div class="table-section">
+
+
 
         <h3>Detalhamento por EDSP</h3>
 
+
+
         <table>
+
+
 
             <thead>
 
+
+
                 <tr>
+
+
 
                     <th>EDSP</th>
 
+
+
                     <th>Resp.</th>
+
+
 
                     <th>Data</th>
 
+
+
                     <th>Forecast</th>
+
+
 
                     <th>Processed</th>
 
+
+
                     <th>Desvio %</th>
+
+
 
                     <th>H.Ini</th>
 
+
+
                     <th>H.Fim</th>
+
+
 
                     <th>OTR</th>
 
+
+
                     <th>Piso</th>
+
+
 
                     <th>WN</th>
 
+
+
                     <th>Lanes</th>
+
+
 
                     <th>Veic. MM</th>
 
+
+
                     <th>Fora CPT</th>
+
+
 
                     <th>Pend.Stow</th>
 
+
+
                     <th>AAs Efet.</th>
+
+
 
                     <th>AAs Interm.</th>
 
+
+
                     <th>TPH</th>
+
+
 
                     <th>CPT%</th>
 
+
+
                     <th>OTD%</th>
+
+
 
                     <th>WHS</th>
 
+
+
                     <th>Falhas</th>
+
+
 
                     <th>Obs.</th>
 
+
+
                     <th>Status</th>
+
+
 
                 </tr>
 
+
+
             </thead>
+
+
 
             <tbody id="tabelaNodes">
 
+
+
                 <tr><td colspan="22">Aguardando dados...</td></tr>
+
+
 
             </tbody>
 
+
+
         </table>
 
+
+
     </div>
+
+
+
+
 
 
 
@@ -953,63 +1904,127 @@ Tier: direct
 
 
 
+
+
+
+
     <div class="modal-overlay" id="modalOverlay" onclick="fecharModal(event)">
+
+
 
         <div class="modal-box" onclick="event.stopPropagation()">
 
+
+
             <div class="modal-header">
+
+
 
                 <h3 id="modalTitle">📢 Callout</h3>
 
+
+
                 <button class="modal-close" onclick="fecharModal()">✕</button>
 
+
+
             </div>
+
+
 
             <div class="modal-info" id="modalInfo"></div>
 
+
+
             <div class="modal-obs">
+
+
 
                 <div class="obs-label">📋 Observacao / Callout</div>
 
+
+
                 <div class="obs-text" id="modalObsText"></div>
+
+
 
             </div>
 
+
+
         </div>
 
+
+
     </div>
+
+
+
+
+
+
 
 
 
 
 
      <!-- Modal seleção de período do relatório -->
+
     <div class="modal-relatorio-overlay" id="modalRelatorioOverlay" onclick="fecharModalRelatorio(event)">
+
         <div class="modal-relatorio-box" onclick="event.stopPropagation()">
+
             <h3>📄 Gerar Relatório PDF</h3>
+
             <label>Data Início</label>
+
             <input type="date" id="relInicio">
+
             <label>Data Fim</label>
+
             <input type="date" id="relFim">
+
             <div class="modal-relatorio-btns">
+
                 <button class="btn-gerar" onclick="gerarRelatorio()">Gerar</button>
+
                 <button class="btn-cancelar" onclick="fecharModalRelatorio()">Cancelar</button>
+
             </div>
+
         </div>
+
     </div>
 
+
+
     <!-- Overlay fullscreen do relatório gerado -->
+
     <div class="relatorio-overlay" id="relatorioOverlay">
+
         <div class="relatorio-toolbar">
+
             <button class="btn-imprimir" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
+
             <button class="btn-fechar-rel" onclick="fecharRelatorio()">✕ Fechar</button>
+
         </div>
+
         <div id="relatorioConteudo"></div>
+
     </div>
+
+
 
    <script>
 
+
+
     var BASE_URL = 'https://script.google.com/macros/s/AKfycbzPZd7W-x_2J0YM1C3O81-3pmcMsfmRKz4HwLGXV0N-EEBhmcOAr2k_k4mB_osMmKAK/exec';
+
+
+
+
 
 
 
@@ -1017,9 +2032,19 @@ Tier: direct
 
 
 
+
+
+
+
     var TODOS_DADOS = [];
 
+
+
     window.DADOS_TABELA = [];
+
+
+
+
 
 
 
@@ -1027,971 +2052,1947 @@ Tier: direct
 
 
 
+
+
+
+
     function carregarDados() {
+
+
 
         document.getElementById('lastUpdate').textContent = 'Carregando...';
 
+
+
         var xhr = new XMLHttpRequest();
+
+
 
         xhr.open('GET', BASE_URL + '?action=getData', true);
 
+
+
         xhr.onreadystatechange = function() {
+
+
 
             if (xhr.readyState === 4) {
 
+
+
                 if (xhr.status === 200) {
+
+
 
                     try {
 
+
+
                         var data = JSON.parse(xhr.responseText);
+
+
 
                         processarDados(data);
 
+
+
                     } catch(e) { tentarJSONP(); }
+
+
 
                 } else { tentarJSONP(); }
 
+
+
             }
+
+
 
         };
 
+
+
         xhr.onerror = function() { tentarJSONP(); };
+
+
 
         xhr.send();
 
+
+
     }
+
+
+
+
 
 
 
     function tentarJSONP() {
 
+
+
         var callbackName = 'dashCallback_' + Date.now();
+
+
 
         window[callbackName] = function(data) {
 
+
+
             processarDados(data);
+
+
 
             delete window[callbackName];
 
+
+
         };
+
+
 
         var script = document.createElement('script');
 
+
+
         script.src = BASE_URL + '?action=getData&callback=' + callbackName;
+
+
 
         script.onerror = function() {
 
+
+
             document.getElementById('lastUpdate').textContent = 'Erro ao carregar dados.';
+
+
 
         };
 
+
+
         document.body.appendChild(script);
 
+
+
     }
+
+
+
+
 
 
 
     function processarDados(data) {
 
+
+
         document.getElementById('lastUpdate').textContent = 'Atualizado: ' + new Date(data.lastUpdate).toLocaleString('pt-BR');
+
+
 
         TODOS_DADOS = data.dados;
 
+
+
         for (var i = 0; i < TODOS_DADOS.length; i++) {
+
+
 
             if (TODOS_DADOS[i].dataRef && TODOS_DADOS[i].dataRef.length > 10) {
 
+
+
                 TODOS_DADOS[i].dataRef = TODOS_DADOS[i].dataRef.slice(0, 10);
+
+
 
             }
 
+
+
         }
+
+
 
         var hoje = new Date().toISOString().split('T')[0];
 
+
+
         var seteDiasAtras = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
+
 
         document.getElementById('dataFim').value = hoje;
 
+
+
         document.getElementById('dataInicio').value = seteDiasAtras;
+
+
 
         aplicarFiltro();
 
+
+
     }
+
+
+
+
 
 
 
     function toggleTodos() {
 
+
+
         var marcado = document.getElementById('chkTodos').checked;
+
+
 
         var checks = document.querySelectorAll('.chkEDSP');
 
+
+
         for (var i = 0; i < checks.length; i++) { checks[i].checked = marcado; }
 
+
+
     }
+
+
+
+
 
 
 
     function verificarTodos() {
 
+
+
         var checks = document.querySelectorAll('.chkEDSP');
+
+
 
         var todosMarcados = true;
 
+
+
         for (var i = 0; i < checks.length; i++) {
+
+
 
             if (!checks[i].checked) { todosMarcados = false; break; }
 
+
+
         }
+
+
 
         document.getElementById('chkTodos').checked = todosMarcados;
 
+
+
     }
+
+
+
+
 
 
 
     var checksIndividuais = document.querySelectorAll('.chkEDSP');
 
+
+
     for (var i = 0; i < checksIndividuais.length; i++) {
+
+
 
         checksIndividuais[i].addEventListener('change', verificarTodos);
 
+
+
     }
+
+
+
+
 
 
 
     function getEDSPsSelecionados() {
 
+
+
         var checks = document.querySelectorAll('.chkEDSP:checked');
+
+
 
         var selecionados = [];
 
+
+
         for (var i = 0; i < checks.length; i++) { selecionados.push(checks[i].value); }
+
+
 
         return selecionados;
 
+
+
     }
+
+
+
+
 
 
 
     function aplicarFiltro() {
 
+
+
         var dataInicio = document.getElementById('dataInicio').value;
+
+
 
         var dataFim = document.getElementById('dataFim').value;
 
+
+
         var edspsSelecionados = getEDSPsSelecionados();
+
+
 
         var dadosFiltrados = TODOS_DADOS.filter(function(d) {
 
+
+
             var passaData = true;
+
+
 
             var passaEDSP = true;
 
+
+
             if (dataInicio) passaData = d.dataRef >= dataInicio;
+
+
 
             if (dataFim) passaData = passaData && d.dataRef <= dataFim;
 
+
+
             if (edspsSelecionados.length > 0) {
+
+
 
                 passaEDSP = edspsSelecionados.indexOf(d.node) !== -1;
 
+
+
             } else { passaEDSP = false; }
+
+
 
             return passaData && passaEDSP;
 
+
+
         });
+
+
 
         var info = '';
 
+
+
         if (dataInicio && dataFim) { info = 'Periodo: ' + dataInicio + ' ate ' + dataFim; }
+
+
 
         else if (dataInicio) { info = 'A partir de: ' + dataInicio; }
 
+
+
         else if (dataFim) { info = 'Ate: ' + dataFim; }
+
+
 
         else { info = 'Mostrando todos os dados disponiveis'; }
 
+
+
         if (edspsSelecionados.length < 14) { info += ' | EDSPs: ' + edspsSelecionados.join(', '); }
+
+
 
         info += ' (' + dadosFiltrados.length + ' registros)';
 
+
+
         document.getElementById('periodoInfo').textContent = info;
+
+
 
         renderizar(dadosFiltrados);
 
+
+
     }
+
+
+
+
 
 
 
     function limparFiltro() {
 
+
+
         document.getElementById('dataInicio').value = '';
+
+
 
         document.getElementById('dataFim').value = '';
 
+
+
         document.getElementById('chkTodos').checked = true;
+
+
 
         toggleTodos();
 
+
+
         document.getElementById('periodoInfo').textContent = 'Mostrando todos os dados disponiveis (' + TODOS_DADOS.length + ' registros)';
+
+
 
         renderizar(TODOS_DADOS);
 
+
+
     }
+
+
+
+
 
 
 
     function renderizar(dados) {
 
+
+
         if (dados.length === 0) {
+
+
 
             document.getElementById('kpiProcessed').textContent = '--';
 
+
+
             document.getElementById('kpiDesvio').textContent = '--';
+
+
 
             document.getElementById('kpiForaCPT').textContent = '--';
 
+
+
             document.getElementById('kpiEquipe').textContent = '--';
+
+
 
             document.getElementById('kpiTPH').textContent = '--';
 
+
+
             document.getElementById('kpiPendingStow').textContent = '--';
+
+
 
             document.getElementById('kpiOTR').textContent = '--';
 
+
+
             document.getElementById('kpiWrongNode').textContent = '--';
+
+
 
             document.getElementById('tabelaNodes').innerHTML = '<tr><td colspan="23">Nenhum dado encontrado.</td></tr>';
 
+
+
             return;
+
+
 
         }
 
+
+
         var totalProcessed = soma(dados, 'processed');
+
+
 
         var avgDesvio = media(dados, 'desvioForecast');
 
+
+
         var totalForaCPT = soma(dados, 'caminhoesAtrasoCPT') || soma(dados, 'veiculosForaCPT');
+
+
 
         var totalEquipe = (soma(dados, 'qtdAAsEfetivos') || soma(dados, 'qtdAAs')) + (soma(dados, 'qtdAAsIntermitentes') || soma(dados, 'qtdDiaristas'));
 
+
+
         var avgTPH = media(dados, 'tph');
+
+
 
         var totalPendingStow = soma(dados, 'pendingStow');
 
+
+
         var totalOTR = soma(dados, 'otrVeiculos');
+
+
 
         var totalWrongNode = soma(dados, 'wrongNode');
 
 
 
+
+
+
+
         document.getElementById('kpiProcessed').textContent = totalProcessed.toLocaleString('pt-BR');
+
+
 
         document.getElementById('kpiDesvio').textContent = (avgDesvio >= 0 ? '+' : '') + avgDesvio.toFixed(1) + '%';
 
+
+
         document.getElementById('kpiDesvio').style.color = avgDesvio >= 0 ? '#2E7D32' : '#C62828';
+
+
 
         document.getElementById('kpiForaCPT').textContent = totalForaCPT;
 
+
+
         document.getElementById('kpiEquipe').textContent = totalEquipe;
+
+
 
         document.getElementById('kpiTPH').textContent = avgTPH.toFixed(2);
 
+
+
         document.getElementById('kpiPendingStow').textContent = totalPendingStow;
 
+
+
         document.getElementById('kpiOTR').textContent = totalOTR;
+
+
 
         document.getElementById('kpiWrongNode').textContent = totalWrongNode;
 
 
 
+
+
+
+
         renderChartForecast(dados);
+
+
 
         renderChartTPH(dados);
 
+
+
         renderChartForaCPT(dados);
+
+
 
         renderChartEquipe(dados);
 
+
+
         renderChartFalhas(dados);
+
+
 
         renderTabela(dados);
 
+
+
     }
+
+
+
+
 
 
 
     function renderChartForecast(dados) {
 
+
+
         var datas = [];
+
+
 
         var forecastPorDia = {};
 
+
+
         var processedPorDia = {};
+
+
 
         dados.forEach(function(d) {
 
+
+
             if (datas.indexOf(d.dataRef) === -1) datas.push(d.dataRef);
+
+
 
             forecastPorDia[d.dataRef] = (forecastPorDia[d.dataRef] || 0) + d.forecast;
 
+
+
             processedPorDia[d.dataRef] = (processedPorDia[d.dataRef] || 0) + d.processed;
 
+
+
         });
+
+
 
         datas.sort();
 
+
+
         Highcharts.chart('chartForecast', {
+
+
 
             chart: { type: 'column' },
 
+
+
             title: { text: 'Forecast vs Processed', style: { fontSize: '12px' } },
+
+
 
             xAxis: { categories: datas.map(function(d){ return d.slice(5); }), labels: { style: { fontSize: '10px' } } },
 
+
+
             yAxis: { title: { text: '' }, labels: { style: { fontSize: '10px' } } },
+
+
 
             series: [
 
+
+
                 { name: 'Forecast', data: datas.map(function(dt){ return forecastPorDia[dt]; }), color: '#37475A' },
+
+
 
                 { name: 'Processed', data: datas.map(function(dt){ return processedPorDia[dt]; }), color: '#FF9900' }
 
+
+
             ],
+
+
 
             credits: { enabled: false },
 
+
+
             legend: { itemStyle: { fontSize: '10px' } }
+
+
 
         });
 
+
+
     }
+
+
+
+
 
 
 
     function renderChartTPH(dados) {
 
+
+
         var nodes = {};
+
+
 
         dados.forEach(function(d) {
 
+
+
             if (!nodes[d.node]) nodes[d.node] = { soma: 0, qtd: 0 };
+
+
 
             nodes[d.node].soma += d.tph;
 
+
+
             nodes[d.node].qtd += 1;
 
+
+
         });
+
+
 
         var labels = Object.keys(nodes).sort();
 
+
+
         var tphs = labels.map(function(n) { return Math.round((nodes[n].soma / nodes[n].qtd) * 100) / 100; });
+
+
 
         Highcharts.chart('chartTPH', {
 
+
+
             chart: { type: 'bar' },
+
+
 
             title: { text: 'TPH Medio por EDSP', style: { fontSize: '12px' } },
 
+
+
             xAxis: { categories: labels, labels: { style: { fontSize: '10px' } } },
+
+
 
             yAxis: { title: { text: '' }, labels: { style: { fontSize: '10px' } } },
 
+
+
             series: [{ name: 'TPH', data: tphs, color: '#FF9900' }],
+
+
 
             credits: { enabled: false },
 
+
+
             legend: { enabled: false }
+
+
 
         });
 
+
+
     }
+
+
+
+
 
 
 
     function renderChartForaCPT(dados) {
 
+
+
         var nodes = {};
+
+
 
         dados.forEach(function(d) {
 
+
+
             nodes[d.node] = (nodes[d.node] || 0) + (d.veiculosForaCPT || 0);
 
+
+
         });
+
+
 
         var labels = Object.keys(nodes).sort();
 
+
+
         Highcharts.chart('chartForaCPT', {
+
+
 
             chart: { type: 'column' },
 
+
+
             title: { text: 'Veículos Fora CPT', style: { fontSize: '12px' } },
+
+
 
             xAxis: { categories: labels, labels: { style: { fontSize: '10px' } } },
 
+
+
             yAxis: { title: { text: '' }, labels: { style: { fontSize: '10px' } } },
+
+
 
             series: [{ name: 'Fora CPT', data: labels.map(function(n){ return nodes[n]; }), color: '#C62828' }],
 
+
+
             credits: { enabled: false },
+
+
 
             legend: { enabled: false }
 
+
+
         });
 
+
+
     }
+
+
+
+
 
 
 
     function renderChartEquipe(dados) {
 
+
+
         var nodes = {};
+
+
 
         dados.forEach(function(d) {
 
+
+
             if (!nodes[d.node]) nodes[d.node] = { aas: 0, diar: 0, yb: 0, qtd: 0 };
+
+
 
             nodes[d.node].aas += (d.qtdAAsEfetivos || d.qtdAAs || 0);
 
+
+
             nodes[d.node].diar += (d.qtdAAsIntermitentes || d.qtdDiaristas || 0);
+
+
 
             // yb removed
 
+
+
             nodes[d.node].qtd += 1;
 
+
+
         });
+
+
 
         var labels = Object.keys(nodes).sort();
 
+
+
         Highcharts.chart('chartEquipe', {
+
+
 
             chart: { type: 'bar' },
 
+
+
             title: { text: 'Equipe Media por EDSP', style: { fontSize: '12px' } },
+
+
 
             xAxis: { categories: labels, labels: { style: { fontSize: '10px' } } },
 
+
+
             yAxis: { title: { text: '' }, labels: { style: { fontSize: '10px' } } },
+
+
 
             plotOptions: { series: { stacking: 'normal' } },
 
+
+
             series: [
+
+
 
                 { name: "AA's", data: labels.map(function(n){ return Math.round(nodes[n].aas / nodes[n].qtd); }), color: '#232F3E' },
 
+
+
                 { name: 'Diaristas', data: labels.map(function(n){ return Math.round(nodes[n].diar / nodes[n].qtd); }), color: '#FF9900' },
+
+
 
                 { name: 'Lider YB', data: labels.map(function(n){ return Math.round(nodes[n].yb / nodes[n].qtd); }), color: '#37475A' }
 
+
+
             ],
+
+
 
             credits: { enabled: false },
 
+
+
             legend: { itemStyle: { fontSize: '10px' } }
+
+
 
         });
 
+
+
     }
+
+
+
+
 
 
 
     function renderChartFalhas(dados) {
+
         var nodes = {};
+
         dados.forEach(function(d) {
+
             if (!nodes[d.node]) nodes[d.node] = { cpt: 0, otd: 0, qtd: 0 };
+
             nodes[d.node].cpt += (typeof d.cptSuccess !== 'undefined' ? Number(d.cptSuccess) : 100);
+
             nodes[d.node].otd += (typeof d.otdSuccess !== 'undefined' ? Number(d.otdSuccess) : 100);
+
             nodes[d.node].qtd += 1;
+
         });
+
         var labels = Object.keys(nodes).sort();
+
         Highcharts.chart('chartBacklog', {
+
             chart: { type: 'column' },
+
             title: { text: 'CPT% e OTD% médio por Node', style: { fontSize: '12px' } },
+
             xAxis: { categories: labels, labels: { style: { fontSize: '10px' } } },
+
             yAxis: { title: { text: '%' }, min: 0, max: 100, labels: { style: { fontSize: '10px' } } },
+
             plotOptions: { column: { grouping: true } },
+
             series: [
+
                 { name: 'CPT%', data: labels.map(function(n){ return parseFloat((nodes[n].cpt/nodes[n].qtd).toFixed(1)); }), color: '#FF9900' },
+
                 { name: 'OTD%', data: labels.map(function(n){ return parseFloat((nodes[n].otd/nodes[n].qtd).toFixed(1)); }), color: '#232F3E' }
+
             ],
+
             credits: { enabled: false },
+
             legend: { itemStyle: { fontSize: '10px' } }
+
         });
+
     }
+
+
+
+
 
 
 
     function renderTabela(dados) {
 
+
+
         var tbody = document.getElementById('tabelaNodes');
+
+
 
         dados.sort(function(a, b) {
 
+
+
             if (a.dataRef === b.dataRef) return b.tph - a.tph;
+
+
 
             return b.dataRef > a.dataRef ? 1 : -1;
 
+
+
         });
+
+
 
         window.DADOS_TABELA = dados;
 
+
+
         tbody.innerHTML = dados.map(function(d, index) {
+
+
 
             var status = getStatus(d);
 
+
+
             var desvioClass = Number(d.desvioForecast) >= 0 ? 'pos' : 'neg';
+
+
 
             var obs = (d.observacoes || d.observacao) ? (d.observacoes || d.observacao).substring(0, 30) : '';
 
+
+
             var temCallout = (d.observacoes || d.observacao || d.justificativaOTD) && (d.observacoes || d.observacao || d.justificativaOTD).trim() !== '';
+
+
 
             var rowClass = temCallout ? ' class="has-callout"' : '';
 
+
+
             var rowClick = temCallout ? ' onclick="abrirModal(' + index + ')"' : '';
+
+
 
             return '<tr' + rowClass + rowClick + '>' +
 
+
+
                 '<td class="node-bold">' + d.node + '</td>' +
+
+
 
                 '<td>' + (d.responsavel || '-') + '</td>' +
 
+
+
                 '<td>' + d.dataRef + '</td>' +
+
+
 
                 '<td>' + d.forecast + '</td>' +
 
+
+
                 '<td>' + d.processed + '</td>' +
+
+
 
                 '<td class="' + desvioClass + '">' + (Number(d.desvioForecast) >= 0 ? '+' : '') + Number(d.desvioForecast).toFixed(1) + '%</td>' +
 
+
+
                 '<td>' + formatHora(d.turnoIniReal || d.horarioInicio) + '</td>' +
+
+
 
                 '<td>' + formatHora(d.turnoFimReal || d.horarioFim) + '</td>' +
 
+
+
                 '<td>' + (d.otrVeiculos || 0) + '</td>' +
+
+
 
                 '<td>' + (d.pacotesPiso || 0) + '</td>' +
 
+
+
                 '<td>' + (d.wrongNode || 0) + '</td>' +
+
+
 
                 '<td>' + (d.qtdLanes || 0) + '</td>' +
 
+
+
                 '<td>' + (d.qtdCaminhoes || d.qtdVeiculos || 0) + '</td>' +
+
+
 
                 '<td>' + (d.caminhoesAtrasoCPT || d.veiculosForaCPT || 0) + '</td>' +
 
+
+
                 '<td>' + (d.pendingStow || 0) + '</td>' +
+
+
 
                 '<td>' + (d.qtdAAsEfetivos || d.qtdAAs || 0) + '</td>' +
 
+
+
                 '<td>' + (d.qtdAAsIntermitentes || d.qtdDiaristas || 0) + '</td>' +
+
+
 
                 '<td>' + (d.tph || 0) + '</td>' +
 
+
+
                 '<td>' + (typeof d.cptSuccess !== 'undefined' ? Number(d.cptSuccess).toFixed(1) + '%' : '-') + '</td>' +
+
+
 
                 '<td>' + (typeof d.otdSuccess !== 'undefined' ? Number(d.otdSuccess).toFixed(1) + '%' : '-') + '</td>' +
 
+
+
                 '<td>' + (d.whsSafety ? '✅' : '—') + '</td>' +
+
+
 
                 '<td>' + [d.falhaUTR?'UTR':'',d.falhaOTR?'OTR':'',d.falhaPUDO?'PUDO':'',d.falhaMM?'MM':''].filter(Boolean).join(',') + '</td>' +
 
+
+
                 '<td class="obs-cell" title="' + (d.observacoes || d.observacao || '') + '">' + (temCallout ? '📢 ' : '') + obs + '</td>' +
+
+
 
                 '<td><span class="badge ' + status.classe + '">' + status.texto + '</span></td>' +
 
+
+
                 '</tr>';
+
+
 
         }).join('');
 
+
+
     }
+
+
+
+
 
 
 
     function abrirModal(index) {
 
+
+
         var d = window.DADOS_TABELA[index];
+
+
 
         if (!d) return;
 
+
+
         document.getElementById('modalTitle').textContent = '📢 Callout - ' + d.node;
+
+
 
         document.getElementById('modalObsText').textContent = d.observacoes || d.observacao || '';
 
+
+
         document.getElementById('modalInfo').innerHTML =
+
+
 
             '<div class="modal-info-item"><div class="mi-label">EDSP</div><div class="mi-value">' + d.node + '</div></div>' +
 
+
+
             '<div class="modal-info-item"><div class="mi-label">Data</div><div class="mi-value">' + d.dataRef + '</div></div>' +
+
+
 
             '<div class="modal-info-item"><div class="mi-label">Responsavel</div><div class="mi-value">' + (d.responsavel || '-') + '</div></div>' +
 
+
+
             '<div class="modal-info-item"><div class="mi-label">TPH</div><div class="mi-value">' + (d.tph || 0) + '</div></div>' +
+
+
 
             '<div class="modal-info-item"><div class="mi-label">Processed</div><div class="mi-value">' + (d.processed || 0) + '</div></div>' +
 
+
+
             '<div class="modal-info-item"><div class="mi-label">Fora CPT</div><div class="mi-value">' + (d.veiculosForaCPT || 0) + '</div></div>';
+
+
 
         document.getElementById('modalOverlay').classList.add('active');
 
+
+
     }
+
+
+
+
 
 
 
     function fecharModal(event) {
 
+
+
         if (!event || event.target === document.getElementById('modalOverlay')) {
+
+
 
             document.getElementById('modalOverlay').classList.remove('active');
 
+
+
         }
 
+
+
     }
+
+
+
+
 
 
 
     function getStatus(d) {
+
         var foraCPT = d.caminhoesAtrasoCPT || d.veiculosForaCPT || 0;
+
         var cpt = typeof d.cptSuccess !== 'undefined' ? Number(d.cptSuccess) : null;
+
         var otd = typeof d.otdSuccess !== 'undefined' ? Number(d.otdSuccess) : null;
+
         var temFalha = d.falhaUTR || d.falhaOTR || d.falhaPUDO || d.falhaMM;
+
         if (foraCPT > 3 || (cpt !== null && cpt < 90) || d.desvioForecast < -10) return { texto: 'Critico', classe: 'badge-alert' };
+
         if (foraCPT > 0 || (cpt !== null && cpt < 100) || (otd !== null && otd < 100) || temFalha || d.desvioForecast < -5) return { texto: 'Atencao', classe: 'badge-warn' };
+
         return { texto: 'OK', classe: 'badge-ok' };
+
     }
+
+
+
+
 
 
 
     function formatHora(val) {
+
         if (!val) return '-';
+
         var s = String(val);
+
         // "2026-05-29T08:30:00" ou "08:30:00" ou "8:30 AM" → extrai HH:MM
+
         var m = s.match(/(\d{1,2}):(\d{2})/);
+
         if (m) {
+
             var h = m[1].padStart(2,'0');
+
             // corrige AM/PM se presente
+
             if (/PM/i.test(s) && h !== '12') h = String(parseInt(h)+12).padStart(2,'0');
+
             if (/AM/i.test(s) && h === '12') h = '00';
+
             return h + ':' + m[2];
+
         }
+
         return s.slice(0,5); // fallback: primeiros 5 chars
+
     }
 
+
+
     function media(arr, campo) { return arr.length > 0 ? arr.reduce(function(s, d) { return s + (d[campo] || 0); }, 0) / arr.length : 0; }
+
+
 
     function soma(arr, campo) { return arr.reduce(function(s, d) { return s + (d[campo] || 0); }, 0); }
 
 
 
 
+
+
+
+
+
     function abrirModalRelatorio() {
+
         var ini = document.getElementById('dataInicio').value;
+
         var fim = document.getElementById('dataFim').value;
+
         if (ini) document.getElementById('relInicio').value = ini;
+
         if (fim) document.getElementById('relFim').value = fim;
+
         document.getElementById('modalRelatorioOverlay').classList.add('active');
+
     }
+
+
 
     function fecharModalRelatorio(event) {
+
         if (!event || event.target === document.getElementById('modalRelatorioOverlay')) {
+
             document.getElementById('modalRelatorioOverlay').classList.remove('active');
+
         }
+
     }
+
+
 
     function fecharRelatorio() {
+
         document.getElementById('relatorioOverlay').classList.remove('active');
+
     }
 
+
+
     function gerarRelatorio() {
+
         var inicio = document.getElementById('relInicio').value;
+
         var fim = document.getElementById('relFim').value;
+
         if (!inicio || !fim) { alert('Selecione o período completo.'); return; }
+
         fecharModalRelatorio();
 
+
+
         var dados = TODOS_DADOS.filter(function(d) { return d.dataRef >= inicio && d.dataRef <= fim; });
+
         if (dados.length === 0) { alert('Nenhum dado encontrado para o período selecionado.'); return; }
+
+
 
         var geradoEm = new Date().toLocaleString('pt-BR');
 
+
+
         // ── Visão Geral (todos os dados) ──────────────────────────────────
+
         var totalProcessed = soma(dados, 'processed');
+
         var totalForecast  = soma(dados, 'forecast');
+
         var desvioGeral    = totalForecast > 0 ? ((totalProcessed - totalForecast) / totalForecast * 100) : 0;
+
         var avgTPH         = media(dados, 'tph');
+
         var totalWN        = soma(dados, 'wrongNode');
+
         var totalAAs       = (soma(dados, 'qtdAAsEfetivos') || soma(dados, 'qtdAAs')) + (soma(dados, 'qtdAAsIntermitentes') || soma(dados, 'qtdDiaristas'));
+
         var totalOTR       = soma(dados, 'otrVeiculos');
+
         var totalForaCPT   = soma(dados, 'caminhoesAtrasoCPT') || soma(dados, 'veiculosForaCPT');
+
         var totalVeic      = soma(dados, 'qtdCaminhoes') || soma(dados, 'qtdVeiculos');
+
         var totalPiso      = soma(dados, 'pacotesPiso');
 
-        // CPT% = (processed - piso) / processed | OTD% = (qtdVeiculos - foraCPT) / qtdVeiculos
-        var cptGeralPct = totalProcessed > 0 ? ((totalProcessed - totalPiso) / totalProcessed * 100) : 0;
-        var otdGeralPct = totalVeic > 0 ? ((totalVeic - totalForaCPT) / totalVeic * 100) : 0;
+
+
+        // CPT%/OTD% — usa campos diretos quando disponíveis, fallback para cálculo
+        var _dadosComCPT = dados.filter(function(d){ return typeof d.cptSuccess !== 'undefined'; });
+        var cptGeralPct = _dadosComCPT.length > 0
+            ? media(_dadosComCPT, 'cptSuccess')
+            : (totalProcessed > 0 ? ((totalProcessed - totalPiso) / totalProcessed * 100) : 0);
+        var _dadosComOTD = dados.filter(function(d){ return typeof d.otdSuccess !== 'undefined'; });
+        var otdGeralPct = _dadosComOTD.length > 0
+            ? media(_dadosComOTD, 'otdSuccess')
+            : (totalVeic > 0 ? ((totalVeic - totalForaCPT) / totalVeic * 100) : 0);
+
+
 
         // sites únicos
+
         var sitesSet = {};
+
         dados.forEach(function(d) { sitesSet[d.node] = true; });
+
         var sitesTotal = Object.keys(sitesSet).length;
 
+
+
         // OTD/CPT no horário (% de estações com OTD/CPT = 100%)
+
         var nodeStats = {};
+
         dados.forEach(function(d) {
+
             if (!nodeStats[d.node]) nodeStats[d.node] = { cpt100: true, otd100: true, processados: 0, piso: 0, veic: 0, foraCPT: 0 };
+
             var ns = nodeStats[d.node];
+
             ns.processados += (d.processed || 0);
+
             ns.piso        += (d.pacotesPiso || 0);
-            ns.veic        += (d.qtdVeiculos || 0);
-            ns.foraCPT     += (d.veiculosForaCPT || 0);
+
+            ns.veic        += (d.qtdCaminhoes || d.qtdVeiculos || 0);
+
+            ns.foraCPT     += (d.caminhoesAtrasoCPT || d.veiculosForaCPT || 0);
+
         });
+
         var nodeKeys = Object.keys(nodeStats);
+
         var cptOK = 0, otdOK = 0;
+
         nodeKeys.forEach(function(k) {
+
             var ns = nodeStats[k];
+
             var cpt = ns.processados > 0 ? ((ns.processados - ns.piso) / ns.processados * 100) : 0;
+
             var otd = ns.veic > 0 ? ((ns.veic - ns.foraCPT) / ns.veic * 100) : 0;
+
             if (cpt >= 99) cptOK++;
+
             if (otd >= 99) otdOK++;
+
         });
+
+
 
         // ── Regional DF Sul ──────────────────────────────────────────────
+
         var REGIONAL = ['ECB8','EGO8','EIJ8','EJO8','ELO8','EME8','EMR8','EOZ8','ERS8','ESB8','ESE8','EUM8','EVE8','EXS9'];
+
         var dadosReg = dados.filter(function(d) { return REGIONAL.indexOf(d.node) !== -1; });
 
+
+
         var regProcessed = soma(dadosReg, 'processed');
+
         var regForecast  = soma(dadosReg, 'forecast');
+
         var regDesvio    = regForecast > 0 ? ((regProcessed - regForecast) / regForecast * 100) : 0;
+
         var regTPH       = media(dadosReg, 'tph');
+
         var regAAs       = (soma(dadosReg, 'qtdAAsEfetivos') || soma(dadosReg, 'qtdAAs')) + (soma(dadosReg, 'qtdAAsIntermitentes') || soma(dadosReg, 'qtdDiaristas'));
+
         var regWN        = soma(dadosReg, 'wrongNode');
+
         var regVeic      = soma(dadosReg, 'qtdCaminhoes') || soma(dadosReg, 'qtdVeiculos');
+
         var regForaCPT   = soma(dadosReg, 'caminhoesAtrasoCPT') || soma(dadosReg, 'veiculosForaCPT');
+
         var regPiso      = soma(dadosReg, 'pacotesPiso');
+
         var regProc      = soma(dadosReg, 'processed');
 
+
+
         var regCPT = regProc > 0 ? ((regProc - regPiso) / regProc * 100) : 0;
+
         var regOTD = regVeic > 0 ? ((regVeic - regForaCPT) / regVeic * 100) : 0;
 
+
+
         var regSitesSet = {};
+
         dadosReg.forEach(function(d) { regSitesSet[d.node] = true; });
+
         var regSites = Object.keys(regSitesSet).length;
 
+
+
         // Relatórios submetidos (registros únicos por node no período)
+
         var relSub = 0;
+
         var relNodes = {};
+
         dadosReg.forEach(function(d) { relNodes[d.node + '_' + d.dataRef] = true; });
+
         relSub = Object.keys(relNodes).length;
 
+
+
         // Breakdown por estação (regional)
+
         var nodes = {};
+
         dadosReg.forEach(function(d) {
+
             if (!nodes[d.node]) nodes[d.node] = {
+
                 node: d.node, responsavel: d.responsavel || '-',
+
                 processed: 0, forecast: 0, tphSoma: 0, tphQtd: 0,
+
                 aas: 0, wrongNode: 0, foraCPT: 0, veic: 0, piso: 0
+
             };
+
             var n = nodes[d.node];
+
             n.processed += (d.processed || 0);
+
             n.forecast  += (d.forecast || 0);
+
             n.tphSoma   += (d.tph || 0);
+
             n.tphQtd    += 1;
+
             n.aas       += (d.qtdAAsEfetivos || d.qtdAAs || 0) + (d.qtdAAsIntermitentes || d.qtdDiaristas || 0);
+
             n.wrongNode += (d.wrongNode || 0);
+
             n.foraCPT   += (d.caminhoesAtrasoCPT || d.veiculosForaCPT || 0);
+
             n.veic      += (d.qtdCaminhoes || d.qtdVeiculos || 0);
+
             n.piso      += (d.pacotesPiso || 0);
+
         });
 
+
+
         var linhasNodes = Object.keys(nodes).sort().map(function(key, idx) {
+
             var n = nodes[key];
+
             var dev    = n.forecast > 0 ? ((n.processed - n.forecast) / n.forecast * 100) : 0;
+
             var tphMed = n.tphQtd > 0 ? (n.tphSoma / n.tphQtd) : 0;
+
             var cpt    = n.processed > 0 ? ((n.processed - n.piso) / n.processed * 100) : 0;
+
             var otd    = n.veic > 0 ? ((n.veic - n.foraCPT) / n.veic * 100) : 0;
 
+
+
             var devStr   = (dev >= 0 ? '+' : '') + dev.toFixed(1) + '%';
+
             var devColor = dev >= 0 ? '#E65100' : (dev < -10 ? '#C62828' : '#232F3E');
+
             var tphColor = tphMed < 10 ? '#C62828' : (tphMed < 30 ? '#E65100' : '#232F3E');
+
             var tphStr   = tphMed.toFixed(1);
+
             var cptStr   = cpt.toFixed(1) + '%';
+
             var otdStr   = otd.toFixed(1) + '%';
+
             var cptColor = cpt >= 100 ? '#2E7D32' : (cpt >= 90 ? '#E65100' : '#C62828');
+
             var otdColor = otd >= 100 ? '#2E7D32' : (otd >= 90 ? '#E65100' : '#C62828');
+
             var bg = idx % 2 === 0 ? '#FFFFFF' : '#F9F9F9';
 
+
+
             return '<tr style="background:' + bg + ';">' +
+
                 '<td style="padding:8px 12px; font-weight:700; border-bottom:1px solid #eee;">' + n.node + '</td>' +
+
                 '<td style="padding:8px 10px; text-align:center; border-bottom:1px solid #eee;">' + n.processed.toLocaleString('pt-BR') + '</td>' +
+
                 '<td style="padding:8px 10px; text-align:center; border-bottom:1px solid #eee;">' + n.forecast.toLocaleString('pt-BR') + '</td>' +
+
                 '<td style="padding:8px 10px; text-align:center; border-bottom:1px solid #eee; font-weight:700; color:' + devColor + ';">' + devStr + '</td>' +
+
                 '<td style="padding:8px 10px; text-align:center; border-bottom:1px solid #eee; font-weight:700; color:' + tphColor + ';">' + tphStr + '</td>' +
+
                 '<td style="padding:8px 10px; text-align:center; border-bottom:1px solid #eee;">' + n.aas + '</td>' +
+
                 '<td style="padding:8px 10px; text-align:center; border-bottom:1px solid #eee;">' + n.wrongNode + '</td>' +
+
                 '<td style="padding:8px 10px; text-align:center; border-bottom:1px solid #eee; font-weight:700; color:' + cptColor + ';">' + cptStr + '</td>' +
+
                 '<td style="padding:8px 10px; text-align:center; border-bottom:1px solid #eee; font-weight:700; color:' + otdColor + ';">' + otdStr + '</td>' +
+
                 '</tr>';
+
         }).join('');
 
+
+
         // ── Helpers inline ────────────────────────────────────────────────
+
         function kpi(valor, label, color) {
+
             var c = color || '#232F3E';
+
             return '<div style="background:#fff; border-radius:6px; padding:16px 12px; text-align:center; border:1px solid #e8e8e8; min-width:100px;">' +
+
                 '<div style="font-size:22px; font-weight:700; color:' + c + '; margin-bottom:4px;">' + valor + '</div>' +
+
                 '<div style="font-size:10px; color:#888; text-transform:uppercase; letter-spacing:0.5px;">' + label + '</div>' +
+
                 '</div>';
+
         }
+
         function metricRow(items) {
+
             var cells = items.map(function(item) {
+
                 return '<div style="flex:1; padding:6px 0;">' +
+
                     '<span style="font-size:12px; color:#444; font-weight:500;">' + item.label + ':</span>&nbsp;' +
+
                     '<span style="font-size:12px; font-weight:700; color:' + (item.color || '#232F3E') + ';">' + item.valor + '</span></div>';
+
             }).join('');
+
             return '<div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; padding:12px; background:#F9F9F9; border-radius:6px;">' + cells + '</div>';
+
         }
+
+
 
         // ── Build HTML ────────────────────────────────────────────────────
+
         var html = '<div style="max-width:900px; margin:0 auto; font-family:-apple-system,BlinkMacSystemFont,Arial,sans-serif; font-size:13px; color:#232F3E;">' +
 
+
+
         // Header
+
         '<div style="background:#1B2631; color:white; padding:20px 24px; border-radius:10px; margin-bottom:20px;">' +
+
         '<div style="display:flex; align-items:center; gap:10px; margin-bottom:4px;">' +
+
         '<span style="font-size:18px;">📊</span>' +
+
         '<h1 style="margin:0; font-size:17px; font-weight:700;">Relatório Consolidado — Wash Report</h1></div>' +
+
         '<p style="margin:0; font-size:11px; color:#aaa;">Período: ' + inicio + ' a ' + fim + ' &nbsp;|&nbsp; Gerado em: ' + geradoEm + '</p>' +
+
         '</div>' +
+
+
 
         // ── Visão Geral ──
+
         '<div style="background:#fff; border-radius:10px; padding:20px; margin-bottom:16px; border:1px solid #e8e8e8;">' +
+
         '<div style="display:flex; align-items:center; gap:8px; margin-bottom:14px; padding-bottom:10px; border-bottom:2px solid #F0F0F0;">' +
+
         '<span style="font-size:15px;">📋</span><h2 style="margin:0; font-size:14px; font-weight:700;">Visão Geral Consolidada</h2></div>' +
+
         '<div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:10px;">' +
+
         kpi(totalProcessed.toLocaleString('pt-BR'), 'Pacotes Processados', '#E65100') +
+
         kpi(avgTPH.toFixed(1), 'TPH Puro Médio', '#E65100') +
+
         kpi((desvioGeral >= 0 ? '+' : '') + desvioGeral.toFixed(1) + '%', 'Desvio Forecast', '#E65100') +
+
         kpi(sitesTotal, 'Sites com Dados') +
+
         '</div>' +
+
         '<div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:14px;">' +
+
         kpi(totalAAs, 'Total Associados') +
+
         kpi(totalWN, 'Wrong Node', '#C62828') +
+
         kpi(cptGeralPct.toFixed(1) + '%', 'CPT Success Médio', cptGeralPct >= 99 ? '#2E7D32' : '#E65100') +
+
         kpi(otdGeralPct.toFixed(1) + '%', 'OTD Success Médio', otdGeralPct >= 99 ? '#2E7D32' : '#E65100') +
+
         '</div>' +
+
         '<div style="font-size:12px; line-height:2;">' +
+
         '<div><span style="font-weight:600;">OTD no Horário</span>: ' + otdOK + '/' + nodeKeys.length + ' estações (' + Math.round(otdOK/nodeKeys.length*100) + '%)</div>' +
+
         '<div><span style="font-weight:600;">CPT no Horário</span>: ' + cptOK + '/' + nodeKeys.length + ' estações (' + Math.round(cptOK/nodeKeys.length*100) + '%)</div>' +
+
         '</div>' +
+
         '</div>' +
+
+
 
         // ── Regional DF Sul ──
+
         '<div style="background:#fff; border-radius:10px; overflow:hidden; border:1px solid #e8e8e8;">' +
+
         '<div style="background:#232F3E; padding:14px 20px; display:flex; align-items:center; gap:8px;">' +
+
         '<span style="background:#FF9900; width:12px; height:12px; border-radius:50%; display:inline-block;"></span>' +
+
         '<h2 style="margin:0; font-size:14px; font-weight:700; color:white;">Regional: DF Sul <span style="font-weight:400; font-size:12px; color:#aaa;">(' + regSites + ' sites com dados)</span></h2>' +
+
         '</div>' +
+
         '<div style="padding:18px 20px;">' +
+
         '<div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:14px;">' +
+
         kpi(regProcessed.toLocaleString('pt-BR'), 'Pacotes', '#E65100') +
+
         kpi(regTPH.toFixed(1), 'TPH Puro Médio', '#E65100') +
+
         kpi((regDesvio >= 0 ? '+' : '') + regDesvio.toFixed(1) + '%', 'Desvio Forecast', '#E65100') +
+
         kpi(regAAs, 'Associados') +
+
         '</div>' +
+
         metricRow([
+
             { label: 'CPT Success Médio', valor: regCPT.toFixed(1) + '%', color: regCPT >= 99 ? '#2E7D32' : '#E65100' },
+
             { label: 'OTD Success Médio', valor: regOTD.toFixed(1) + '%', color: regOTD >= 99 ? '#2E7D32' : '#E65100' },
+
             { label: 'Wrong Node', valor: regWN.toString() },
+
             { label: 'Relatórios', valor: relSub.toString() }
+
         ]) +
 
+
+
         // Breakdown table
+
         '<div style="margin-top:16px;">' +
+
         '<div style="display:flex; align-items:center; gap:6px; margin-bottom:10px;">' +
+
         '<span style="color:#FF9900; font-size:13px;">●</span>' +
+
         '<span style="font-size:13px; font-weight:700;">Breakdown por Estação</span>' +
+
         '</div>' +
+
         '<div style="overflow-x:auto;">' +
+
         '<table style="width:100%; border-collapse:collapse; font-size:12px;">' +
+
         '<thead><tr style="background:#F5F5F5;">' +
+
         '<th style="padding:9px 12px; text-align:left; font-weight:700; font-size:11px; color:#444; text-transform:uppercase; letter-spacing:0.5px; border-bottom:2px solid #ddd;">SITE</th>' +
+
         '<th style="padding:9px 10px; text-align:center; font-weight:700; font-size:11px; color:#444; text-transform:uppercase; border-bottom:2px solid #ddd;">PACOTES</th>' +
+
         '<th style="padding:9px 10px; text-align:center; font-weight:700; font-size:11px; color:#444; text-transform:uppercase; border-bottom:2px solid #ddd;">FORECAST</th>' +
+
         '<th style="padding:9px 10px; text-align:center; font-weight:700; font-size:11px; color:#444; text-transform:uppercase; border-bottom:2px solid #ddd;">DESVIO</th>' +
+
         '<th style="padding:9px 10px; text-align:center; font-weight:700; font-size:11px; color:#444; text-transform:uppercase; border-bottom:2px solid #ddd;">TPH PURO</th>' +
+
         '<th style="padding:9px 10px; text-align:center; font-weight:700; font-size:11px; color:#444; text-transform:uppercase; border-bottom:2px solid #ddd;">AAs</th>' +
+
         '<th style="padding:9px 10px; text-align:center; font-weight:700; font-size:11px; color:#444; text-transform:uppercase; border-bottom:2px solid #ddd;">WRONG NODE</th>' +
+
         '<th style="padding:9px 10px; text-align:center; font-weight:700; font-size:11px; color:#444; text-transform:uppercase; border-bottom:2px solid #ddd;">CPT%</th>' +
+
         '<th style="padding:9px 10px; text-align:center; font-weight:700; font-size:11px; color:#444; text-transform:uppercase; border-bottom:2px solid #ddd;">OTD%</th>' +
+
         '</tr></thead>' +
+
         '<tbody>' + linhasNodes + '</tbody>' +
+
         '</table></div></div></div></div></div>';
 
+
+
         document.getElementById('relatorioConteudo').innerHTML = html;
+
         document.getElementById('relatorioOverlay').classList.add('active');
+
         document.getElementById('relatorioOverlay').scrollTop = 0;
+
     }
+
+
+
 
 
     if ('serviceWorker' in navigator) {
 
+
+
         navigator.serviceWorker.register('./service-worker.js')
+
+
 
         .then(function(reg) { reg.update(); })
 
+
+
         .catch(function(err) { console.log('SW erro:', err); });
 
+
+
     }
+
+
+
+
 
 
 
     var deferredPrompt;
 
+
+
     window.addEventListener('beforeinstallprompt', function(e) {
+
+
 
         e.preventDefault();
 
+
+
         deferredPrompt = e;
+
+
 
         document.getElementById('installBanner').style.display = 'block';
 
+
+
     });
+
+
+
+
 
 
 
     document.getElementById('btnInstall').addEventListener('click', function() {
 
+
+
         if (deferredPrompt) {
+
+
 
             deferredPrompt.prompt();
 
+
+
             deferredPrompt.userChoice.then(function(choiceResult) {
+
+
 
                 document.getElementById('installBanner').style.display = 'none';
 
+
+
                 deferredPrompt = null;
+
+
 
             });
 
+
+
         }
+
+
 
     });
 
 
 
+
+
+
+
     if (window.navigator.standalone === false) {
+
+
 
         document.getElementById('installBanner').style.display = 'block';
 
+
+
         document.getElementById('installBanner').innerHTML =
+
+
 
             '📲 Para instalar: toque em <strong>Compartilhar</strong> e depois <strong>Adicionar a Tela Inicio</strong>';
 
+
+
     }
+
+
 
     </script>
 
+
+
 </body>
 
+
+
 </html>
+
+
+
+
 
 
 
