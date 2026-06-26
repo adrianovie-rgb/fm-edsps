@@ -853,7 +853,7 @@ document.getElementById('formColeta').addEventListener('submit',function(e){
     document.getElementById('lastNode').textContent=dados.node;
     document.getElementById('statusMsg').textContent='Relatorio enviado! ('+dados.node+' - '+dados.dataRef+')';
 
-    ['processed','forecast','pendingStow','pacotesPiso','wrongNode','qtdLanes','qtdVeiculosOTR','qtdCaminhoes','horasTrabalhadas','qtdAAsEfetivos','qtdAAsIntermitentes','caminhoesAtrasoCPT'].forEach(function(id){document.getElementById(id).value='';});
+    ['processed','forecast','pendingStow','pacotesPiso','wrongNode','qtdLanes','qtdVeiculosOTR','qtdCaminhoes','horasTrabalhadas','qtdAAsEfetivos','qtdAAsIntermitentes','caminhoesAtrasoCPT'].forEach(function(id){document.getElementById(id).value='';}); var _h=new Date(); document.getElementById('dataRef').value=_h.getFullYear()+'-'+String(_h.getMonth()+1).padStart(2,'0')+'-'+String(_h.getDate()).padStart(2,'0');
 
     ['turno','inducao','stow','otr','carregamento'].forEach(function(a){['InicioReal','FimReal'].forEach(function(s){document.getElementById(a+s).value='';});document.getElementById(a+'Duracao').textContent='--';document.getElementById(a+'StIni').innerHTML='<span class="st-neu">--</span>';document.getElementById(a+'StFim').innerHTML='<span class="st-neu">--</span>';});
 
