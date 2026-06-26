@@ -1288,6 +1288,7 @@
 
     
 @media print {
+    @page { margin: 15mm 10mm; size: A4 landscape; }
     body > *:not(#relatorioOverlay) { display: none !important; }
     #relatorioOverlay {
         position: static !important;
@@ -1295,14 +1296,38 @@
         background: white !important;
         padding: 0 !important;
         display: block !important;
+        width: 100% !important;
     }
     #relatorioConteudo {
         overflow: visible !important;
         max-height: none !important;
         height: auto !important;
+        width: 100% !important;
+        padding: 0 !important;
     }
-    .relatorio-actions { display: none !important; }
-    .relatorio-close  { display: none !important; }
+    /* Expandir todos os wrappers overflow dentro do relatório */
+    #relatorioConteudo div[style*="overflow"] {
+        overflow: visible !important;
+    }
+    #relatorioConteudo table {
+        width: 100% !important;
+        font-size: 9pt !important;
+        page-break-inside: auto;
+    }
+    #relatorioConteudo th,
+    #relatorioConteudo td {
+        padding: 5px 6px !important;
+        white-space: normal !important;
+        word-break: break-word !important;
+    }
+    #relatorioConteudo tr { page-break-inside: avoid; }
+    /* Grid de KPIs: 4 colunas lado a lado */
+    #relatorioConteudo div[style*="grid-template-columns"] {
+        display: grid !important;
+    }
+    .relatorio-actions,
+    .relatorio-close,
+    button { display: none !important; }
 }
 </style>
 
@@ -3818,7 +3843,7 @@
 
         '</div>' +
 
-        '<div style="overflow-x:auto;">' +
+        '<div style="overflow-x:auto;" class="table-wrap">' +
 
         '<table style="width:100%; border-collapse:collapse; font-size:12px;">' +
 
