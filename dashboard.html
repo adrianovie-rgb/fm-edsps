@@ -3956,21 +3956,14 @@ Tier: direct
 
 
 
-    if (window.navigator.standalone === false) {
-
-
+    var _isMob = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    if (_isMob && window.navigator.standalone === false) {
 
         document.getElementById('installBanner').style.display = 'block';
 
-
-
         document.getElementById('installBanner').innerHTML =
 
-
-
             '📲 Para instalar: toque em <strong>Compartilhar</strong> e depois <strong>Adicionar a Tela Inicio</strong>';
-
-
 
     }
 
