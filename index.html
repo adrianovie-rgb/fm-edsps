@@ -690,6 +690,22 @@ var MINHA_URL='https://script.google.com/macros/s/AKfycbwL_9312RhpK_JNculKu_bCUi
 
 (function(){var d=new Date();document.getElementById('dataRef').value=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');})();
 
+// Auto-save: persiste horários de planejamento ao alterar qualquer campo
+(function(){
+  var camposPlano = ['turnoInicioPlano','turnoFimPlano',
+    'inducaoInicioPlano','inducaoFimPlano',
+    'stowInicioPlano','stowFimPlano',
+    'otrInicioPlano','otrFimPlano',
+    'carregamentoInicioPlano','carregamentoFimPlano'];
+  camposPlano.forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('change', function(){ salvarDefaultsNode(); });
+  });
+  // Salvar também ao mudar responsável
+  var resp = document.getElementById('responsavel');
+  if (resp) resp.addEventListener('change', function(){ salvarDefaultsNode(); });
+})();
+
 var RESPONSAVEIS={'ECB8':'Vinicius','EGO8':'Kimberly','EIJ8':'Caio','EJO8':'','ELO8':'','EME8':'','EMR8':'','EOZ8':'Bruno','ERS8':'Kimberly','ESB8':'','ESE8':'Ernesto','EUM8':'Matuza','EVE8':'Julio','EXS9':''};
 
 function preencherResponsavel() {
