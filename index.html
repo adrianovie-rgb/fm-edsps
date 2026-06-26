@@ -206,19 +206,42 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
 
 
-/* Responsive */
-
-@media(max-width:768px){
-
+/* ── Responsive / Mobile ───────────────────────────────────────── */
+@media(max-width:900px){
   .id-row,.grid-3,.kpi-inline{grid-template-columns:1fr;}
-
   .grid-2{grid-template-columns:1fr;}
-
   .horarios-wrap{overflow-x:auto;}
-
   body{padding:12px;}
-
+  .desktop-layout{display:block;}
+  .sidebar{display:none;}
 }
+
+/* ── Desktop layout ────────────────────────────────────────────── */
+body.desktop{background:#EAECF0;padding:32px;}
+
+body.desktop .container{max-width:1280px;}
+
+.desktop-layout{display:grid;grid-template-columns:1fr 340px;gap:28px;align-items:start;}
+
+/* Sidebar */
+.sidebar{position:sticky;top:24px;}
+.sidebar-card{background:white;border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid #E2E8F0;}
+.sidebar-card h4{font-size:0.78em;font-weight:700;color:#FF9900;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+.sidebar-stat{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #F0F0F0;font-size:0.83em;}
+.sidebar-stat:last-child{border-bottom:none;}
+.sidebar-stat .ss-label{color:#718096;}
+.sidebar-stat .ss-value{font-weight:700;color:#232F3E;}
+.sidebar-nodes{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+.node-chip{padding:4px 10px;border-radius:20px;font-size:0.72em;font-weight:700;background:#F7F8FA;color:#4a5568;border:1px solid #E2E8F0;}
+.node-chip.ok{background:#F0FFF4;color:#276749;border-color:#9AE6B4;}
+.sidebar-guide p{font-size:0.8em;color:#4a5568;line-height:1.6;margin-bottom:8px;}
+.sidebar-guide p:last-child{margin-bottom:0;}
+.sidebar-guide strong{color:#232F3E;}
+
+/* Branding header desktop */
+body.desktop .page-title{font-size:1.8em;margin-bottom:28px;}
+body.desktop .aviso-bar{margin-bottom:28px;}
+body.desktop .horarios-table td input[type="time"]{width:120px;}
 
 
 
@@ -681,8 +704,34 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   <button type="submit" class="btn-submit" id="btnSubmit">&#x2713; Enviar Relatorio</button>
 
 </form>
+</main>
 
-<div id="msg" class="msg"></div>
+<!-- Sidebar desktop -->
+<aside class="sidebar">
+  <div class="sidebar-card">
+    <h4>📊 Status</h4>
+    <div class="sidebar-stat"><span class="ss-label">Data</span><span class="ss-value" id="sbData">--</span></div>
+    <div class="sidebar-stat"><span class="ss-label">Último envio</span><span class="ss-value" id="sbUltimo">--</span></div>
+    <div class="sidebar-stat"><span class="ss-label">Node</span><span class="ss-value" id="sbNode">--</span></div>
+  </div>
+  <div class="sidebar-card">
+    <h4>🗂️ Nodes DF-SUL</h4>
+    <div class="sidebar-nodes" id="sbNodes">
+      <span class="node-chip">ECB8</span><span class="node-chip">EGO8</span><span class="node-chip">EIJ8</span><span class="node-chip">EJO8</span><span class="node-chip">ELO8</span><span class="node-chip">EME8</span><span class="node-chip">EMR8</span><span class="node-chip">EOZ8</span><span class="node-chip">ERS8</span><span class="node-chip">ESB8</span><span class="node-chip">ESE8</span><span class="node-chip">EUM8</span><span class="node-chip">EVE8</span><span class="node-chip">EXS9</span>
+    </div>
+  </div>
+  <div class="sidebar-card sidebar-guide">
+    <h4>📋 Instruções</h4>
+    <p><strong>1.</strong> Selecione o Site e confirme o Responsável.</p>
+    <p><strong>2.</strong> Preencha os horários planejados — serão salvos automaticamente para o próximo turno.</p>
+    <p><strong>3.</strong> Ao final do turno, preencha os horários reais e as quantidades.</p>
+    <p><strong>4.</strong> Informe CPT, OTD, falhas e WHS Safety antes de enviar.</p>
+  </div>
+</aside>
+</div>
+
+<div id="msg"
+ class="msg"></div>
 
 
 
@@ -703,6 +752,31 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <script>
 
 var MINHA_URL='https://script.google.com/macros/s/AKfycbwL_9312RhpK_JNculKu_bCUiI662cTn2PXYrxZYoMA3NwAeJ5cxm8p38Ebk0aByT-Z/exec';
+
+// ── Detecção de dispositivo ───────────────────────────────────────────────
+(function(){
+  var touch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  var wide  = window.innerWidth >= 1024;
+  if (!touch && wide) document.body.classList.add('desktop');
+
+  // Atualizar sidebar com data atual
+  var sbData = document.getElementById('sbData');
+  if (sbData) {
+    var now = new Date();
+    sbData.textContent = now.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'2-digit'});
+  }
+})();
+
+// Highlight node-chip quando node selecionado
+function atualizarSidebar(node) {
+  var chips = document.querySelectorAll('.node-chip');
+  chips.forEach(function(c){ c.classList.remove('ok'); });
+  if (node) {
+    chips.forEach(function(c){ if (c.textContent.trim() === node) c.classList.add('ok'); });
+    var sbNode = document.getElementById('sbNode');
+    if (sbNode) sbNode.textContent = node;
+  }
+}
 
 (function(){var el=document.getElementById('aviso');if(MINHA_URL==='COLOQUE_SUA_URL_AQUI'){el.className='aviso-bar erro';el.textContent='Configure a URL do Apps Script.';}else{el.className='aviso-bar pronto';el.textContent='Conectado. Pronto para enviar.';}})();
 
@@ -758,6 +832,7 @@ function preencherResponsavel() {
     } catch(e) {}
   } else {
     // Fallback ao mapa estático
+    atualizarSidebar(node);
     var r = document.getElementById('responsavel');
     if (r && RESPONSAVEIS[node]) r.value = RESPONSAVEIS[node];
   }
@@ -958,6 +1033,9 @@ document.getElementById('formColeta').addEventListener('submit',function(e){
     document.getElementById('popupMsg').textContent = dados.node + ' — ' + dados.dataRef + ' registrado com sucesso.';
     document.getElementById('popupSucesso').style.display = 'flex';
     document.getElementById('lastNode').textContent = dados.node;
+    var sbUlt = document.getElementById('sbUltimo');
+    if (sbUlt) sbUlt.textContent = dados.node + ' ' + new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    atualizarSidebar('');
     document.getElementById('statusMsg').textContent = 'Último envio: ' + dados.node + ' - ' + dados.dataRef;
     msgEl.className = 'msg'; msgEl.textContent = '';
 
