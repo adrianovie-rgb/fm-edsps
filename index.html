@@ -186,6 +186,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
 .msg.ok{display:block;background:#F0FFF4;color:#276749;border:1px solid #9AE6B4;}
 
+.popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);z-index:1000;display:flex;align-items:center;justify-content:center;}
+.popup-box{background:#fff;border-radius:14px;padding:32px 28px;max-width:320px;width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.18);}
+.popup-box .popup-icon{font-size:48px;margin-bottom:12px;}
+.popup-box h3{font-size:1.1em;font-weight:700;color:#232F3E;margin-bottom:8px;}
+.popup-box p{font-size:0.85em;color:#555;margin-bottom:24px;line-height:1.5;}
+.popup-box button{background:#FF9900;color:#232F3E;border:none;padding:12px 32px;border-radius:8px;font-size:1em;font-weight:700;cursor:pointer;width:100%;}
+.popup-box button:active{opacity:0.85;}
+
 .msg.erro{display:block;background:#FFF5F5;color:#C53030;border:1px solid #FEB2B2;}
 
 .msg.enviando{display:block;background:#FFF8E1;color:#744210;border:1px solid #F6AD55;}
@@ -680,6 +688,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
 </div><!-- /container -->
 
+<!-- Popup de sucesso -->
+<div id="popupSucesso" class="popup-overlay" style="display:none;" onclick="if(event.target===this)fecharPopupSucesso()">
+  <div class="popup-box">
+    <div class="popup-icon">✅</div>
+    <h3>Relatório Enviado!</h3>
+    <p id="popupMsg">Dados registrados com sucesso.</p>
+    <button onclick="fecharPopupSucesso()">OK</button>
+  </div>
+</div>
+
 
 
 <script>
@@ -708,9 +726,23 @@ var MINHA_URL='https://script.google.com/macros/s/AKfycbwL_9312RhpK_JNculKu_bCUi
 
 var RESPONSAVEIS={'ECB8':'Vinicius','EGO8':'Kimberly','EIJ8':'Caio','EJO8':'','ELO8':'','EME8':'','EMR8':'','EOZ8':'Bruno','ERS8':'Kimberly','ESB8':'','ESE8':'Ernesto','EUM8':'Matuza','EVE8':'Julio','EXS9':''};
 
+function fecharPopupSucesso() {
+  document.getElementById('popupSucesso').style.display = 'none';
+}
+
 function preencherResponsavel() {
   var node = document.getElementById('node').value;
-  if (!node) return;
+  if (!node) {
+    // Sem node: limpar horários planejados e responsável
+    document.getElementById('responsavel').value = '';
+    ['turno','inducao','stow','otr','carregamento'].forEach(function(a){
+      ['InicioPlano','FimPlano'].forEach(function(s){
+        var el = document.getElementById(a+s);
+        if (el) el.value = '';
+      });
+    });
+    return;
+  }
   // Carregar defaults salvos (planejados + responsável)
   var saved = localStorage.getItem('nodeDefaults_' + node);
   if (saved) {
@@ -922,11 +954,12 @@ document.getElementById('formColeta').addEventListener('submit',function(e){
     // ── Salvar defaults antes de limpar ─────────────────────────
     salvarDefaultsNode();
 
-    // ── Mensagem de sucesso ──────────────────────────────────────
-    msgEl.className='msg ok';
-    msgEl.textContent='✅ Relatório enviado com sucesso! ' + dados.node + ' — ' + dados.dataRef;
-    document.getElementById('lastNode').textContent=dados.node;
-    document.getElementById('statusMsg').textContent='Último envio: '+dados.node+' - '+dados.dataRef;
+    // ── Popup de sucesso ─────────────────────────────────────────
+    document.getElementById('popupMsg').textContent = dados.node + ' — ' + dados.dataRef + ' registrado com sucesso.';
+    document.getElementById('popupSucesso').style.display = 'flex';
+    document.getElementById('lastNode').textContent = dados.node;
+    document.getElementById('statusMsg').textContent = 'Último envio: ' + dados.node + ' - ' + dados.dataRef;
+    msgEl.className = 'msg'; msgEl.textContent = '';
 
     // ── Limpar campos (exceto *Plano e dataRef) ──────────────────
     // Node e responsável
