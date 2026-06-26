@@ -919,23 +919,67 @@ document.getElementById('formColeta').addEventListener('submit',function(e){
 
   setTimeout(function(){
 
-    msgEl.className='msg ok';msgEl.salvarDefaultsNode();
+    // ── Salvar defaults antes de limpar ─────────────────────────
+    salvarDefaultsNode();
+
+    // ── Mensagem de sucesso ──────────────────────────────────────
+    msgEl.className='msg ok';
+    msgEl.textContent='✅ Relatório enviado com sucesso! ' + dados.node + ' — ' + dados.dataRef;
     document.getElementById('lastNode').textContent=dados.node;
-    document.getElementById('statusMsg').textContent='Relatorio enviado! ('+dados.node+' - '+dados.dataRef+')';
+    document.getElementById('statusMsg').textContent='Último envio: '+dados.node+' - '+dados.dataRef;
 
-    ['processed','forecast','pendingStow','pacotesPiso','wrongNode','qtdLanes','qtdVeiculosOTR','qtdCaminhoes','horasTrabalhadas','qtdAAsEfetivos','qtdAAsIntermitentes','caminhoesAtrasoCPT'].forEach(function(id){document.getElementById(id).value='';}); var _h=new Date(); document.getElementById('dataRef').value=_h.getFullYear()+'-'+String(_h.getMonth()+1).padStart(2,'0')+'-'+String(_h.getDate()).padStart(2,'0');
+    // ── Limpar campos (exceto *Plano e dataRef) ──────────────────
+    // Node e responsável
+    document.getElementById('node').value='';
+    document.getElementById('responsavel').value='';
 
-    ['turno','inducao','stow','otr','carregamento'].forEach(function(a){['InicioReal','FimReal'].forEach(function(s){document.getElementById(a+s).value='';});document.getElementById(a+'Duracao').textContent='--';document.getElementById(a+'StIni').innerHTML='<span class="st-neu">--</span>';document.getElementById(a+'StFim').innerHTML='<span class="st-neu">--</span>';});
+    // Campos numéricos
+    ['processed','forecast','pendingStow','pacotesPiso','wrongNode','qtdLanes',
+     'qtdVeiculosOTR','qtdCaminhoes','horasTrabalhadas','qtdAAsEfetivos',
+     'qtdAAsIntermitentes','caminhoesAtrasoCPT'].forEach(function(id){
+      document.getElementById(id).value='';
+    });
 
-    ['desvioForecast','totalAAs','tphValor','cptValor','otdValor'].forEach(function(id){document.getElementById(id).value='-';});
+    // Manter dataRef = hoje
+    var _h=new Date();
+    document.getElementById('dataRef').value=_h.getFullYear()+'-'+String(_h.getMonth()+1).padStart(2,'0')+'-'+String(_h.getDate()).padStart(2,'0');
 
-    ['observacoes','whsSafety','justificativaOTD'].forEach(function(id){document.getElementById(id).value='';});
+    // Campos horários reais
+    ['turno','inducao','stow','otr','carregamento'].forEach(function(a){
+      ['InicioReal','FimReal'].forEach(function(s){document.getElementById(a+s).value='';});
+      document.getElementById(a+'Duracao').textContent='--';
+      document.getElementById(a+'StIni').innerHTML='<span class="st-neu">--</span>';
+      document.getElementById(a+'StFim').innerHTML='<span class="st-neu">--</span>';
+    });
 
-    ['falhaUTR','falhaOTR','falhaPUDO','falhaMM'].forEach(function(id){document.getElementById(id).checked=false;toggleCheck('lbl'+id.charAt(0).toUpperCase()+id.slice(1));});
+    // Campos calculados
+    ['desvioForecast','totalAAs','tphValor','cptValor','otdValor'].forEach(function(id){
+      document.getElementById(id).value='-';
+    });
 
-    otdNoHorario=null;document.getElementById('btnSim').className='toggle-btn';document.getElementById('btnNao').className='toggle-btn';document.getElementById('atrasoSection').className='atraso-section';
+    // Texto livre e OTD
+    ['observacoes','whsSafety','justificativaOTD','horasAtrasoOTD'].forEach(function(id){
+      document.getElementById(id).value='';
+    });
 
-    btn.disabled=false;btn.textContent='&#x2713; Enviar Relatorio';document.body.removeChild(ifr);document.body.removeChild(fm);
+    // Checkboxes de falha
+    ['falhaUTR','falhaOTR','falhaPUDO','falhaMM'].forEach(function(id){
+      document.getElementById(id).checked=false;
+      toggleCheck('lbl'+id.charAt(0).toUpperCase()+id.slice(1));
+    });
+
+    // Reset OTD buttons
+    otdNoHorario=null;
+    document.getElementById('btnSim').className='toggle-btn';
+    document.getElementById('btnNao').className='toggle-btn';
+    document.getElementById('atrasoSection').className='atraso-section';
+
+    // Reabilitar botão e scroll ao topo
+    btn.disabled=false;
+    btn.textContent='&#x2713; Enviar Relatorio';
+    document.body.removeChild(ifr);
+    document.body.removeChild(fm);
+    window.scrollTo({top:0, behavior:'smooth'});
 
   },3000);
 
