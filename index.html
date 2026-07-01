@@ -817,11 +817,14 @@ function preencherResponsavel() {
     });
     return;
   }
-  // Carregar defaults salvos (planejados + responsável)
-  var saved = localStorage.getItem('nodeDefaults_' + node);
-  if (saved) {
+  // Carregar defaults: 1º global, 2º node-específico (sobrescreve)
+  var global = JSON.parse(localStorage.getItem('globalPlanHours') || '{}');
+  var saved  = JSON.parse(localStorage.getItem('nodeDefaults_' + node) || '{}');
+  // Mescla: global como base, node-específico sobrescreve
+  var d = Object.assign({}, global, saved);
+  var temPlanos = Object.keys(d).some(function(k){ return k.indexOf('Plano') !== -1 && d[k]; });
+  if (temPlanos) {
     try {
-      var d = JSON.parse(saved);
       if (d.responsavel) document.getElementById('responsavel').value = d.responsavel;
       ['turno','inducao','stow','otr','carregamento'].forEach(function(a) {
         ['InicioPlano','FimPlano'].forEach(function(s) {
@@ -831,7 +834,7 @@ function preencherResponsavel() {
       });
     } catch(e) {}
   } else {
-    // Fallback ao mapa estático
+    // Sem histórico: fallback ao mapa estático
     atualizarSidebar(node);
     var r = document.getElementById('responsavel');
     if (r && RESPONSAVEIS[node]) r.value = RESPONSAVEIS[node];
@@ -848,7 +851,16 @@ function salvarDefaultsNode() {
       if (el) defaults[a + s] = el.value;
     });
   });
+  // Salva específico do node
   localStorage.setItem('nodeDefaults_' + node, JSON.stringify(defaults));
+  // Salva também como padrão global — todos os outros nodes herdam estes horários
+  var global = JSON.parse(localStorage.getItem('globalPlanHours') || '{}');
+  ['turno','inducao','stow','otr','carregamento'].forEach(function(a) {
+    ['InicioPlano','FimPlano'].forEach(function(s) {
+      if (defaults[a + s]) global[a + s] = defaults[a + s];
+    });
+  });
+  localStorage.setItem('globalPlanHours', JSON.stringify(global));
 }
 
 function calcularAuto(){
