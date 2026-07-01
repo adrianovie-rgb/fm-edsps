@@ -365,9 +365,9 @@ body.desktop .horarios-table td input[type="time"]{width:120px;}
 
           <td class="atividade">Horario do Turno</td>
 
-          <td><input type="time" id="turnoInicioPlano" oninput="calcHorario('turno')"></td>
+          <td><input type="time" id="turnoInicioPlano" oninput="calcHorario('turno')" onchange="salvarDefaultsNode()"></td>
 
-          <td><input type="time" id="turnoFimPlano" oninput="calcHorario('turno')"></td>
+          <td><input type="time" id="turnoFimPlano" oninput="calcHorario('turno')" onchange="salvarDefaultsNode()"></td>
 
           <td><input type="time" id="turnoInicioReal" oninput="calcHorario('turno')"></td>
 
@@ -385,9 +385,9 @@ body.desktop .horarios-table td input[type="time"]{width:120px;}
 
           <td class="atividade">Inducao</td>
 
-          <td><input type="time" id="inducaoInicioPlano" oninput="calcHorario('inducao')"></td>
+          <td><input type="time" id="inducaoInicioPlano" oninput="calcHorario('inducao')" onchange="salvarDefaultsNode()"></td>
 
-          <td><input type="time" id="inducaoFimPlano" oninput="calcHorario('inducao')"></td>
+          <td><input type="time" id="inducaoFimPlano" oninput="calcHorario('inducao')" onchange="salvarDefaultsNode()"></td>
 
           <td><input type="time" id="inducaoInicioReal" oninput="calcHorario('inducao')"></td>
 
@@ -405,9 +405,9 @@ body.desktop .horarios-table td input[type="time"]{width:120px;}
 
           <td class="atividade">Stow</td>
 
-          <td><input type="time" id="stowInicioPlano" oninput="calcHorario('stow')"></td>
+          <td><input type="time" id="stowInicioPlano" oninput="calcHorario('stow')" onchange="salvarDefaultsNode()"></td>
 
-          <td><input type="time" id="stowFimPlano" oninput="calcHorario('stow')"></td>
+          <td><input type="time" id="stowFimPlano" oninput="calcHorario('stow')" onchange="salvarDefaultsNode()"></td>
 
           <td><input type="time" id="stowInicioReal" oninput="calcHorario('stow')"></td>
 
@@ -425,9 +425,9 @@ body.desktop .horarios-table td input[type="time"]{width:120px;}
 
           <td class="atividade">Horario de Descarregamento OTR</td>
 
-          <td><input type="time" id="otrInicioPlano" oninput="calcHorario('otr')"></td>
+          <td><input type="time" id="otrInicioPlano" oninput="calcHorario('otr')" onchange="salvarDefaultsNode()"></td>
 
-          <td><input type="time" id="otrFimPlano" oninput="calcHorario('otr')"></td>
+          <td><input type="time" id="otrFimPlano" oninput="calcHorario('otr')" onchange="salvarDefaultsNode()"></td>
 
           <td><input type="time" id="otrInicioReal" oninput="calcHorario('otr')"></td>
 
@@ -445,9 +445,9 @@ body.desktop .horarios-table td input[type="time"]{width:120px;}
 
           <td class="atividade">Carregamento</td>
 
-          <td><input type="time" id="carregamentoInicioPlano" oninput="calcHorario('carregamento')"></td>
+          <td><input type="time" id="carregamentoInicioPlano" oninput="calcHorario('carregamento')" onchange="salvarDefaultsNode()"></td>
 
-          <td><input type="time" id="carregamentoFimPlano" oninput="calcHorario('carregamento')"></td>
+          <td><input type="time" id="carregamentoFimPlano" oninput="calcHorario('carregamento')" onchange="salvarDefaultsNode()"></td>
 
           <td><input type="time" id="carregamentoInicioReal" oninput="calcHorario('carregamento')"></td>
 
@@ -963,7 +963,6 @@ document.getElementById('formColeta').addEventListener('submit',function(e){
     {id:'qtdCaminhoes',   label:'Qtd Caminhões'},
     {id:'horasTrabalhadas',label:'Horas Trabalhadas'},
     {id:'qtdAAsEfetivos', label:'AAs Efetivos'},
-    {id:'whsSafety',      label:'WHS Safety'}
   ];
   var campoVazio = null;
   for (var vi=0; vi<OBRIGATORIOS.length; vi++) {
